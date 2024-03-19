@@ -26,6 +26,7 @@ import MessageCenter from '../Screens/MessageCenter';
 import MessageCenterDetail from '../Screens/MessageCenterDetail';
 import KundaliForm from '../Screens/KundaliForm';
 import MembershipForm from '../Screens/MembershipForm';
+import MyInvoice from '../Screens/MyInvoice';
 
 
 const Stack = createStackNavigator();
@@ -164,6 +165,11 @@ const StackNavigator = () => {
                 <Stack.Screen
                     name="MembershipForm"
                     component={MembershipForm}
+                    options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                    name="MyInvoice"
+                    component={MyInvoice}
                     options={{ headerShown: false }}
                 />
 

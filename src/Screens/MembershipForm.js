@@ -21,17 +21,25 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import moment from 'moment';
 import DatePicker from 'react-native-date-picker'
 import { RadioButton } from 'react-native-paper';
-import { ButtonStyle } from '../Custom/CustomView';
 import Button from 'react-native-button';
+import CheckBox from '@react-native-community/checkbox';
 import Header from '../Custom/Header';
+import DateTimePickerModal from "react-native-modal-datetime-picker";
 import stringsoflanguages from '../language/Language'
 import { Dropdown } from 'react-native-element-dropdown';
-
 const MembershipForm = ({ navigation }) => {
     const { _kundali, _customlang } = stringsoflanguages
-
+    const window = Dimensions.get('window');
+    const { width, height } = Dimensions.get('window');
     const [checked, setChecked] = React.useState(false);
+    const [checked1, setChecked1] = React.useState(false);
     const gender = [_kundali.male, _kundali.female]
+    const married = [_kundali.married, _kundali.unmarried, _kundali.divorce]
+    const service = [_kundali.business, _kundali.service]
+    const [checked2, setChecked2] = React.useState(false);
+    const goverment = [_kundali.private, _kundali.government]
+    const [checked3, setChecked3] = React.useState(false);
+    const [checked4, setChecked4] = React.useState(false);
     const [type, setType] = useState(false)
     const [date, setDate] = useState('')
     const [pdate, setPDate] = useState('')
@@ -44,13 +52,37 @@ const MembershipForm = ({ navigation }) => {
     const [should5, setShould5] = useState('')
     const [should6, setShould6] = useState('')
     const [should7, setShould7] = useState('')
+    const [isTimePickerVisible, setTimePickerVisibility] = useState(false);
+    const [timeofbirth, settimeofbirth] = useState(new Date());
+    const [select, setSelect] = useState()
     const [state, setState] = useState({
         loading: false,
     });
     const toggleLoading = bol => setState({ ...state, loading: bol });
 
+    const [data, setData] = useState([
+        { id: '1', title: 'Education', checked4: false },
+        { id: '2', title: 'Finace', checked4: false },
+        { id: '3', title: 'Health', checked4: false },
+        { id: '4', title: 'Marriage', checked4: false },
+        { id: '5', title: 'Business', checked4: false },
+        { id: '6', title: 'Happy Life', checked4: false },
+        { id: '7', title: 'Service', checked4: false },
+        { id: '8', title: 'All the above', checked4: false },
+        { id: '9', title: 'Career', checked4: false },
+        { id: '10', title: 'Other', checked4: false },
+
+    ]);
+    const data1 = [
+        {
+
+        },
+        {
+
+        },
+    ]
+
     const labels = [
-        '',
         '',
         '',
         '',
@@ -83,7 +115,18 @@ const MembershipForm = ({ navigation }) => {
         currentStepLabelColor: '#333333',
     };
 
+    const showDatePicker1 = () => {
+        setTimePickerVisibility(true);
+    };
 
+    const hideDatePicker1 = () => {
+        setTimePickerVisibility(false);
+    };
+    const handleConfirm1 = date => {
+        console.warn('A date has been picked: ', date);
+        settimeofbirth(moment(date).format('hh:mm:a'));
+        hideDatePicker1();
+    };
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
@@ -91,7 +134,7 @@ const MembershipForm = ({ navigation }) => {
             <Header
                 menuOption={() => navigation.goBack()}
                 leftIcon={require('../assets/back.png')}
-                title='Astrologer Register'
+                title={_kundali.membership}
             />
             <View style={{ marginHorizontal: 5, marginTop: 15 }}>
                 <StepIndicator
@@ -212,7 +255,7 @@ const MembershipForm = ({ navigation }) => {
                                 marginTop: 19,
                                 marginHorizontal: 18,
                             }}>
-                            Mobile No.
+                            {_kundali.mobile}
                         </Text>
                         <TextInput
                             style={{
@@ -229,7 +272,7 @@ const MembershipForm = ({ navigation }) => {
                             }}
                             placeholderTextColor={'#333333'}
                             keyboardType='numeric'
-                            placeholder={'Mobile No.'}
+                            placeholder={_kundali.mobile}
                         />
 
                         <Text
@@ -304,34 +347,32 @@ const MembershipForm = ({ navigation }) => {
                                 marginTop: 5,
                                 marginHorizontal: 18,
                             }}>
-                            Consultant
+                            {_kundali.dateofbirth}
                         </Text>
-                        <Dropdown
-                            style={{
-                                height: 50,
-                                marginHorizontal: 18, marginTop: 10, borderWidth: 1.5, borderColor: '#00000020',
-                                borderRadius: 10,
-                            }}
-                            placeholderStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', paddingHorizontal: 15, }}
-                            selectedTextStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', paddingHorizontal: 15, textTransform: 'capitalize' }}
-                            iconStyle={{
-                                width: 20,
-                                height: 20,
-                                marginRight: 12,
-                            }}
-                            itemTextStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', textTransform: 'capitalize' }}
-                            data={[
-                                { label: 'Item 1', value: '1' },
-                                { label: 'Item 2', value: '2' },
-                                { label: 'Item 3', value: '3' }]
-                            }
-                            maxHeight={150}
-                            labelField="label"
-                            valueField="value"
-                            placeholder="Consultant"
-                            value={should1}
-                            onChange={(item) => setShould1(item.value)}
-                        />
+                        <TouchableOpacity activeOpacity={0.9} style={{
+                            borderRadius: 10,
+                            paddingHorizontal: 15,
+                            marginHorizontal: 18,
+                            marginTop: 10,
+                            borderColor: '#00000020',
+                            borderWidth: 1.5,
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                        }} onPress={() => { setOpen(true), setType(false) }}>
+                            <TextInput
+                                style={{
+                                    fontSize: 16,
+                                    color: '#333333',
+                                    fontFamily: 'AvenirLTStd-Medium',
+                                    width: '90%',
+                                }}
+                                editable={false}
+                                value={date != '' ? moment(date).format('DD-MM-YYYY') : ''}
+                                placeholder={_kundali.dateofbirth}
+                                placeholderTextColor={'#333333'}
+                            />
+
+                        </TouchableOpacity>
 
                         <Text
                             style={{
@@ -342,34 +383,42 @@ const MembershipForm = ({ navigation }) => {
                                 marginTop: 19,
                                 marginHorizontal: 18,
                             }}>
-                            Skill (Expertise)
+                            {_kundali.timeofbirth}
                         </Text>
-                        <Dropdown
+                        <TouchableOpacity
                             style={{
-                                height: 50,
-                                marginHorizontal: 18, marginTop: 10, borderWidth: 1.5, borderColor: '#00000020',
                                 borderRadius: 10,
+                                paddingHorizontal: 15,
+                                marginHorizontal: 18,
+                                marginTop: 10,
+                                borderColor: '#00000020',
+                                borderWidth: 1.5,
+                                flexDirection: 'row',
+                                alignItems: 'center',
                             }}
-                            placeholderStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', paddingHorizontal: 15, }}
-                            selectedTextStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', paddingHorizontal: 15, textTransform: 'capitalize' }}
-                            iconStyle={{
-                                width: 20,
-                                height: 20,
-                                marginRight: 12,
-                            }}
-                            itemTextStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', textTransform: 'capitalize' }}
-                            data={[
-                                { label: 'Item 1', value: '1' },
-                                { label: 'Item 2', value: '2' },
-                                { label: 'Item 3', value: '3' }]
-                            }
-                            maxHeight={150}
-                            labelField="label"
-                            valueField="value"
-                            placeholder="Skill (Expertise)"
-                            value={should2}
-                            onChange={(item) => setShould2(item.value)}
-                        />
+                            activeOpacity={0.9}
+                            onPress={() => {
+
+                                showDatePicker1();
+                            }}>
+                            <TextInput
+                                style={{
+                                    fontSize: 16,
+                                    color: '#333333',
+                                    fontFamily: 'AvenirLTStd-Medium',
+                                    width: '90%',
+                                }}
+                                value={
+                                    !timeofbirth
+                                        ? moment(timeofbirth).format('hh:mm:a')
+                                        : timeofbirth
+                                }
+                                placeholderTextColor="#333333"
+                                editable={false}
+                                placeholder={_kundali.timeofbirth}
+                            />
+
+                        </TouchableOpacity>
 
                         <Text
                             style={{
@@ -380,83 +429,7 @@ const MembershipForm = ({ navigation }) => {
                                 marginTop: 19,
                                 marginHorizontal: 18,
                             }}>
-                            Main Specialization
-                        </Text>
-                        <Dropdown
-                            style={{
-                                height: 50,
-                                marginHorizontal: 18, marginTop: 10, borderWidth: 1.5, borderColor: '#00000020',
-                                borderRadius: 10,
-                            }}
-                            placeholderStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', paddingHorizontal: 15, }}
-                            selectedTextStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', paddingHorizontal: 15, textTransform: 'capitalize' }}
-                            iconStyle={{
-                                width: 20,
-                                height: 20,
-                                marginRight: 12,
-                            }}
-                            itemTextStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', textTransform: 'capitalize' }}
-                            data={[
-                                { label: 'Item 1', value: '1' },
-                                { label: 'Item 2', value: '2' },
-                                { label: 'Item 3', value: '3' }]
-                            }
-                            maxHeight={150}
-                            labelField="label"
-                            valueField="value"
-                            placeholder="Main Specialization"
-                            value={should3}
-                            onChange={(item) => setShould3(item.value)}
-                        />
-
-                        <Text
-                            style={{
-                                fontFamily: 'AvenirLTStd-Medium',
-                                color: '#ADADAD',
-                                fontSize: 18,
-                                letterSpacing: -0.2,
-                                marginTop: 19,
-                                marginHorizontal: 18,
-                            }}>
-                            Language
-                        </Text>
-                        <Dropdown
-                            style={{
-                                height: 50,
-                                marginHorizontal: 18, marginTop: 10, borderWidth: 1.5, borderColor: '#00000020',
-                                borderRadius: 10,
-                            }}
-                            placeholderStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', paddingHorizontal: 15, }}
-                            selectedTextStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', paddingHorizontal: 15, textTransform: 'capitalize' }}
-                            iconStyle={{
-                                width: 20,
-                                height: 20,
-                                marginRight: 12,
-                            }}
-                            itemTextStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', textTransform: 'capitalize' }}
-                            data={[
-                                { label: 'Item 1', value: '1' },
-                                { label: 'Item 2', value: '2' },
-                                { label: 'Item 3', value: '3' }]
-                            }
-                            maxHeight={150}
-                            labelField="label"
-                            valueField="value"
-                            placeholder="Language"
-                            value={should4}
-                            onChange={(item) => setShould4(item.value)}
-                        />
-
-                        <Text
-                            style={{
-                                fontFamily: 'AvenirLTStd-Medium',
-                                color: '#ADADAD',
-                                fontSize: 18,
-                                letterSpacing: -0.2,
-                                marginTop: 19,
-                                marginHorizontal: 18,
-                            }}>
-                            Experience
+                            {_kundali.placeofbirth}
                         </Text>
                         <TextInput
                             style={{
@@ -472,7 +445,7 @@ const MembershipForm = ({ navigation }) => {
                                 color: '#333333',
                             }}
                             placeholderTextColor={'#333333'}
-                            placeholder={'Experience'}
+                            placeholder={_kundali.placeofbirth}
                         />
 
                         <Text
@@ -484,7 +457,7 @@ const MembershipForm = ({ navigation }) => {
                                 marginTop: 19,
                                 marginHorizontal: 18,
                             }}>
-                            How many hours can contribute daily?
+                            {_kundali.caste}
                         </Text>
                         <TextInput
                             style={{
@@ -500,8 +473,38 @@ const MembershipForm = ({ navigation }) => {
                                 color: '#333333',
                             }}
                             placeholderTextColor={'#333333'}
-                            placeholder={'Daily hours'}
+                            placeholder={_kundali.caste}
                         />
+
+
+                        <Text
+                            style={{
+                                fontFamily: 'AvenirLTStd-Medium',
+                                color: '#ADADAD',
+                                fontSize: 18,
+                                letterSpacing: -0.2,
+                                marginTop: 19,
+                                marginHorizontal: 18,
+                            }}>
+                            {_kundali.gotre}
+                        </Text>
+                        <TextInput
+                            style={{
+                                fontSize: 16,
+                                fontFamily: 'AvenirLTStd-Medium',
+                                borderRadius: 10,
+                                borderColor: '#00000020',
+                                borderWidth: 1.5,
+                                marginTop: 10,
+                                marginHorizontal: 18,
+                                paddingHorizontal: 15,
+                                paddingVertical: 11,
+                                color: '#333333',
+                            }}
+                            placeholderTextColor={'#333333'}
+                            placeholder={_kundali.gotre}
+                        />
+
 
                     </View>
                 )}
@@ -517,7 +520,7 @@ const MembershipForm = ({ navigation }) => {
                                 marginTop: 5,
                                 marginHorizontal: 18,
                             }}>
-                            Bank Name
+                            {_kundali.fathername}
                         </Text>
                         <TextInput
                             style={{
@@ -533,7 +536,7 @@ const MembershipForm = ({ navigation }) => {
                                 color: '#333333',
                             }}
                             placeholderTextColor={'#333333'}
-                            placeholder={'Bank Name'}
+                            placeholder={_kundali.fathername}
                         />
 
                         <Text
@@ -545,7 +548,7 @@ const MembershipForm = ({ navigation }) => {
                                 marginTop: 19,
                                 marginHorizontal: 18,
                             }}>
-                            Bank Account Number
+                            {_kundali.mothername}
                         </Text>
                         <TextInput
                             style={{
@@ -561,8 +564,7 @@ const MembershipForm = ({ navigation }) => {
                                 color: '#333333',
                             }}
                             placeholderTextColor={'#333333'}
-                            keyboardType='numeric'
-                            placeholder={'Bank Account Number'}
+                            placeholder={_kundali.mothername}
                         />
 
                         <Text
@@ -574,7 +576,7 @@ const MembershipForm = ({ navigation }) => {
                                 marginTop: 19,
                                 marginHorizontal: 18,
                             }}>
-                            IFSC Code
+                            {_kundali.grandfathername}
                         </Text>
                         <TextInput
                             style={{
@@ -589,11 +591,293 @@ const MembershipForm = ({ navigation }) => {
                                 paddingVertical: 11,
                                 color: '#333333',
                             }}
-                            autoCapitalize='characters'
                             placeholderTextColor={'#333333'}
-                            placeholder={'IFSC Code'}
+                            placeholder={_kundali.grandfathername}
+                        />
+                        <Text
+                            style={{
+                                fontFamily: 'AvenirLTStd-Medium',
+                                color: '#ADADAD',
+                                fontSize: 18,
+                                letterSpacing: -0.2,
+                                marginTop: 19,
+                                marginHorizontal: 18,
+                            }}>
+                            {_kundali.martialstatus}
+                        </Text>
+
+                        <FlatList
+                            data={married}
+                            horizontal
+                            renderItem={({ item, index }) => (
+                                <TouchableOpacity onPress={() => {
+                                    setChecked1(index)
+                                }}>
+                                    <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 13, marginTop: 5 }}>
+                                        <RadioButton
+                                            value={checked1}
+                                            status={checked1 === index ? 'checked' : 'unchecked'}
+                                            onPress={() => {
+                                                setChecked1(index)
+                                            }}
+                                            uncheckedColor='#69707F'
+                                            color='#FFCC80'
+                                        />
+                                        <Text style={{
+                                            fontSize: 16,
+                                            color: '#333333',
+                                            fontFamily: 'AvenirLTStd-Medium',
+                                        }}>
+                                            {item}
+                                        </Text>
+                                    </View>
+                                </TouchableOpacity>
+                            )}
                         />
 
+                        <Text
+                            style={{
+                                fontFamily: 'AvenirLTStd-Medium',
+                                color: '#ADADAD',
+                                fontSize: 18,
+                                letterSpacing: -0.2,
+                                marginTop: 19,
+                                marginHorizontal: 18,
+                            }}>
+                            {_kundali.numofchildren}
+                        </Text>
+                        <TextInput
+                            style={{
+                                fontSize: 16,
+                                fontFamily: 'AvenirLTStd-Medium',
+                                borderRadius: 10,
+                                borderColor: '#00000020',
+                                borderWidth: 1.5,
+                                marginTop: 10,
+                                marginHorizontal: 18,
+                                paddingHorizontal: 15,
+                                paddingVertical: 11,
+                                color: '#333333',
+                            }}
+                            placeholderTextColor={'#333333'}
+                            placeholder={_kundali.numofchildren}
+                        />
+
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                            <View>
+                                <Text
+                                    style={{
+                                        fontFamily: 'AvenirLTStd-Medium',
+                                        color: '#ADADAD',
+                                        fontSize: 18,
+                                        letterSpacing: -0.2,
+                                        marginTop: 19,
+                                        marginLeft: 18,
+                                    }}>
+                                    {_kundali.childage}
+                                </Text>
+                                <TextInput
+                                    style={{
+                                        fontSize: 16,
+                                        fontFamily: 'AvenirLTStd-Medium',
+                                        borderRadius: 10,
+                                        borderColor: '#00000020',
+                                        borderWidth: 1.5,
+                                        marginTop: 10,
+                                        width: window.width - 220,
+                                        marginLeft: 18,
+                                        paddingHorizontal: 15,
+                                        paddingVertical: 11,
+                                        color: '#333333',
+                                    }}
+                                    placeholderTextColor={'#333333'}
+                                    placeholder={_kundali.childage}
+                                />
+                            </View>
+                            <View >
+                                <Text
+                                    style={{
+                                        fontFamily: 'AvenirLTStd-Medium',
+                                        color: '#ADADAD',
+                                        fontSize: 18,
+                                        letterSpacing: -0.2,
+                                        marginTop: 19,
+                                    }}>
+                                    {_kundali.chilegender}
+                                </Text>
+                                <Dropdown
+                                    style={{
+                                        height: 52,
+                                        width: window.width - 200, marginTop: 10, borderWidth: 1.5, borderColor: '#00000020',
+                                        borderRadius: 10, marginRight: 18,
+                                    }}
+                                    placeholderStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', paddingHorizontal: 15, }}
+                                    selectedTextStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', paddingHorizontal: 15, textTransform: 'capitalize' }}
+                                    iconStyle={{
+                                        width: 20,
+                                        height: 20,
+                                        marginRight: 12,
+                                    }}
+                                    itemTextStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', textTransform: 'capitalize' }}
+                                    data={[
+                                        { label: 'Item 1', value: '1' },
+                                        { label: 'Item 2', value: '2' },
+                                        { label: 'Item 3', value: '3' }]
+                                    }
+                                    maxHeight={150}
+                                    labelField="label"
+                                    valueField="value"
+                                    placeholder={_kundali.chilegender}
+                                    value={should1}
+                                    onChange={(item) => setShould1(item.value)}
+                                />
+
+                            </View>
+                        </View>
+
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                            <View>
+                                <Text
+                                    style={{
+                                        fontFamily: 'AvenirLTStd-Medium',
+                                        color: '#ADADAD',
+                                        fontSize: 18,
+                                        letterSpacing: -0.2,
+                                        marginTop: 19,
+                                        marginLeft: 18,
+                                    }}>
+                                    {_kundali.childage}
+                                </Text>
+                                <TextInput
+                                    style={{
+                                        fontSize: 16,
+                                        fontFamily: 'AvenirLTStd-Medium',
+                                        borderRadius: 10,
+                                        borderColor: '#00000020',
+                                        borderWidth: 1.5,
+                                        marginTop: 10,
+                                        width: window.width - 220,
+                                        marginLeft: 18,
+                                        paddingHorizontal: 15,
+                                        paddingVertical: 11,
+                                        color: '#333333',
+                                    }}
+                                    placeholderTextColor={'#333333'}
+                                    placeholder={_kundali.childage}
+                                />
+                            </View>
+                            <View >
+                                <Text
+                                    style={{
+                                        fontFamily: 'AvenirLTStd-Medium',
+                                        color: '#ADADAD',
+                                        fontSize: 18,
+                                        letterSpacing: -0.2,
+                                        marginTop: 19,
+                                    }}>
+                                    {_kundali.chilegender}
+                                </Text>
+                                <Dropdown
+                                    style={{
+                                        height: 52,
+                                        width: window.width - 200, marginTop: 10, borderWidth: 1.5, borderColor: '#00000020',
+                                        borderRadius: 10, marginRight: 18,
+                                    }}
+                                    placeholderStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', paddingHorizontal: 15, }}
+                                    selectedTextStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', paddingHorizontal: 15, textTransform: 'capitalize' }}
+                                    iconStyle={{
+                                        width: 20,
+                                        height: 20,
+                                        marginRight: 12,
+                                    }}
+                                    itemTextStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', textTransform: 'capitalize' }}
+                                    data={[
+                                        { label: 'Item 1', value: '1' },
+                                        { label: 'Item 2', value: '2' },
+                                        { label: 'Item 3', value: '3' }]
+                                    }
+                                    maxHeight={150}
+                                    labelField="label"
+                                    valueField="value"
+                                    placeholder={_kundali.chilegender}
+                                    value={should2}
+                                    onChange={(item) => setShould2(item.value)}
+                                />
+
+                            </View>
+                        </View>
+
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                            <View>
+                                <Text
+                                    style={{
+                                        fontFamily: 'AvenirLTStd-Medium',
+                                        color: '#ADADAD',
+                                        fontSize: 18,
+                                        letterSpacing: -0.2,
+                                        marginTop: 19,
+                                        marginLeft: 18,
+                                    }}>
+                                    {_kundali.childage}
+                                </Text>
+                                <TextInput
+                                    style={{
+                                        fontSize: 16,
+                                        fontFamily: 'AvenirLTStd-Medium',
+                                        borderRadius: 10,
+                                        borderColor: '#00000020',
+                                        borderWidth: 1.5,
+                                        marginTop: 10,
+                                        width: window.width - 220,
+                                        marginLeft: 18,
+                                        paddingHorizontal: 15,
+                                        paddingVertical: 11,
+                                        color: '#333333',
+                                    }}
+                                    placeholderTextColor={'#333333'}
+                                    placeholder={_kundali.childage}
+                                />
+                            </View>
+                            <View >
+                                <Text
+                                    style={{
+                                        fontFamily: 'AvenirLTStd-Medium',
+                                        color: '#ADADAD',
+                                        fontSize: 18,
+                                        letterSpacing: -0.2,
+                                        marginTop: 19,
+                                    }}>
+                                    {_kundali.chilegender}
+                                </Text>
+                                <Dropdown
+                                    style={{
+                                        height: 52,
+                                        width: window.width - 200, marginTop: 10, borderWidth: 1.5, borderColor: '#00000020',
+                                        borderRadius: 10, marginRight: 18,
+                                    }}
+                                    placeholderStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', paddingHorizontal: 15, }}
+                                    selectedTextStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', paddingHorizontal: 15, textTransform: 'capitalize' }}
+                                    iconStyle={{
+                                        width: 20,
+                                        height: 20,
+                                        marginRight: 12,
+                                    }}
+                                    itemTextStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', textTransform: 'capitalize' }}
+                                    data={[
+                                        { label: 'Item 1', value: '1' },
+                                        { label: 'Item 2', value: '2' },
+                                        { label: 'Item 3', value: '3' }]
+                                    }
+                                    maxHeight={150}
+                                    labelField="label"
+                                    valueField="value"
+                                    placeholder={_kundali.chilegender}
+                                    value={should3}
+                                    onChange={(item) => setShould3(item.value)}
+                                />
+
+                            </View>
+                        </View>
 
                     </View>
                 )}
@@ -609,7 +893,47 @@ const MembershipForm = ({ navigation }) => {
                                 marginTop: 5,
                                 marginHorizontal: 18,
                             }}>
-                            Address
+                            {_kundali.occupation}
+                        </Text>
+                        <FlatList
+                            data={service}
+                            horizontal
+                            renderItem={({ item, index }) => (
+                                <TouchableOpacity onPress={() => {
+                                    setChecked2(index)
+                                }}>
+                                    <View style={{ flexDirection: 'row', alignItems: 'center', marginHorizontal: 13, marginTop: 5 }}>
+                                        <RadioButton
+                                            value={checked2}
+                                            status={checked2 === index ? 'checked' : 'unchecked'}
+                                            onPress={() => {
+                                                setChecked2(index)
+                                            }}
+                                            uncheckedColor='#69707F'
+                                            color='#FFCC80'
+                                        />
+                                        <Text style={{
+                                            fontSize: 16,
+                                            color: '#333333',
+                                            fontFamily: 'AvenirLTStd-Medium',
+                                        }}>
+                                            {item}
+                                        </Text>
+                                    </View>
+                                </TouchableOpacity>
+                            )}
+                        />
+
+                        <Text
+                            style={{
+                                fontFamily: 'AvenirLTStd-Medium',
+                                color: '#ADADAD',
+                                fontSize: 18,
+                                letterSpacing: -0.2,
+                                marginTop: 19,
+                                marginHorizontal: 18,
+                            }}>
+                            {_kundali.specific}
                         </Text>
                         <TextInput
                             style={{
@@ -625,7 +949,7 @@ const MembershipForm = ({ navigation }) => {
                                 color: '#333333',
                             }}
                             placeholderTextColor={'#333333'}
-                            placeholder={'Address'}
+                            placeholder={_kundali.specific}
                         />
 
                         <Text
@@ -637,34 +961,38 @@ const MembershipForm = ({ navigation }) => {
                                 marginTop: 19,
                                 marginHorizontal: 18,
                             }}>
-                            Country
+                            {_kundali.servicetype}
                         </Text>
-                        <Dropdown
-                            style={{
-                                height: 50,
-                                marginHorizontal: 18, marginTop: 10, borderWidth: 1.5, borderColor: '#00000020',
-                                borderRadius: 10,
-                            }}
-                            placeholderStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', paddingHorizontal: 15, }}
-                            selectedTextStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', paddingHorizontal: 15, textTransform: 'capitalize' }}
-                            iconStyle={{
-                                width: 20,
-                                height: 20,
-                                marginRight: 12,
-                            }}
-                            itemTextStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', textTransform: 'capitalize' }}
-                            data={[
-                                { label: 'Item 1', value: '1' },
-                                { label: 'Item 2', value: '2' },
-                                { label: 'Item 3', value: '3' }]
-                            }
-                            maxHeight={150}
-                            labelField="label"
-                            valueField="value"
-                            placeholder="Country"
-                            value={should5}
-                            onChange={(item) => setShould5(item.value)}
+
+                        <FlatList
+                            data={goverment}
+                            horizontal
+                            renderItem={({ item, index }) => (
+                                <TouchableOpacity onPress={() => {
+                                    setChecked3(index)
+                                }}>
+                                    <View style={{ flexDirection: 'row', alignItems: 'center', marginHorizontal: 13, marginTop: 5 }}>
+                                        <RadioButton
+                                            value={checked3}
+                                            status={checked3 === index ? 'checked' : 'unchecked'}
+                                            onPress={() => {
+                                                setChecked3(index)
+                                            }}
+                                            uncheckedColor='#69707F'
+                                            color='#FFCC80'
+                                        />
+                                        <Text style={{
+                                            fontSize: 16,
+                                            color: '#333333',
+                                            fontFamily: 'AvenirLTStd-Medium',
+                                        }}>
+                                            {item}
+                                        </Text>
+                                    </View>
+                                </TouchableOpacity>
+                            )}
                         />
+
 
                         <Text
                             style={{
@@ -675,35 +1003,38 @@ const MembershipForm = ({ navigation }) => {
                                 marginTop: 19,
                                 marginHorizontal: 18,
                             }}>
-                            State
+                            {_kundali.addtext}
                         </Text>
-                        <Dropdown
-                            style={{
-                                height: 50,
-                                marginHorizontal: 18, marginTop: 10, borderWidth: 1.5, borderColor: '#00000020',
-                                borderRadius: 10,
-                            }}
-                            placeholderStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', paddingHorizontal: 15, }}
-                            selectedTextStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', paddingHorizontal: 15, textTransform: 'capitalize' }}
-                            iconStyle={{
-                                width: 20,
-                                height: 20,
-                                marginRight: 12,
-                            }}
-                            itemTextStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', textTransform: 'capitalize' }}
-                            data={[
-                                { label: 'Item 1', value: '1' },
-                                { label: 'Item 2', value: '2' },
-                                { label: 'Item 3', value: '3' }]
-                            }
-                            maxHeight={150}
-                            labelField="label"
-                            valueField="value"
-                            placeholder="State"
-                            value={should6}
-                            onChange={(item) => setShould6(item.value)}
-                        />
 
+                        <FlatList
+                            numColumns={2}
+                            data={data}
+                            keyExtractor={(item) => item.id}
+                            renderItem={({ item, index }) => (
+                                <View style={{ flexDirection: 'row', alignItems: 'center', width: window.width / 2 - 50, marginLeft: 12, marginTop: 10 }}>
+                                    <CheckBox
+                                        value={item.checked4}
+                                        tintColors={{ true: '#FFC629', false: '#00000050' }}
+                                        onValueChange={(newValue) =>
+                                            setData((prevData) =>
+                                                prevData.map((dataItem) =>
+                                                    dataItem.id === item.id ? { ...dataItem, checked4: newValue } : dataItem
+                                                )
+                                            )
+                                        }
+                                    />
+                                    <Text
+                                        style={{
+                                            fontFamily: 'AvenirLTStd-Medium',
+                                            color: '#333333',
+                                            fontSize: 16,
+                                            marginLeft: 5,
+                                        }}>
+                                        {item.title}
+                                    </Text>
+                                </View>
+                            )}
+                        />
                         <Text
                             style={{
                                 fontFamily: 'AvenirLTStd-Medium',
@@ -713,45 +1044,7 @@ const MembershipForm = ({ navigation }) => {
                                 marginTop: 19,
                                 marginHorizontal: 18,
                             }}>
-                            City
-                        </Text>
-                        <Dropdown
-                            style={{
-                                height: 50,
-                                marginHorizontal: 18, marginTop: 10, borderWidth: 1.5, borderColor: '#00000020',
-                                borderRadius: 10,
-                            }}
-                            placeholderStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', paddingHorizontal: 15, }}
-                            selectedTextStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', paddingHorizontal: 15, textTransform: 'capitalize' }}
-                            iconStyle={{
-                                width: 20,
-                                height: 20,
-                                marginRight: 12,
-                            }}
-                            itemTextStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', textTransform: 'capitalize' }}
-                            data={[
-                                { label: 'Item 1', value: '1' },
-                                { label: 'Item 2', value: '2' },
-                                { label: 'Item 3', value: '3' }]
-                            }
-                            maxHeight={150}
-                            labelField="label"
-                            valueField="value"
-                            placeholder="City"
-                            value={should7}
-                            onChange={(item) => setShould7(item.value)}
-                        />
-
-                        <Text
-                            style={{
-                                fontFamily: 'AvenirLTStd-Medium',
-                                color: '#ADADAD',
-                                fontSize: 18,
-                                letterSpacing: -0.2,
-                                marginTop: 19,
-                                marginHorizontal: 18,
-                            }}>
-                            Pincode
+                            {_kundali.other}
                         </Text>
                         <TextInput
                             style={{
@@ -767,300 +1060,66 @@ const MembershipForm = ({ navigation }) => {
                                 color: '#333333',
                             }}
                             placeholderTextColor={'#333333'}
-                            keyboardType='numeric'
-                            maxLength={6}
-                            placeholder={'Pincode'}
+                            placeholder={_kundali.other}
                         />
-
-
                     </View>
                 )}
 
                 {currentPosition == 4 && (
                     <View>
-                        <Text
-                            style={{
-                                fontFamily: 'AvenirLTStd-Medium',
-                                color: '#ADADAD',
-                                fontSize: 18,
-                                letterSpacing: -0.2,
-                                marginTop: 5,
-                                marginHorizontal: 18,
-                            }}>
-                            PAN Card No.
-                        </Text>
-                        <TextInput
-                            style={{
-                                fontSize: 16,
-                                fontFamily: 'AvenirLTStd-Medium',
-                                borderRadius: 10,
-                                borderColor: '#00000020',
-                                borderWidth: 1.5,
-                                marginTop: 10,
-                                marginHorizontal: 18,
-                                paddingHorizontal: 15,
-                                paddingVertical: 11,
-                                color: '#333333',
-                            }}
-                            placeholderTextColor={'#333333'}
-                            maxLength={10}
-                            placeholder={'PAN Card No.'}
-                            autoCapitalize='characters'
-                        />
+                        <FlatList
+                            data={data1}
 
+                            renderItem={({ item, index }) => (
+                                <Pressable style={{
+                                    marginHorizontal: 18,
+                                    paddingVertical: 12,
+                                    backgroundColor: '#FFFFFF',
+                                    borderRadius: 12,
+                                    borderColor: index == select ? '#FFCC80' : '#D0D0D0',
+                                    borderWidth: 2,
+                                    elevation: 5,
+                                    bottom: 10,
+                                    marginTop: 15,
+                                }} onPress={() => { setSelect(index) }}>
 
-                        <Text
-                            style={{
-                                fontFamily: 'AvenirLTStd-Medium',
-                                color: '#ADADAD',
-                                fontSize: 18,
-                                letterSpacing: -0.2,
-                                marginTop: 19,
-                                marginHorizontal: 18,
-                            }}>
-                            Aadhar Card No.
-                        </Text>
-                        <TextInput
-                            style={{
-                                fontSize: 16,
-                                fontFamily: 'AvenirLTStd-Medium',
-                                borderRadius: 10,
-                                borderColor: '#00000020',
-                                borderWidth: 1.5,
-                                marginTop: 10,
-                                marginHorizontal: 18,
-                                paddingHorizontal: 15,
-                                paddingVertical: 11,
-                                color: '#333333',
-                            }}
-                            placeholderTextColor={'#333333'}
-                            keyboardType='numeric'
-                            maxLength={12}
-                            placeholder={'Aadhar Card No.'}
-                        />
+                                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', }}>
 
-                        <Text
-                            style={{
-                                fontFamily: 'AvenirLTStd-Medium',
-                                color: '#ADADAD',
-                                fontSize: 18,
-                                letterSpacing: -0.2,
-                                marginTop: 19,
-                                marginHorizontal: 18,
-                            }}>
-                            Upload Aadhar Card
-                        </Text>
-                        <View style={{ flexDirection: 'row', marginTop: 10 }}>
-                            <Pressable >
-                                <Image
-                                    style={{
-                                        width: 100,
-                                        height: 80,
-                                        resizeMode: 'contain',
-                                        marginLeft: 18,
-                                    }}
-                                    source={require('../assets/upload.png')} />
-                            </Pressable>
-                            <Pressable>
-                                <Image
-                                    style={{
-                                        width: 100,
-                                        height: 80,
-                                        resizeMode: 'contain',
-                                        marginLeft: 15,
-                                    }}
-                                    source={require('../assets/upload.png')} />
-                            </Pressable>
-                        </View>
+                                        <Text style={{
+                                            fontSize: 18,
+                                            color: '#333333',
+                                            fontFamily: 'AvenirLTStd-Heavy',
+                                            marginLeft: 10,
+                                        }}>
+                                            Free Trial
+                                        </Text>
+                                        <Text style={{
+                                            fontSize: 18,
+                                            color: '#333333',
+                                            fontFamily: 'AvenirLTStd-Heavy',
+                                            marginRight: 10,
+                                        }}>
+                                            ₹1100/mo
+                                        </Text>
+                                    </View>
 
-                        <Text
-                            style={{
-                                fontFamily: 'AvenirLTStd-Medium',
-                                color: '#ADADAD',
-                                fontSize: 18,
-                                letterSpacing: -0.2,
-                                marginTop: 19,
-                                marginHorizontal: 18,
-                            }}>
-                            Upload PAN Card
-                        </Text>
-                        <Pressable >
-                            <Image
-                                style={{
-                                    width: 100,
-                                    height: 80,
-                                    resizeMode: 'contain',
-                                    marginLeft: 18,
-                                    marginTop: 10,
-                                }}
-                                source={require('../assets/upload.png')} />
-                        </Pressable>
+                                    <Text style={{
+                                        fontSize: 13,
+                                        color: '#36363660',
+                                        lineHeight: 17,
+                                        marginTop: 5,
+                                        fontFamily: 'AvenirLTStd-Medium',
+                                        marginHorizontal: 10,
+                                    }}>
+                                        Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+                                    </Text>
+                                </Pressable>
 
-                    </View>
-                )}
-
-                {currentPosition == 5 && (
-                    <View>
-                        <Text
-                            style={{
-                                fontFamily: 'AvenirLTStd-Medium',
-                                color: '#ADADAD',
-                                fontSize: 18,
-                                letterSpacing: -0.2,
-                                marginTop: 5,
-                                marginHorizontal: 18,
-                            }}>
-                            Academic Qualification
-                        </Text>
-                        <TextInput
-                            style={{
-                                fontSize: 16,
-                                fontFamily: 'AvenirLTStd-Medium',
-                                borderRadius: 10,
-                                borderColor: '#00000020',
-                                borderWidth: 1.5,
-                                marginTop: 10,
-                                marginHorizontal: 18,
-                                paddingHorizontal: 15,
-                                paddingVertical: 11,
-                                color: '#333333',
-                            }}
-                            placeholderTextColor={'#333333'}
-                            placeholder={'Academic Qualification'}
-                        />
-
-                        <Text
-                            style={{
-                                fontFamily: 'AvenirLTStd-Medium',
-                                color: '#ADADAD',
-                                fontSize: 18,
-                                letterSpacing: -0.2,
-                                marginTop: 19,
-                                marginHorizontal: 18,
-                            }}>
-                            Astrological Qalifications
-                        </Text>
-                        <TextInput
-                            style={{
-                                fontSize: 16,
-                                fontFamily: 'AvenirLTStd-Medium',
-                                borderRadius: 10,
-                                borderColor: '#00000020',
-                                borderWidth: 1.5,
-                                marginTop: 10,
-                                marginHorizontal: 18,
-                                paddingHorizontal: 15,
-                                paddingVertical: 11,
-                                color: '#333333',
-                            }}
-                            placeholderTextColor={'#333333'}
-                            placeholder={'Astrological Qalifications'}
-                        />
-
-                        <Text
-                            style={{
-                                fontFamily: 'AvenirLTStd-Medium',
-                                color: '#ADADAD',
-                                fontSize: 18,
-                                letterSpacing: -0.2,
-                                marginTop: 19,
-                                marginHorizontal: 18,
-                            }}>
-                            Upload Academic Certificate
-                        </Text>
-                        <Pressable >
-                            <Image
-                                style={{
-                                    width: 100,
-                                    height: 80,
-                                    resizeMode: 'contain',
-                                    marginLeft: 18,
-                                    marginTop: 10,
-                                }}
-                                source={require('../assets/upload.png')} />
-                        </Pressable>
-
-                        <Text
-                            style={{
-                                fontFamily: 'AvenirLTStd-Medium',
-                                color: '#ADADAD',
-                                fontSize: 18,
-                                letterSpacing: -0.2,
-                                marginTop: 19,
-                                marginHorizontal: 18,
-                            }}>
-                            Upload Astrological Certificate
-                        </Text>
-                        <Pressable >
-                            <Image
-                                style={{
-                                    width: 100,
-                                    height: 80,
-                                    resizeMode: 'contain',
-                                    marginLeft: 18,
-                                    marginTop: 10,
-                                }}
-                                source={require('../assets/upload.png')} />
-                        </Pressable>
-
-                        <Text
-                            style={{
-                                fontFamily: 'AvenirLTStd-Medium',
-                                color: '#ADADAD',
-                                fontSize: 18,
-                                letterSpacing: -0.2,
-                                marginTop: 19,
-                                marginHorizontal: 18,
-                            }}>
-                            Upload Profile Picture
-                        </Text>
-                        <Pressable >
-                            <Image
-                                style={{
-                                    width: 100,
-                                    height: 80,
-                                    resizeMode: 'contain',
-                                    marginLeft: 18,
-                                    marginTop: 10,
-                                }}
-                                source={require('../assets/upload.png')} />
-                        </Pressable>
-
-
-                        <Text
-                            style={{
-                                fontFamily: 'AvenirLTStd-Medium',
-                                color: '#ADADAD',
-                                fontSize: 18,
-                                letterSpacing: -0.2,
-                                marginTop: 19,
-                                marginHorizontal: 18,
-                            }}>
-                            Biography
-                        </Text>
-                        <TextInput
-                            style={{
-                                fontSize: 16,
-                                fontFamily: 'AvenirLTStd-Medium',
-                                borderRadius: 10,
-                                borderColor: '#00000020',
-                                borderWidth: 1.5,
-                                marginTop: 10,
-                                marginHorizontal: 18,
-                                paddingHorizontal: 15,
-                                height: 120,
-                                color: '#333333',
-                            }}
-                            textAlignVertical='top'
-                            multiline
-                            placeholderTextColor={'#333333'}
-                            placeholder={'Write something…'}
+                            )}
                         />
 
                     </View>
                 )}
-
-
 
                 {currentPosition == 0 && (
                     <Button
@@ -1086,148 +1145,251 @@ const MembershipForm = ({ navigation }) => {
                         onPress={() => {
                             setCurrentPosition(currentPosition + 1)
                         }}>
-                         {_customlang.button}
+                        {_customlang.button}
                     </Button>
                 )}
 
                 {currentPosition == 1 && (
-                    <Button
-                        containerStyle={{
-                            width: '90%',
-                            // position: 'absolute',
-                            marginBottom: 20,
-                            marginTop: 20,
-                            height: 52,
-                            borderRadius: 12,
-                            overflow: 'hidden',
-                            alignSelf: 'center',
-                            justifyContent: 'center',
-                            backgroundColor: '#FFCC80',
-                        }}
-                        style={{
-                            fontSize: 18,
-                            color: '#333333',
-                            alignSelf: 'center',
-                            fontFamily: 'AvenirLTStd-Medium',
-                        }}
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                        <Button
+                            containerStyle={{
+                                width: '42%',
+                                // position: 'absolute',
+                                marginBottom: 20,
+                                borderColor: '#333333',
+                                borderWidth: 1,
+                                marginLeft: 18,
+                                marginTop: 20,
+                                height: 52,
+                                borderRadius: 12,
+                                overflow: 'hidden',
+                                alignSelf: 'center',
+                                justifyContent: 'center',
+                                backgroundColor: 'white',
+                            }}
+                            style={{
+                                fontSize: 18,
+                                color: '#333333',
+                                alignSelf: 'center',
+                                fontFamily: 'AvenirLTStd-Medium',
+                            }}
 
-                        onPress={() => {
-                            setCurrentPosition(currentPosition + 1)
-                        }}>
-                        Next
-                    </Button>
+                            onPress={() => {
+                                setCurrentPosition(currentPosition - 1)
+                            }}>
+                            {_kundali.previous}
+                        </Button>
+                        <Button
+                            containerStyle={{
+                                width: '42%',
+                                // position: 'absolute',
+                                marginRight: 18,
+                                marginBottom: 20,
+                                marginTop: 20,
+                                height: 52,
+                                borderRadius: 12,
+                                overflow: 'hidden',
+                                alignSelf: 'center',
+                                justifyContent: 'center',
+                                backgroundColor: '#FFCC80',
+                            }}
+                            style={{
+                                fontSize: 18,
+                                color: '#333333',
+                                alignSelf: 'center',
+                                fontFamily: 'AvenirLTStd-Medium',
+                            }}
+
+                            onPress={() => {
+                                setCurrentPosition(currentPosition + 1)
+                            }}>
+                            {_customlang.button}
+                        </Button>
+                    </View>
                 )}
 
-                {currentPosition == 5 && (
-                    <Button
-                        containerStyle={{
-                            width: '90%',
-                            // position: 'absolute',
-                            marginBottom: 20,
-                            marginTop: 20,
-                            height: 52,
-                            borderRadius: 12,
-                            overflow: 'hidden',
-                            alignSelf: 'center',
-                            justifyContent: 'center',
-                            backgroundColor: '#FFCC80',
-                        }}
-                        style={{
-                            fontSize: 18,
-                            color: '#333333',
-                            alignSelf: 'center',
-                            fontFamily: 'AvenirLTStd-Medium',
-                        }}
 
-                        onPress={() => {
-                            navigation.navigate('Package')
-                        }}>
-                        Next
-                    </Button>
+                {currentPosition == 2 && (
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                        <Button
+                            containerStyle={{
+                                width: '42%',
+                                // position: 'absolute',
+                                marginBottom: 20,
+                                borderColor: '#333333',
+                                borderWidth: 1,
+                                marginLeft: 18,
+                                marginTop: 20,
+                                height: 52,
+                                borderRadius: 12,
+                                overflow: 'hidden',
+                                alignSelf: 'center',
+                                justifyContent: 'center',
+                                backgroundColor: 'white',
+                            }}
+                            style={{
+                                fontSize: 18,
+                                color: '#333333',
+                                alignSelf: 'center',
+                                fontFamily: 'AvenirLTStd-Medium',
+                            }}
+
+                            onPress={() => {
+                                setCurrentPosition(currentPosition - 1)
+                            }}>
+                            {_kundali.previous}
+                        </Button>
+                        <Button
+                            containerStyle={{
+                                width: '42%',
+                                // position: 'absolute',
+                                marginRight: 18,
+                                marginBottom: 20,
+                                marginTop: 20,
+                                height: 52,
+                                borderRadius: 12,
+                                overflow: 'hidden',
+                                alignSelf: 'center',
+                                justifyContent: 'center',
+                                backgroundColor: '#FFCC80',
+                            }}
+                            style={{
+                                fontSize: 18,
+                                color: '#333333',
+                                alignSelf: 'center',
+                                fontFamily: 'AvenirLTStd-Medium',
+                            }}
+
+                            onPress={() => {
+                                setCurrentPosition(currentPosition + 1)
+                            }}>
+                            {_customlang.button}
+                        </Button>
+                    </View>
                 )}
 
+                {currentPosition == 3 && (
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                        <Button
+                            containerStyle={{
+                                width: '42%',
+                                // position: 'absolute',
+                                marginBottom: 20,
+                                borderColor: '#333333',
+                                borderWidth: 1,
+                                marginLeft: 18,
+                                marginTop: 20,
+                                height: 52,
+                                borderRadius: 12,
+                                overflow: 'hidden',
+                                alignSelf: 'center',
+                                justifyContent: 'center',
+                                backgroundColor: 'white',
+                            }}
+                            style={{
+                                fontSize: 18,
+                                color: '#333333',
+                                alignSelf: 'center',
+                                fontFamily: 'AvenirLTStd-Medium',
+                            }}
+
+                            onPress={() => {
+                                setCurrentPosition(currentPosition - 1)
+                            }}>
+                            {_kundali.previous}
+                        </Button>
+                        <Button
+                            containerStyle={{
+                                width: '42%',
+                                // position: 'absolute',
+                                marginRight: 18,
+                                marginBottom: 20,
+                                marginTop: 20,
+                                height: 52,
+                                borderRadius: 12,
+                                overflow: 'hidden',
+                                alignSelf: 'center',
+                                justifyContent: 'center',
+                                backgroundColor: '#FFCC80',
+                            }}
+                            style={{
+                                fontSize: 18,
+                                color: '#333333',
+                                alignSelf: 'center',
+                                fontFamily: 'AvenirLTStd-Medium',
+                            }}
+
+                            onPress={() => {
+                                setCurrentPosition(currentPosition + 1)
+                            }}>
+                            {_customlang.button}
+                        </Button>
+                    </View>
+                )}
 
             </KeyboardAwareScrollView>
 
-            {currentPosition == 2 && (
-                <Button
-                    containerStyle={{
-                        width: '90%',
-                        position: 'absolute',
-                        bottom: 20,
-                        height: 52,
-                        borderRadius: 12,
-                        overflow: 'hidden',
-                        alignSelf: 'center',
-                        justifyContent: 'center',
-                        backgroundColor: '#FFCC80',
-                    }}
-                    style={{
-                        fontSize: 18,
-                        color: '#333333',
-                        alignSelf: 'center',
-                        fontFamily: 'AvenirLTStd-Medium',
-                    }}
 
-                    onPress={() => {
-                        setCurrentPosition(currentPosition + 1)
-                    }}>
-                    Next
-                </Button>
-            )}
 
-            {currentPosition == 3 && (
-                <Button
-                    containerStyle={{
-                        width: '90%',
-                        position: 'absolute',
-                        bottom: 20,
-                        height: 52,
-                        borderRadius: 12,
-                        overflow: 'hidden',
-                        alignSelf: 'center',
-                        justifyContent: 'center',
-                        backgroundColor: '#FFCC80',
-                    }}
-                    style={{
-                        fontSize: 18,
-                        color: '#333333',
-                        alignSelf: 'center',
-                        fontFamily: 'AvenirLTStd-Medium',
-                    }}
 
-                    onPress={() => {
-                        setCurrentPosition(currentPosition + 1)
-                    }}>
-                    Next
-                </Button>
-            )}
 
             {currentPosition == 4 && (
-                <Button
-                    containerStyle={{
-                        width: '90%',
-                        position: 'absolute',
-                        bottom: 20,
-                        height: 52,
-                        borderRadius: 12,
-                        overflow: 'hidden',
-                        alignSelf: 'center',
-                        justifyContent: 'center',
-                        backgroundColor: '#FFCC80',
-                    }}
-                    style={{
-                        fontSize: 18,
-                        color: '#333333',
-                        alignSelf: 'center',
-                        fontFamily: 'AvenirLTStd-Medium',
-                    }}
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                    <Button
+                        containerStyle={{
+                            width: '42%',
+                            // position: 'absolute',
+                            marginBottom: 20,
+                            borderColor: '#333333',
+                            borderWidth: 1,
+                            marginLeft: 18,
+                            marginTop: 20,
+                            height: 52,
+                            borderRadius: 12,
+                            overflow: 'hidden',
+                            alignSelf: 'center',
+                            justifyContent: 'center',
+                            backgroundColor: 'white',
+                        }}
+                        style={{
+                            fontSize: 18,
+                            color: '#333333',
+                            alignSelf: 'center',
+                            fontFamily: 'AvenirLTStd-Medium',
+                        }}
 
-                    onPress={() => {
-                        setCurrentPosition(currentPosition + 1)
-                    }}>
-                    Next
-                </Button>
+                        onPress={() => {
+                            setCurrentPosition(currentPosition - 1)
+                        }}>
+                        {_kundali.previous}
+                    </Button>
+                    <Button
+                        containerStyle={{
+                            width: '42%',
+                            // position: 'absolute',
+                            marginRight: 18,
+                            marginBottom: 20,
+                            marginTop: 20,
+                            height: 52,
+                            borderRadius: 12,
+                            overflow: 'hidden',
+                            alignSelf: 'center',
+                            justifyContent: 'center',
+                            backgroundColor: '#FFCC80',
+                        }}
+                        style={{
+                            fontSize: 18,
+                            color: '#333333',
+                            alignSelf: 'center',
+                            fontFamily: 'AvenirLTStd-Medium',
+                        }}
+
+                        onPress={() => {
+                            navigation.navigate('Payment')
+                        }}>
+                        {_kundali.paynow}
+                    </Button>
+                </View>
             )}
 
 
@@ -1243,6 +1405,14 @@ const MembershipForm = ({ navigation }) => {
                 onCancel={() => {
                     setOpen(false);
                 }}
+            />
+
+            <DateTimePickerModal
+                isVisible={isTimePickerVisible}
+                mode="time"
+                display="spinner"
+                onConfirm={handleConfirm1}
+                onCancel={hideDatePicker1}
             />
         </SafeAreaView>
     );
