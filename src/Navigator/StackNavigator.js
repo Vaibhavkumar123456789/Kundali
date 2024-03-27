@@ -26,6 +26,13 @@ import MessageCenter from '../Screens/MessageCenter';
 import MessageCenterDetail from '../Screens/MessageCenterDetail';
 import KundaliForm from '../Screens/KundaliForm';
 import MembershipForm from '../Screens/MembershipForm';
+import MyOrders from '../Screens/MyOrders';
+import OnlineJyotish from '../Screens/OnlineJyotish';
+import Wallet from '../Screens/Wallet';
+import ReportDetails from '../Screens/ReportDetails';
+import PremiumKundliDetailReport from '../Screens/PremiumKundliDetailReport';
+import ProductList from '../Screens/ProductList';
+import Cart from '../Screens/Cart';
 
 
 const Stack = createStackNavigator();
@@ -164,6 +171,41 @@ const StackNavigator = () => {
                 <Stack.Screen
                     name="MembershipForm"
                     component={MembershipForm}
+                    options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                    name="MyOrders"
+                    component={MyOrders}
+                    options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                    name="OnlineJyotish"
+                    component={OnlineJyotish}
+                    options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                    name="Wallet"
+                    component={Wallet}
+                    options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                    name="ReportDetails"
+                    component={ReportDetails}
+                    options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                    name="PremiumKundliDetailReport"
+                    component={PremiumKundliDetailReport}
+                    options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                    name="ProductList"
+                    component={ProductList}
+                    options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                    name="Cart"
+                    component={Cart}
                     options={{ headerShown: false }}
                 />
 

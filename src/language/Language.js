@@ -40,6 +40,12 @@ let stringsoflanguages = new LocalizedStrings({
             premium: 'Premium Kundali Report',
             price: 'Price',
             viewsample: 'View Sample',
+            myOrder: "My Orders",
+            myorderTab1: "Kundali Report",
+            myorderTab2: "Total Products",
+            onlineJyotish: "Online Jyotish",
+            wallet: "Wallet",
+            reportDetails: "Report Detail",
         },
         _member: {
             freemember: 'Free Member List',
@@ -80,6 +86,15 @@ let stringsoflanguages = new LocalizedStrings({
             nameenglish: 'Name (In English)',
             namehindi: 'Name (In Hindi)',
             emailid: 'Email Id',
+            viewsample : "View Sample",
+            buyNow: "Buy Now",
+            prashanLagan: "Prashan Lagan"
+        },
+        _productlist: {
+            tab1: 'Rudraksh',
+            tab2: 'Ratna',
+            tab3: 'Crystal',
+            tab4: 'Diamond',
         }
 
     },

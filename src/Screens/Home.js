@@ -62,10 +62,10 @@ const Home = ({ navigation }) => {
                 navigation.navigate('MembershipForm')
                 break;
             case _home.order:
-                navigation.navigate('')
+                navigation.navigate('MyOrders')
                 break;
             case _home.online:
-                navigation.navigate('')
+                navigation.navigate('OnlineJyotish')
                 break;
             default:
         }
@@ -171,7 +171,7 @@ const Home = ({ navigation }) => {
                 </View>
                 <View style={{ flexDirection: 'row', }}>
 
-                    <View style={{
+                    <TouchableOpacity activeOpacity={0.9} onPress={() => { navigation.navigate('Wallet') }} style={{
                         flexDirection: 'row', borderColor: '#333333', borderWidth: 1,
                         paddingHorizontal: 5, paddingVertical: 5, borderRadius: 4,
                         alignSelf: 'center', marginRight: 12
@@ -194,11 +194,11 @@ const Home = ({ navigation }) => {
                             }}>
                             ₹10,000
                         </Text>
-                    </View>
+                    </TouchableOpacity>
 
                     <TouchableOpacity activeOpacity={0.9}
                         style={{ paddingVertical: 6 }}
-                        onPress={() => { navigation.navigate('') }}>
+                        onPress={() => { navigation.navigate('Cart') }}>
                         <Image
                             source={require('../assets/cart.png')}
                             style={{
@@ -442,7 +442,7 @@ const Home = ({ navigation }) => {
                                             {_home.viewsample}
                                         </Text>
                                     </Pressable>
-                                    <Pressable>
+                                    <Pressable onPress={() => navigation.navigate("PremiumKundliDetailReport")}>
                                         <Image
                                             style={{
                                                 width: 30,

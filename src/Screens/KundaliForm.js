@@ -22,7 +22,7 @@ import { RadioButton } from 'react-native-paper';
 import DatePicker from 'react-native-date-picker'
 import CheckBox from '@react-native-community/checkbox';
 import moment from 'moment';
-import DateTimePickerModal from "react-native-modal-datetime-picker";
+// import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { Dropdown } from 'react-native-element-dropdown';
 import Button from 'react-native-button';
 
@@ -491,13 +491,13 @@ const KundaliForm = ({ navigation }) => {
                     setOpen(false);
                 }}
             />
-            <DateTimePickerModal
+            {/* <DateTimePickerModal
                 isVisible={isTimePickerVisible}
                 mode="time"
                 display="spinner"
                 onConfirm={handleConfirm1}
                 onCancel={hideDatePicker1}
-            />
+            /> */}
 
         </SafeAreaView >
     )

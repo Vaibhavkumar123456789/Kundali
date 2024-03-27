@@ -56,12 +56,13 @@ const CustomDrawer = ({ navigation }) => {
                 navigation.closeDrawer();
                 break;
             case _drawer.order:
+                navigation.navigate('MyOrders');
                 break;
             case _drawer.kundli:
                 navigation.navigate('');
                 break;
             case _drawer.wallet:
-                navigation.navigate('');
+                navigation.navigate('Wallet');
                 break;
             case _drawer.invoice:
                 navigation.navigate('');

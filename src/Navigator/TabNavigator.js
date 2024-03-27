@@ -7,6 +7,7 @@ import Astromart from '../Screens/Astromart';
 import Members from '../Screens/Members';
 import Prashna from '../Screens/Prashna';
 import Home from '../Screens/Home';
+import ProductList from '../Screens/ProductList';
 const iconPath = {
     h: require('../assets/footer-home.png'),
     ha: require('../assets/footer-home1.png'),
@@ -68,8 +69,8 @@ const TabNavigator = () => {
                 }}
             />
             <Tab.Screen
-                name="Astromart"
-                component={Astromart}
+                name="ProductList"
+                component={ProductList}
                 options={{
                     tabBarLabel: _tab.astromart,
                     tabBarIcon: ({ focused }) =>
