@@ -89,7 +89,7 @@ const MyInvoice = ({ navigation }) => {
                                 </View>
                             </View>
                             <Text
-                                 style={{
+                                style={{
                                     fontFamily: 'AvenirLTStd-Medium',
                                     color: '#FFCC80',
                                     fontSize: 14,

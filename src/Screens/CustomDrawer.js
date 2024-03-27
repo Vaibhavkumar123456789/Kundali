@@ -67,7 +67,7 @@ const CustomDrawer = ({ navigation }) => {
                 navigation.navigate('MyInvoice');
                 break;
             case _drawer.manage:
-                navigation.navigate('');
+                navigation.navigate('ManageHeaderFooter');
                 break;
 
             case _drawer.header:

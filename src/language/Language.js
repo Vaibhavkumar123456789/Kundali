@@ -110,6 +110,14 @@ let stringsoflanguages = new LocalizedStrings({
         _invoice: {
             myinvoice: 'My Invoice',
             invoice: 'Invoice',
+            add: 'Add Header',
+            addlogo: 'Add Logo',
+            companyname: 'Company Name',
+            addfooter: 'Add Footer',
+            astrologername: 'Astrologer Name',
+            companyaddress: "Company Address",
+            website: 'Website',
+            addmore: 'ADD MORE',
         }
 
     },

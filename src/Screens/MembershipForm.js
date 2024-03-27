@@ -14,7 +14,7 @@ import {
     FlatList,
     SafeAreaView,
     ScrollView,
-    StatusBar
+    StatusBar,
 } from 'react-native';
 import StepIndicator from 'react-native-step-indicator';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
@@ -24,7 +24,6 @@ import { RadioButton } from 'react-native-paper';
 import Button from 'react-native-button';
 import CheckBox from '@react-native-community/checkbox';
 import Header from '../Custom/Header';
-import DateTimePickerModal from "react-native-modal-datetime-picker";
 import stringsoflanguages from '../language/Language'
 import { Dropdown } from 'react-native-element-dropdown';
 const MembershipForm = ({ navigation }) => {
@@ -52,9 +51,12 @@ const MembershipForm = ({ navigation }) => {
     const [should5, setShould5] = useState('')
     const [should6, setShould6] = useState('')
     const [should7, setShould7] = useState('')
-    const [isTimePickerVisible, setTimePickerVisibility] = useState(false);
-    const [timeofbirth, settimeofbirth] = useState(new Date());
+
     const [select, setSelect] = useState()
+    const [type1, setType1] = useState(false)
+    const [date1, setDate1] = useState('')
+    const [pdate1, setPDate1] = useState('')
+    const [open1, setOpen1] = useState(false)
     const [state, setState] = useState({
         loading: false,
     });
@@ -113,19 +115,6 @@ const MembershipForm = ({ navigation }) => {
         labelSize: 11,
         labelFontFamily: 'AvenirLTStd-Medium',
         currentStepLabelColor: '#333333',
-    };
-
-    const showDatePicker1 = () => {
-        setTimePickerVisibility(true);
-    };
-
-    const hideDatePicker1 = () => {
-        setTimePickerVisibility(false);
-    };
-    const handleConfirm1 = date => {
-        console.warn('A date has been picked: ', date);
-        settimeofbirth(moment(date).format('hh:mm:a'));
-        hideDatePicker1();
     };
 
     return (
@@ -385,22 +374,17 @@ const MembershipForm = ({ navigation }) => {
                             }}>
                             {_kundali.timeofbirth}
                         </Text>
-                        <TouchableOpacity
-                            style={{
-                                borderRadius: 10,
-                                paddingHorizontal: 15,
-                                marginHorizontal: 18,
-                                marginTop: 10,
-                                borderColor: '#00000020',
-                                borderWidth: 1.5,
-                                flexDirection: 'row',
-                                alignItems: 'center',
-                            }}
-                            activeOpacity={0.9}
-                            onPress={() => {
 
-                                showDatePicker1();
-                            }}>
+                        <TouchableOpacity activeOpacity={0.9} style={{
+                            borderRadius: 10,
+                            paddingHorizontal: 15,
+                            marginHorizontal: 18,
+                            marginTop: 10,
+                            borderColor: '#00000020',
+                            borderWidth: 1.5,
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                        }} onPress={() => { setOpen1(true), setType1(false) }}>
                             <TextInput
                                 style={{
                                     fontSize: 16,
@@ -408,14 +392,10 @@ const MembershipForm = ({ navigation }) => {
                                     fontFamily: 'AvenirLTStd-Medium',
                                     width: '90%',
                                 }}
-                                value={
-                                    !timeofbirth
-                                        ? moment(timeofbirth).format('hh:mm:a')
-                                        : timeofbirth
-                                }
-                                placeholderTextColor="#333333"
                                 editable={false}
+                                value={date1 != '' ? moment(date1).format('hh:mm a') : ''}
                                 placeholder={_kundali.timeofbirth}
+                                placeholderTextColor={'#333333'}
                             />
 
                         </TouchableOpacity>
@@ -1407,12 +1387,18 @@ const MembershipForm = ({ navigation }) => {
                 }}
             />
 
-            <DateTimePickerModal
-                isVisible={isTimePickerVisible}
-                mode="time"
-                display="spinner"
-                onConfirm={handleConfirm1}
-                onCancel={hideDatePicker1}
+            <DatePicker
+                modal
+                mode={"time"}
+                open={open1}
+                date={date1 == '' ? new Date() : date1}
+                onConfirm={(date) => {
+                    setOpen1(false)
+                    type1 == false ? setDate1(date) : setPDate1(date);
+                }}
+                onCancel={() => {
+                    setOpen1(false)
+                }}
             />
         </SafeAreaView>
     );
