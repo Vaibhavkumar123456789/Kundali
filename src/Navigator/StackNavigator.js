@@ -28,6 +28,9 @@ import KundaliForm from '../Screens/KundaliForm';
 import MembershipForm from '../Screens/MembershipForm';
 import MyInvoice from '../Screens/MyInvoice';
 import ManageHeaderFooter from '../Screens/ManageHeaderFooter';
+import HeaderFooterPreview from '../Screens/HeaderFooterPreview';
+import Settings from '../Screens/Settings';
+import ContactSupport from '../Screens/ContactSupport';
 
 
 const Stack = createStackNavigator();
@@ -176,6 +179,21 @@ const StackNavigator = () => {
                 <Stack.Screen
                     name="ManageHeaderFooter"
                     component={ManageHeaderFooter}
+                    options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                    name="HeaderFooterPreview"
+                    component={HeaderFooterPreview}
+                    options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                    name="Settings"
+                    component={Settings}
+                    options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                    name="ContactSupport"
+                    component={ContactSupport}
                     options={{ headerShown: false }}
                 />
 

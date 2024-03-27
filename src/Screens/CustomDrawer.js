@@ -71,19 +71,20 @@ const CustomDrawer = ({ navigation }) => {
                 break;
 
             case _drawer.header:
-                navigation.navigate('');
+                navigation.navigate('HeaderFooterPreview');
                 break;
 
             case _drawer.message:
-                navigation.navigate('');
+                // navigation.dispatch(TabActions.jumpTo('MessageCenter'))
+                navigation.navigate('MessageCenter')
                 break;
 
             case _drawer.contact:
-                navigation.navigate('');
+                navigation.navigate('ContactSupport');
                 break;
 
             case _drawer.setting:
-                navigation.navigate('');
+                navigation.navigate('Settings');
                 break;
 
             default:
