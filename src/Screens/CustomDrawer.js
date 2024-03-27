@@ -58,7 +58,7 @@ const CustomDrawer = ({ navigation }) => {
             case _drawer.order:
                 break;
             case _drawer.kundli:
-                navigation.navigate('');
+                navigation.navigate('KundaliForm');
                 break;
             case _drawer.wallet:
                 navigation.navigate('');
@@ -75,7 +75,7 @@ const CustomDrawer = ({ navigation }) => {
                 break;
 
             case _drawer.message:
-                // navigation.dispatch(TabActions.jumpTo('MessageCenter'))
+
                 navigation.navigate('MessageCenter')
                 break;
 

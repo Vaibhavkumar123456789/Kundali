@@ -23,7 +23,7 @@ import Button from 'react-native-button';
 const ContactSupport = ({ navigation }) => {
     const window = Dimensions.get('window');
     const { width, height } = Dimensions.get('window');
-    const { _member, _invoice, _kundali, _drawer, _setting } = stringsoflanguages
+    const { _invoice, _kundali, _drawer, _setting } = stringsoflanguages
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>

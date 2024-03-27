@@ -140,7 +140,7 @@ let stringsoflanguages = new LocalizedStrings({
         _customlang: {
             title: 'अपनी पसंदीदा भाषा चुनें',
             button: 'अगला',
-            submit: 'Submit',
+            submit: 'जमा करना',
         },
 
         _drawer: {
