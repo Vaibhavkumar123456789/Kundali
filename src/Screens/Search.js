@@ -94,3 +94,4 @@ export default Search;
 const styles = StyleSheet.create({
 
 });
+
