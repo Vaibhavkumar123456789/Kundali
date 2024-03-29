@@ -116,7 +116,7 @@ const CustomDrawer = ({ navigation }) => {
                             Deepak Kumar
                         </Text>
                         <TouchableOpacity activeOpacity={0.9}
-                            onPress={() => navigation.navigate('')}>
+                            onPress={() => navigation.navigate('Profile')}>
                             <Text
                                 style={{
                                     marginTop: 5,

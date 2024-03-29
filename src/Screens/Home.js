@@ -1,12 +1,15 @@
-import { View, Text, Image, StyleSheet, Dimensions, FlatList, TextInput, StatusBar, SafeAreaView, ImageBackground, Pressable, ScrollView, TouchableOpacity, } from 'react-native'
+import { View, Text, Image, StyleSheet, Dimensions, FlatList, Modal, TextInput, StatusBar, SafeAreaView, ImageBackground, Pressable, ScrollView, TouchableOpacity, } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import Carousel from 'react-native-banner-carousel';
 import stringsoflanguages from '../language/Language'
 import { TabActions } from '@react-navigation/native';
+import { RadioButton } from 'react-native-paper';
 
 const Home = ({ navigation }) => {
     const window = Dimensions.get('window');
     const { width, height } = Dimensions.get('window');
+    const [checked1, setChecked1] = useState(0);
+    const [popupVisible, setPopupVisible] = useState(false);
     const { _home } = stringsoflanguages
 
     const images = [
@@ -100,6 +103,16 @@ const Home = ({ navigation }) => {
         },
 
     ]
+    const list1 = [
+        {
+
+        },
+        {
+
+        },
+
+
+    ]
     const renderPage = (item, index) => {
         return (
             <View key={index}>
@@ -171,7 +184,7 @@ const Home = ({ navigation }) => {
                 </View>
                 <View style={{ flexDirection: 'row', }}>
 
-                    <View style={{
+                    <Pressable onPress={() => {  }} style={{
                         flexDirection: 'row', borderColor: '#333333', borderWidth: 1,
                         paddingHorizontal: 5, paddingVertical: 5, borderRadius: 4,
                         alignSelf: 'center', marginRight: 12
@@ -194,7 +207,7 @@ const Home = ({ navigation }) => {
                             }}>
                             ₹10,000
                         </Text>
-                    </View>
+                    </Pressable>
 
                     <TouchableOpacity activeOpacity={0.9}
                         style={{ paddingVertical: 6 }}
@@ -505,6 +518,121 @@ const Home = ({ navigation }) => {
                 />
 
             </ScrollView>
+
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={popupVisible}
+                onRequestClose={() => {
+                    setPopupVisible(false);
+                }}>
+                <TouchableOpacity
+                    activeOpacity={0.8}
+                    onPress={() => {
+                        setPopupVisible(false);
+                    }}
+                    style={styles.container}>
+                    <View style={styles.modalView}>
+
+                        <Text style={{
+                            fontSize: 20,
+                            color: '#333333',
+                            fontFamily: 'AvenirLTStd-Medium',
+                            textAlign: 'center',
+                        }}>Select Member?</Text>
+
+                        <FlatList
+                            data={list1}
+                            renderItem={({ item, index }) => (
+                                <>
+                                    <TouchableOpacity
+                                        activeOpacity={0.8}
+                                        style={{ flexDirection: 'row', marginTop: 20, }}
+                                        onPress={() => {
+                                            setChecked1(index);
+                                        }}>
+                                        <Image
+                                            style={{
+                                                width: 50,
+                                                height: 50,
+                                                resizeMode: 'contain',
+                                                marginLeft: 15,
+                                                alignSelf: 'center',
+                                            }}
+                                            source={require('../assets/add.png')}
+                                        />
+                                        <View>
+                                            <Text numberOfLines={1}
+                                                style={{
+                                                    fontFamily: 'AvenirLTStd-Medium',
+                                                    fontSize: 18,
+                                                    marginLeft: 10,
+                                                    color: '#333333',
+                                                    marginTop: 13,
+                                                    width: window.width - 170,
+                                                }}>
+                                                Deepak
+                                            </Text>
+
+                                        </View>
+                                        <View
+                                            style={{
+                                                marginTop: 6,
+                                                marginLeft: 'auto',
+                                                marginHorizontal: 15,
+                                            }}>
+                                            <RadioButton
+                                                value="first"
+                                                status={checked1 === index ? 'checked' : 'unchecked'}
+                                                onPress={() => {
+                                                    setChecked1(index);
+                                                }}
+                                                uncheckedColor={'grey'}
+                                                color={'#FFCC80'}
+                                            />
+                                        </View>
+                                    </TouchableOpacity>
+                                </>
+                            )}
+                        />
+                        <View style={{ borderBottomColor: '#D8D8D8', borderBottomWidth: 1, marginTop: 10, marginHorizontal: 15 }}></View>
+                        <TouchableOpacity
+                            activeOpacity={0.8}
+                            style={{ flexDirection: 'row', marginTop: 10, }}
+                            onPress={() => {
+                                navigation.navigate('AddMember')
+                            }}>
+                            <Image
+                                style={{
+                                    width: 50,
+                                    height: 50,
+                                    resizeMode: 'contain',
+                                    marginLeft: 15,
+                                    alignSelf: 'center',
+                                }}
+                                source={require('../assets/add.png')}
+                            />
+                            <View>
+                                <Text numberOfLines={1}
+                                    style={{
+                                        fontFamily: 'AvenirLTStd-Medium',
+                                        fontSize: 18,
+                                        marginLeft: 10,
+                                        color: '#333333',
+                                        marginTop: 13,
+                                        width: window.width - 170,
+                                    }}>
+                                    Add Member
+                                </Text>
+
+                            </View>
+
+                        </TouchableOpacity>
+
+                    </View>
+                </TouchableOpacity>
+            </Modal>
+
         </SafeAreaView>
 
     )
@@ -512,4 +640,18 @@ const Home = ({ navigation }) => {
 
 export default Home
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+
+    container: {
+        flex: 1,
+        backgroundColor: '#00000099',
+        justifyContent: 'center',
+    },
+    modalView: {
+        marginHorizontal: 15,
+        paddingVertical: 20,
+        backgroundColor: '#FFFFFF',
+        borderRadius: 20,
+    },
+
+})

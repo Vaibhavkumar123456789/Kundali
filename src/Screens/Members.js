@@ -345,7 +345,7 @@ const Members = ({ navigation }) => {
         secondRightIcon={require('../assets/search.png')}
         thirdRightIcon={require('../assets/filter.png')}
         rightOption={() => {
-          navigation.navigate('');
+          navigation.navigate('Search');
         }}
         right3Option={() => {
           navigation.navigate('');

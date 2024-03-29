@@ -31,6 +31,9 @@ import ManageHeaderFooter from '../Screens/ManageHeaderFooter';
 import HeaderFooterPreview from '../Screens/HeaderFooterPreview';
 import Settings from '../Screens/Settings';
 import ContactSupport from '../Screens/ContactSupport';
+import Profile from '../Screens/Profile';
+import AddMember from '../Screens/AddMember';
+import Search from '../Screens/Search';
 
 
 const Stack = createStackNavigator();
@@ -194,6 +197,21 @@ const StackNavigator = () => {
                 <Stack.Screen
                     name="ContactSupport"
                     component={ContactSupport}
+                    options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                    name="Profile"
+                    component={Profile}
+                    options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                    name="AddMember"
+                    component={AddMember}
+                    options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                    name="Search"
+                    component={Search}
                     options={{ headerShown: false }}
                 />
 

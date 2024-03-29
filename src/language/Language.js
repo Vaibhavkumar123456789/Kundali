@@ -65,8 +65,8 @@ let stringsoflanguages = new LocalizedStrings({
             gender: 'Gender',
             male: 'Male',
             female: 'Female',
-            dateofbirth: 'Date of birth',
-            timeofbirth: 'Time of birth',
+            dateofbirth: 'Date of birth   ',
+            timeofbirth: 'Time of birth   ',
             country: 'Country',
             birth: 'Birth Place',
             mobile: 'Mobile No.',
@@ -130,8 +130,11 @@ let stringsoflanguages = new LocalizedStrings({
             title: 'For any support request regards your enquiry please feel free to speak with us at below.',
             callus: 'Call us',
             mail: 'Mail us',
+            profile: 'Profile',
+            addmember: 'Add Member',
+            select: 'Select Gender',
+            search: 'Search...',
         },
-
 
     },
 
@@ -266,16 +269,13 @@ let stringsoflanguages = new LocalizedStrings({
             title: 'आपकी पूछताछ के संबंध में किसी भी सहायता अनुरोध के लिए कृपया नीचे दिए गए पते पर हमसे बेझिझक बात करें।',
             callus: 'हमें कॉल करें',
             mail: 'हमें मेल करें',
+            profile: 'प्रोफ़ाइल',
+            addmember: 'सदस्य जोड़ें',
+            select: 'लिंग चुनें',
+            search: 'खोज...',
         }
 
     },
-
-
-
-
-
-
-
 
 });
 export default stringsoflanguages;
