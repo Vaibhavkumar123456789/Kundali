@@ -34,6 +34,8 @@ import ContactSupport from '../Screens/ContactSupport';
 import Profile from '../Screens/Profile';
 import AddMember from '../Screens/AddMember';
 import Search from '../Screens/Search';
+import AddAddress from '../Screens/AddAddress';
+import SelectAddress from '../Screens/SelectAddress';
 
 
 const Stack = createStackNavigator();
@@ -212,6 +214,16 @@ const StackNavigator = () => {
                 <Stack.Screen
                     name="Search"
                     component={Search}
+                    options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                    name="AddAddress"
+                    component={AddAddress}
+                    options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                    name="SelectAddress"
+                    component={SelectAddress}
                     options={{ headerShown: false }}
                 />
 

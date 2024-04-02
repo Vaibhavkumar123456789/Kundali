@@ -134,6 +134,11 @@ let stringsoflanguages = new LocalizedStrings({
             addmember: 'Add Member',
             select: 'Select Gender',
             search: 'Search...',
+            city: 'City',
+            addaddress: 'Add Address',
+            selectaddress: 'Select Address',
+            change: 'Change and Edit',
+            addnewaddress: 'ADD NEW ADDRESS',
         },
 
     },

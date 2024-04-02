@@ -161,6 +161,7 @@ const SignIn = ({ navigation }) => {
                     fontFamily: 'AvenirLTStd-Medium',
                 }}
                 onPress={() => {
+                    navigation.replace('DrawerNavigator')
                 }}>
                 Sign In
             </Button>

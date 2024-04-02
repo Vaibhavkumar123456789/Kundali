@@ -13,6 +13,7 @@ import {
     Share,
     Pressable,
     SafeAreaView,
+    StatusBar,
 } from 'react-native';
 import stringsoflanguages from '../language/Language'
 const { height, width } = Dimensions.get('window');
@@ -22,7 +23,7 @@ const Search = ({ navigation, route }) => {
 
     return (
         <SafeAreaView style={{ backgroundColor: '#FFFFFF', flex: 1 }}>
-
+            <StatusBar barStyle="dark-content" backgroundColor="#FFCC80" />
             <View
                 style={{
                     backgroundColor: '#FFCC80',

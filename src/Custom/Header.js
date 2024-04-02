@@ -14,7 +14,7 @@ const window = Dimensions.get('window');
 const { width, height } = Dimensions.get('window');
 function Header(props) {
     return (
-        <View
+        <SafeAreaView
             style={{
                 backgroundColor: '#FFCC80',
                 height: 60,
@@ -50,7 +50,7 @@ function Header(props) {
                 </Text>
             </View>
 
-        </View>
+        </SafeAreaView>
 
     );
 }
