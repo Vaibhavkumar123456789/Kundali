@@ -59,32 +59,33 @@ const CustomDrawer = ({ navigation }) => {
                 navigation.navigate('MyOrders');
                 break;
             case _drawer.kundli:
-                navigation.navigate('');
+                navigation.navigate('KundaliForm');
                 break;
             case _drawer.wallet:
                 navigation.navigate('Wallet');
                 break;
             case _drawer.invoice:
-                navigation.navigate('');
+                navigation.navigate('MyInvoice');
                 break;
             case _drawer.manage:
-                navigation.navigate('');
+                navigation.navigate('ManageHeaderFooter');
                 break;
 
             case _drawer.header:
-                navigation.navigate('');
+                navigation.navigate('HeaderFooterPreview');
                 break;
 
             case _drawer.message:
-                navigation.navigate('');
+
+                navigation.navigate('MessageCenter')
                 break;
 
             case _drawer.contact:
-                navigation.navigate('');
+                navigation.navigate('ContactSupport');
                 break;
 
             case _drawer.setting:
-                navigation.navigate('');
+                navigation.navigate('Settings');
                 break;
 
             default:

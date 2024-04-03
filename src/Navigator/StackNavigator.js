@@ -26,6 +26,7 @@ import MessageCenter from '../Screens/MessageCenter';
 import MessageCenterDetail from '../Screens/MessageCenterDetail';
 import KundaliForm from '../Screens/KundaliForm';
 import MembershipForm from '../Screens/MembershipForm';
+<<<<<<< HEAD
 import MyOrders from '../Screens/MyOrders';
 import OnlineJyotish from '../Screens/OnlineJyotish';
 import Wallet from '../Screens/Wallet';
@@ -33,6 +34,13 @@ import ReportDetails from '../Screens/ReportDetails';
 import PremiumKundliDetailReport from '../Screens/PremiumKundliDetailReport';
 import ProductList from '../Screens/ProductList';
 import Cart from '../Screens/Cart';
+=======
+import MyInvoice from '../Screens/MyInvoice';
+import ManageHeaderFooter from '../Screens/ManageHeaderFooter';
+import HeaderFooterPreview from '../Screens/HeaderFooterPreview';
+import Settings from '../Screens/Settings';
+import ContactSupport from '../Screens/ContactSupport';
+>>>>>>> 368446cbc26d81e7101e62660a63a374898e7934
 
 
 const Stack = createStackNavigator();
@@ -174,6 +182,7 @@ const StackNavigator = () => {
                     options={{ headerShown: false }}
                 />
                 <Stack.Screen
+<<<<<<< HEAD
                     name="MyOrders"
                     component={MyOrders}
                     options={{ headerShown: false }}
@@ -206,6 +215,30 @@ const StackNavigator = () => {
                 <Stack.Screen
                     name="Cart"
                     component={Cart}
+=======
+                    name="MyInvoice"
+                    component={MyInvoice}
+                    options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                    name="ManageHeaderFooter"
+                    component={ManageHeaderFooter}
+                    options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                    name="HeaderFooterPreview"
+                    component={HeaderFooterPreview}
+                    options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                    name="Settings"
+                    component={Settings}
+                    options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                    name="ContactSupport"
+                    component={ContactSupport}
+>>>>>>> 368446cbc26d81e7101e62660a63a374898e7934
                     options={{ headerShown: false }}
                 />
 

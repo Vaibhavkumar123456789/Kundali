@@ -44,7 +44,7 @@ function Header(props) {
                         fontFamily: 'AvenirLTStd-Heavy',
                         marginTop: 6,
                         marginLeft: 10,
-                        width: Dimensions.get('window').width - 180,
+                        width: Dimensions.get('window').width - 80,
                     }}>
                     {props.title}
                 </Text>
