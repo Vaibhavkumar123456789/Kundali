@@ -133,7 +133,7 @@ const Report = ({ navigation }) => {
                   {_home.viewsample}
                 </Text>
               </Pressable>
-              <Pressable>
+              <Pressable onPress={() => { navigation.navigate('PremiumKundliDetailReport') }}>
                 <Image
                   style={{
                     width: 30,

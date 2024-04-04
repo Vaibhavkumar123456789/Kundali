@@ -36,6 +36,15 @@ import AddMember from '../Screens/AddMember';
 import Search from '../Screens/Search';
 import AddAddress from '../Screens/AddAddress';
 import SelectAddress from '../Screens/SelectAddress';
+import Cart from '../Screens/Cart';
+import OnlineJyotish from '../Screens/OnlineJyotish';
+import PremiumKundliDetailReport from '../Screens/PremiumKundliDetailReport';
+import ProductList from '../Screens/ProductList';
+import ReportDetails from '../Screens/ReportDetails';
+import Wallet from '../Screens/Wallet';
+import GenerateReport from '../Screens/GenerateReport';
+import MyOrders from '../Screens/MyOrders';
+import NetalReportDetail from '../Screens/NetalReportDetail';
 
 
 const Stack = createStackNavigator();
@@ -226,6 +235,53 @@ const StackNavigator = () => {
                     component={SelectAddress}
                     options={{ headerShown: false }}
                 />
+                <Stack.Screen
+                    name="Cart"
+                    component={Cart}
+                    options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                    name="OnlineJyotish"
+                    component={OnlineJyotish}
+                    options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                    name="PremiumKundliDetailReport"
+                    component={PremiumKundliDetailReport}
+                    options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                    name="ProductList"
+                    component={ProductList}
+                    options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                    name="ReportDetails"
+                    component={ReportDetails}
+                    options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                    name="Wallet"
+                    component={Wallet}
+                    options={{ headerShown: false }}
+                />
+
+                <Stack.Screen
+                    name="GenerateReport"
+                    component={GenerateReport}
+                    options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                    name="MyOrders"
+                    component={MyOrders}
+                    options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                    name="NetalReportDetail"
+                    component={NetalReportDetail}
+                    options={{ headerShown: false }}
+                />
+
 
 
             </Stack.Navigator>

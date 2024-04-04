@@ -119,7 +119,12 @@ const Settings = ({ navigation }) => {
                             />
                         </View>
                     </TouchableOpacity>
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={() => {
+                        navigation.reset({
+                            index: 0,
+                            routes: [{ name: 'SignIn' }],
+                        })
+                    }}>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 20, }}>
                             <View style={{ flexDirection: 'row' }}>
                                 <Image

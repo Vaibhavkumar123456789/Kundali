@@ -40,6 +40,11 @@ let stringsoflanguages = new LocalizedStrings({
             premium: 'Premium Kundali Report',
             price: 'Price',
             viewsample: 'View Sample',
+            onlineJyotish: 'Online Jyotish',
+            myOrder: "My Orders",
+            myorderTab1: "Kundali Report",
+            myorderTab2: "Total Products",
+
         },
         _member: {
             freemember: 'Free Member List',
@@ -106,6 +111,15 @@ let stringsoflanguages = new LocalizedStrings({
             addtext: 'Plz mention the area where Jyotish Consult-ancy is required by tick',
             other: 'If other, Plz mention',
             paynow: 'PayNow',
+            viewsample: "View Sample",
+            buyNow: "Buy Now",
+            prashanLagan: "Prashan Lagan"
+        },
+        _productlist: {
+            tab1: 'Rudraksh',
+            tab2: 'Ratna',
+            tab3: 'Crystal',
+            tab4: 'Diamond',
         },
         _invoice: {
             myinvoice: 'My Invoice',
@@ -139,6 +153,9 @@ let stringsoflanguages = new LocalizedStrings({
             selectaddress: 'Select Address',
             change: 'Change and Edit',
             addnewaddress: 'ADD NEW ADDRESS',
+            generate: 'Generate Report',
+            netal: 'Natal Chart Reports',
+            reportdetail: 'Report Detail',
         },
 
     },

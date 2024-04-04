@@ -265,6 +265,7 @@ const AddMember = ({ navigation }) => {
                         fontFamily: 'AvenirLTStd-Medium',
                     }}
                     onPress={() => {
+                        navigation.navigate('GenerateReport')
                     }}>
                     {_setting.addmember}
                 </Button>

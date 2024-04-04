@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react'
 import Carousel from 'react-native-banner-carousel';
 import stringsoflanguages from '../language/Language'
 import { TabActions } from '@react-navigation/native';
-import { RadioButton } from 'react-native-paper';
 
 const Home = ({ navigation }) => {
     const window = Dimensions.get('window');
@@ -65,10 +64,10 @@ const Home = ({ navigation }) => {
                 navigation.navigate('MembershipForm')
                 break;
             case _home.order:
-                navigation.navigate('')
+                navigation.navigate('MyOrders')
                 break;
             case _home.online:
-                navigation.navigate('')
+                navigation.navigate('OnlineJyotish')
                 break;
             default:
         }
@@ -103,16 +102,7 @@ const Home = ({ navigation }) => {
         },
 
     ]
-    const list1 = [
-        {
 
-        },
-        {
-
-        },
-
-
-    ]
     const renderPage = (item, index) => {
         return (
             <View key={index}>
@@ -184,7 +174,7 @@ const Home = ({ navigation }) => {
                 </View>
                 <View style={{ flexDirection: 'row', }}>
 
-                    <Pressable onPress={() => { }} style={{
+                    <Pressable onPress={() => { navigation.navigate('Wallet') }} style={{
                         flexDirection: 'row', borderColor: '#333333', borderWidth: 1,
                         paddingHorizontal: 5, paddingVertical: 5, borderRadius: 4,
                         alignSelf: 'center', marginRight: 12
@@ -211,7 +201,7 @@ const Home = ({ navigation }) => {
 
                     <TouchableOpacity activeOpacity={0.9}
                         style={{ paddingVertical: 6 }}
-                        onPress={() => { navigation.navigate('') }}>
+                        onPress={() => { navigation.navigate('Cart') }}>
                         <Image
                             source={require('../assets/cart.png')}
                             style={{
@@ -455,7 +445,7 @@ const Home = ({ navigation }) => {
                                             {_home.viewsample}
                                         </Text>
                                     </Pressable>
-                                    <Pressable>
+                                    <Pressable onPress={() => { navigation.navigate('PremiumKundliDetailReport') }}>
                                         <Image
                                             style={{
                                                 width: 30,
@@ -519,119 +509,7 @@ const Home = ({ navigation }) => {
 
             </ScrollView>
 
-            <Modal
-                animationType="slide"
-                transparent={true}
-                visible={popupVisible}
-                onRequestClose={() => {
-                    setPopupVisible(false);
-                }}>
-                <TouchableOpacity
-                    activeOpacity={0.8}
-                    onPress={() => {
-                        setPopupVisible(false);
-                    }}
-                    style={styles.container}>
-                    <View style={styles.modalView}>
 
-                        <Text style={{
-                            fontSize: 20,
-                            color: '#333333',
-                            fontFamily: 'AvenirLTStd-Medium',
-                            textAlign: 'center',
-                        }}>Select Member?</Text>
-
-                        <FlatList
-                            data={list1}
-                            renderItem={({ item, index }) => (
-                                <>
-                                    <TouchableOpacity
-                                        activeOpacity={0.8}
-                                        style={{ flexDirection: 'row', marginTop: 20, }}
-                                        onPress={() => {
-                                            setChecked1(index);
-                                        }}>
-                                        <Image
-                                            style={{
-                                                width: 50,
-                                                height: 50,
-                                                resizeMode: 'contain',
-                                                marginLeft: 15,
-                                                alignSelf: 'center',
-                                            }}
-                                            source={require('../assets/add.png')}
-                                        />
-                                        <View>
-                                            <Text numberOfLines={1}
-                                                style={{
-                                                    fontFamily: 'AvenirLTStd-Medium',
-                                                    fontSize: 18,
-                                                    marginLeft: 10,
-                                                    color: '#333333',
-                                                    marginTop: 13,
-                                                    width: window.width - 170,
-                                                }}>
-                                                Deepak
-                                            </Text>
-
-                                        </View>
-                                        <View
-                                            style={{
-                                                marginTop: 6,
-                                                marginLeft: 'auto',
-                                                marginHorizontal: 15,
-                                            }}>
-                                            <RadioButton
-                                                value="first"
-                                                status={checked1 === index ? 'checked' : 'unchecked'}
-                                                onPress={() => {
-                                                    setChecked1(index);
-                                                }}
-                                                uncheckedColor={'grey'}
-                                                color={'#FFCC80'}
-                                            />
-                                        </View>
-                                    </TouchableOpacity>
-                                </>
-                            )}
-                        />
-                        <View style={{ borderBottomColor: '#D8D8D8', borderBottomWidth: 1, marginTop: 10, marginHorizontal: 15 }}></View>
-                        <TouchableOpacity
-                            activeOpacity={0.8}
-                            style={{ flexDirection: 'row', marginTop: 10, }}
-                            onPress={() => {
-                                navigation.navigate('AddMember')
-                            }}>
-                            <Image
-                                style={{
-                                    width: 50,
-                                    height: 50,
-                                    resizeMode: 'contain',
-                                    marginLeft: 15,
-                                    alignSelf: 'center',
-                                }}
-                                source={require('../assets/add.png')}
-                            />
-                            <View>
-                                <Text numberOfLines={1}
-                                    style={{
-                                        fontFamily: 'AvenirLTStd-Medium',
-                                        fontSize: 18,
-                                        marginLeft: 10,
-                                        color: '#333333',
-                                        marginTop: 13,
-                                        width: window.width - 170,
-                                    }}>
-                                    Add Member
-                                </Text>
-
-                            </View>
-
-                        </TouchableOpacity>
-
-                    </View>
-                </TouchableOpacity>
-            </Modal>
 
         </SafeAreaView>
 
