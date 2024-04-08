@@ -134,7 +134,7 @@ export const requestGet1 = (path, json) => {
 export const MultipleAccountList = json =>
   requesth(PATH_URL.multipleaccount, json);
 
-export const LoginOtp = json => request(PATH_URL.login_otp, json);
+export const UserSignUp = json => request(PATH_URL.signUp, json);
 
 
 

@@ -1,20 +1,89 @@
-import { View, Text, Image, StyleSheet, Dimensions, TextInput, StatusBar, SafeAreaView, ImageBackground, Pressable, ScrollView, TouchableOpacity, } from 'react-native'
+import { View, Text, Image, StyleSheet, Dimensions, TextInput, Platform, StatusBar, SafeAreaView, ImageBackground, Pressable, ScrollView, TouchableOpacity, } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import CheckBox from '@react-native-community/checkbox';
 import Button from 'react-native-button';
-
+import Toast from 'react-native-simple-toast';
+import {
+    AsyncStorageSetUser,
+    UserSignUp,
+} from '../backend/Api';
+import * as actions from '../redux/actions';
+import { AsyncStorageSettoken } from '../backend/Api';
+import Loader from '../utils/Loader';
+var validator = require('email-validator');
 const SignUp = ({ navigation }) => {
     const window = Dimensions.get('window');
     const { width, height } = Dimensions.get('window');
     const [VisiblePass, setVisiblePass] = useState(false)
+    const [state, setState] = useState({
+        loading: false,
+    });
+    const toggleLoading = bol => setState({ ...state, loading: bol });
     const makePassVisible = () => {
         setVisiblePass(prevState => !prevState);
     };
     const [toggleCheckBox, setToggleCheckBox] = useState(false)
 
+    const [name, setName] = React.useState('');
+    const [email, setEmail] = React.useState('');
+    const [mobile, setMobile] = useState('')
+    const [password, setPassword] = useState('')
+
+    const buttonClickListenerstarted = () => {
+        if (name == '') {
+            Toast.show('Please enter Name');
+        } else if (email == '') {
+            Toast.show('Please enter Email');
+        } if (mobile === '' || mobile.length !== 10) {
+            Toast.show('Please enter your valid phone number');
+        } else if (password == '') {
+            Toast.show('Please enter Password');
+        }
+        else if (toggleCheckBox == false) {
+            Toast.show('Please accept terms and conditions');
+        }
+        else {
+            toggleLoading(true);
+
+            let e = {
+                "name": name,
+                "email": email,
+                "mobile": mobile,
+                "password": password,
+                "device_id": Platform.OS === 'ios' ? 'IOS' : 'Android',
+                "device_token": "123",
+                "device_type": Platform.OS === 'ios' ? 'IOS' : 'Android',
+                "loginTime": "123",
+                "newsignup": 1
+            };
+            console.log(JSON.stringify(e));
+
+            UserSignUp(e)
+                .then(data => {
+                    toggleLoading(false);
+                    console.log(JSON.stringify(data));
+
+                    if (data.status) {
+                        actions.Login(data.user_detail);
+                        actions.Token(data.token);
+                        AsyncStorageSettoken(data.token);
+                        AsyncStorageSetUser(data.user_detail);
+                        navigation.navigate('Otp')
+                    } else {
+                        alert(data.msg);
+                    }
+                })
+                .catch(error => {
+                    toggleLoading(false);
+                    console.log('error', error);
+                });
+        }
+    };
+
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
             <StatusBar barStyle="dark-content" backgroundColor="white" />
+            {state.loading && <Loader />}
             <ScrollView style={{ marginBottom: 40 }}>
                 <Pressable>
                     <Text
@@ -77,6 +146,8 @@ const SignUp = ({ navigation }) => {
                     }}
                     placeholderTextColor={'#333333'}
                     placeholder={'Name'}
+                    value={name}
+                    onChangeText={(text) => setName(text)}
                 />
 
                 <Text
@@ -105,6 +176,8 @@ const SignUp = ({ navigation }) => {
                     }}
                     placeholderTextColor={'#333333'}
                     placeholder={'Email Address'}
+                    value={email}
+                    onChangeText={(text) => setEmail(text)}
                 />
 
                 <Text
@@ -135,6 +208,8 @@ const SignUp = ({ navigation }) => {
                     keyboardType='numeric'
                     maxLength={10}
                     placeholder={'Mobile No.'}
+                    value={mobile}
+                    onChangeText={(text) => setMobile(text)}
                 />
 
                 <Text
@@ -154,6 +229,8 @@ const SignUp = ({ navigation }) => {
                         placeholder={'Password'}
                         maxLength={20}
                         secureTextEntry={VisiblePass ? false : true}
+                        value={password}
+                        onChangeText={(text) => setPassword(text)}
                         style={{
                             fontSize: 16,
                             fontFamily: 'AvenirLTStd-Medium',
@@ -241,7 +318,8 @@ const SignUp = ({ navigation }) => {
                     fontFamily: 'AvenirLTStd-Medium',
                 }}
                 onPress={() => {
-                    navigation.navigate('Otp')
+
+                    buttonClickListenerstarted()
                 }}>
                 Sign Up
             </Button>
