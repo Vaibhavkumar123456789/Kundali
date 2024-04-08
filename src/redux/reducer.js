@@ -1,69 +1,122 @@
-
 const data = {
-  userDetail: {},
-  user_id: '',
   user: {},
-  user_details: {},
-  deviceInfo: {
-    id: '',
-    token: '',
-    model: '',
-    os: '',
-  },
-  userType: '',
+  coords: {},
+  token: '',
   ftoken: '',
-  netInfo: {
-    details: {},
-    isConnected: false,
-    isInternetReachable: false,
-    isWifiEnabled: false,
-    type: '',
-  },
+  live: {},
+  male: {},
+  female: {},
+  location: {},
   language: 'en',
 };
 const reducer = (state = data, action) => {
   switch (action.type) {
-    case 'setUserDetail':
+    case 'login':
       return {
         ...state,
-        userDetail: action.payload,
-        isLogin: true,
+        user: action.paylod,
       };
-    case 'language':
-      return { ...state, language: action.payload };
-    case 'profile':
-      return { ...state, profile: action.payload };
-    case 'setDeviceInfo':
+    case 'token':
       return {
         ...state,
-        deviceInfo: action.payload,
+        token: action.paylod,
       };
-    case 'phone':
+    case 'live':
       return {
         ...state,
-        phone: action.payload,
+        live: action.paylod,
       };
-
     case 'ftoken':
       return {
         ...state,
         ftoken: action.paylod,
       };
-    case 'netInfo':
+    case 'location':
       return {
         ...state,
-        netInfo: action.payload,
+        location: action.paylod,
       };
-    case 'user_id':
+    case 'male':
       return {
         ...state,
-        user_id: action.payload,
+        male: action.paylod,
       };
+    case 'female':
+      return {
+        ...state,
+        female: action.paylod,
+      };
+    case 'logout':
+      AsyncStorageSetUser({});
+      AsyncStorageSettoken('');
+      return {
+        ...state,
+        user: {},
+        token: '',
+      };
+    case 'setCoords':
+      return {
+        ...state,
+        coords: action.payload,
+      };
+    case 'setLocation':
+      return {
+        ...state,
+        location: action.payload,
+      };
+    case 'language':
+      return { ...state, language: action.payload };
+    // case 'init':
+    //     return {
+    //         ...state,
+    //         created: action.payload.created,
+    //         shared_with_me: action.payload.shared_with_me
+    //     }
+    // case 'modeChange':
+    //     window.localStorage.setItem('amsMode', action.payload.mode)
+    //     return {
+    //         ...state,
+    //         mode: action.payload.mode,
+    //         program: {}
+    //     }
+    // case 'onCodeChange':
+    //     return {
+    //         ...state,
+    //         code: action.payload
+    //     }
 
+    // case 'openProject':
+    //     return {
+    //         ...state,
+    //         type: action.payload.type,
+    //         program: action.payload.program
 
-
+    //     }
+    // case 'newProject':
+    //     return {
+    //         ...state,
+    //         program: action.payload,
+    //         created: [...state.created, action.payload]
+    //     }
+    // case 'updateProject':
+    //     return {
+    //         ...state,
+    //         program: { ...state.program, file_name: action.payload.fileName, code: action.payload.code },
+    //         created: state.created.map(obj => obj.program_id !== action.payload.id ? obj : { ...obj, file_name: action.payload.fileName, code: action.payload.code })
+    //     }
+    // case 'deleteProject':
+    //     return {
+    //         ...state,
+    //         created: state.created.filter(obj => obj.program_id !== action.payload)
+    //     }
+    // case 'shareCourse':
+    //     return {
+    //         ...state,
+    //         shareCourse: action.payload
+    //     }
     default:
       return state;
   }
 };
+
 export default reducer;

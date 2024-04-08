@@ -55,7 +55,7 @@ const Wallet = ({ navigation }) => {
         title={_drawer.wallet}
 
         menuOption={() => navigation.goBack()}
-        leftIcon={require('../assets/back.png')}
+        leftIcon={require('../assets/backtoback.png')}
         // secondRightIcon={require('../assets/search.png')}
         // thirdRightIcon={require('../assets/filter.png')}
         rightOption={() => {

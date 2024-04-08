@@ -122,7 +122,7 @@ const MembershipForm = ({ navigation }) => {
             <StatusBar barStyle="dark-content" backgroundColor="#FFCC80" />
             <Header
                 menuOption={() => navigation.goBack()}
-                leftIcon={require('../assets/back.png')}
+                leftIcon={require('../assets/backtoback.png')}
                 title={_kundali.membership}
             />
             <View style={{ marginHorizontal: 5, marginTop: 15 }}>

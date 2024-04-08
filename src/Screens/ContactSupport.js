@@ -30,7 +30,7 @@ const ContactSupport = ({ navigation }) => {
             <StatusBar barStyle="dark-content" backgroundColor="#FFCC80" />
             <Header
                 menuOption={() => navigation.goBack()}
-                leftIcon={require('../assets/back.png')}
+                leftIcon={require('../assets/backtoback.png')}
                 title={_drawer.contact}
             />
             <View style={{ alignSelf: 'center', marginTop: 50 }}>

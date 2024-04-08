@@ -43,7 +43,7 @@ const AddMember = ({ navigation }) => {
             <StatusBar barStyle="dark-content" backgroundColor="#FFCC80" />
             <Header
                 menuOption={() => navigation.goBack()}
-                leftIcon={require('../assets/back.png')}
+                leftIcon={require('../assets/backtoback.png')}
                 title={_setting.addmember}
             />
             <ScrollView>

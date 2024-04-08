@@ -35,7 +35,7 @@ const Search = ({ navigation, route }) => {
                     style={{ paddingVertical: 6 }}
                     onPress={() => navigation.goBack()}>
                     <Image
-                        source={require('../assets/back.png')}
+                        source={require('../assets/backtoback.png')}
                         style={{
                             height: 20,
                             width: 20,

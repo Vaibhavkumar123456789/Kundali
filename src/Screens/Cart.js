@@ -40,7 +40,7 @@ const Cart = ({ navigation }) => {
             style={{ paddingVertical: 6 }}
             onPress={() => { navigation.goBack() }}>
             <Image
-              source={require('../assets/back.png')}
+              source={require('../assets/backtoback.png')}
               style={{
                 height: 24,
                 width: 24,

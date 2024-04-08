@@ -35,6 +35,7 @@ function Header(props) {
                             resizeMode: 'contain',
                             marginLeft: 18,
                         }}
+
                     />
                 </TouchableOpacity>
                 <Text numberOfLines={1}

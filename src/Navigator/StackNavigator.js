@@ -45,6 +45,8 @@ import Wallet from '../Screens/Wallet';
 import GenerateReport from '../Screens/GenerateReport';
 import MyOrders from '../Screens/MyOrders';
 import NetalReportDetail from '../Screens/NetalReportDetail';
+import NaamJane from '../Screens/NaamJane';
+import NaamJaneReport from '../Screens/NaamJaneReport';
 
 
 const Stack = createStackNavigator();
@@ -274,6 +276,16 @@ const StackNavigator = () => {
                 <Stack.Screen
                     name="MyOrders"
                     component={MyOrders}
+                    options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                    name="NaamJane"
+                    component={NaamJane}
+                    options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                    name="NaamJaneReport"
+                    component={NaamJaneReport}
                     options={{ headerShown: false }}
                 />
                 <Stack.Screen

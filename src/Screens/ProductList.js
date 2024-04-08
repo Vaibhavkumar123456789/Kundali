@@ -353,7 +353,7 @@ const ProductList = ({ navigation }) => {
         title={_home.myOrder}
 
         menuOption={() => navigation.goBack()}
-        leftIcon={require('../assets/back.png')}
+        leftIcon={require('../assets/backtoback.png')}
         // secondRightIcon={require('../assets/search.png')}
         thirdRightIcon={require('../assets/filter.png')}
         rightOption={() => {
@@ -377,7 +377,7 @@ const ProductList = ({ navigation }) => {
                         style={{ paddingVertical: 6 }}
                         onPress={() => { navigation.goBack() }}>
                         <Image
-                            source={require('../assets/back.png')}
+                            source={require('../assets/backtoback.png')}
                             style={{
                                 height: 24,
                                 width: 24,

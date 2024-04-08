@@ -25,7 +25,7 @@ import moment from 'moment';
 import { Dropdown } from 'react-native-element-dropdown';
 import Button from 'react-native-button';
 
-const KundaliForm = ({ navigation }) => {
+const NaamJane = ({ navigation }) => {
     const window = Dimensions.get('window');
     const { width, height } = Dimensions.get('window');
     const { _customlang, _kundali } = stringsoflanguages
@@ -52,7 +52,7 @@ const KundaliForm = ({ navigation }) => {
             <Header
                 menuOption={() => navigation.goBack()}
                 leftIcon={require('../assets/backtoback.png')}
-                title={_kundali.kundali}
+                title='Naam Jane'
             />
             <ScrollView>
                 <Text
@@ -258,118 +258,6 @@ const KundaliForm = ({ navigation }) => {
                     placeholder={_kundali.birth}
                 />
 
-                <Text
-                    style={{
-                        fontFamily: 'AvenirLTStd-Medium',
-                        color: '#ADADAD',
-                        fontSize: 18,
-                        letterSpacing: -0.2,
-                        marginTop: 19,
-                        marginHorizontal: 18,
-                    }}>
-                    {_kundali.mobile}
-                </Text>
-                <TextInput
-                    style={{
-                        fontSize: 16,
-                        fontFamily: 'AvenirLTStd-Medium',
-                        borderRadius: 10,
-                        borderColor: '#00000020',
-                        borderWidth: 1.5,
-                        marginTop: 10,
-                        marginHorizontal: 18,
-                        paddingHorizontal: 15,
-                        paddingVertical: 11,
-                        color: '#333333',
-                    }}
-                    placeholderTextColor={'#333333'}
-                    keyboardType='numeric'
-                    placeholder={_kundali.mobile}
-                />
-                <Text
-                    style={{
-                        fontFamily: 'AvenirLTStd-Medium',
-                        color: '#ADADAD',
-                        fontSize: 18,
-                        letterSpacing: -0.2,
-                        marginTop: 19,
-                        marginHorizontal: 18,
-                    }}>
-                    {_kundali.email}
-                </Text>
-                <TextInput
-                    style={{
-                        fontSize: 16,
-                        fontFamily: 'AvenirLTStd-Medium',
-                        borderRadius: 10,
-                        borderColor: '#00000020',
-                        borderWidth: 1.5,
-                        marginTop: 10,
-                        marginHorizontal: 18,
-                        paddingHorizontal: 15,
-                        paddingVertical: 11,
-                        color: '#333333',
-                    }}
-                    placeholderTextColor={'#333333'}
-                    placeholder={_kundali.email}
-                />
-                <Text
-                    style={{
-                        fontFamily: 'AvenirLTStd-Medium',
-                        color: '#ADADAD',
-                        fontSize: 18,
-                        letterSpacing: -0.2,
-                        marginTop: 19,
-                        marginHorizontal: 18,
-                    }}>
-                    {_kundali.pincode}
-                </Text>
-                <TextInput
-                    style={{
-                        fontSize: 16,
-                        fontFamily: 'AvenirLTStd-Medium',
-                        borderRadius: 10,
-                        borderColor: '#00000020',
-                        borderWidth: 1.5,
-                        marginTop: 10,
-                        marginHorizontal: 18,
-                        paddingHorizontal: 15,
-                        paddingVertical: 11,
-                        color: '#333333',
-                    }}
-                    placeholderTextColor={'#333333'}
-                    placeholder={_kundali.pincode}
-                    keyboardType='numeric'
-                    maxLength={6}
-                />
-                <Text
-                    style={{
-                        fontFamily: 'AvenirLTStd-Medium',
-                        color: '#ADADAD',
-                        fontSize: 18,
-                        letterSpacing: -0.2,
-                        marginTop: 19,
-                        marginHorizontal: 18,
-                    }}>
-                    {_kundali.address}
-                </Text>
-                <TextInput
-                    style={{
-                        fontSize: 16,
-                        fontFamily: 'AvenirLTStd-Medium',
-                        borderRadius: 10,
-                        borderColor: '#00000020',
-                        borderWidth: 1.5,
-                        marginTop: 10,
-                        marginHorizontal: 18,
-                        paddingHorizontal: 15,
-                        paddingVertical: 11,
-                        color: '#333333',
-                    }}
-                    placeholderTextColor={'#333333'}
-                    placeholder={_kundali.address}
-                />
-
                 <View style={{ flexDirection: 'row', marginLeft: 14, marginTop: 15 }}>
                     <CheckBox
                         disabled={false}
@@ -387,50 +275,13 @@ const KundaliForm = ({ navigation }) => {
                         width: window.width - 70,
                         lineHeight: 20,
                     }}>
-                        {_kundali.text}
+                        Save Kundli
 
                     </Text>
 
                 </View>
-                <Text
-                    style={{
-                        fontFamily: 'AvenirLTStd-Medium',
-                        color: '#ADADAD',
-                        fontSize: 18,
-                        letterSpacing: -0.2,
-                        marginTop: 19,
-                        marginHorizontal: 18,
-                    }}>
-                    {_kundali.mode}
-                </Text>
-                <FlatList
-                    data={payment}
-                    horizontal
-                    renderItem={({ item, index }) => (
-                        <TouchableOpacity onPress={() => {
-                            setChecked1(index)
-                        }}>
-                            <View style={{ flexDirection: 'row', alignItems: 'center', marginHorizontal: 15, marginTop: 5 }}>
-                                <RadioButton
-                                    value={checked1}
-                                    status={checked1 === index ? 'checked' : 'unchecked'}
-                                    onPress={() => {
-                                        setChecked1(index)
-                                    }}
-                                    uncheckedColor='#69707F'
-                                    color='#FFCC80'
-                                />
-                                <Text style={{
-                                    fontSize: 16,
-                                    color: '#333333',
-                                    fontFamily: 'AvenirLTStd-Medium',
-                                }}>
-                                    {item}
-                                </Text>
-                            </View>
-                        </TouchableOpacity>
-                    )}
-                />
+
+
 
                 <Button
                     containerStyle={{
@@ -451,8 +302,9 @@ const KundaliForm = ({ navigation }) => {
                         fontFamily: 'AvenirLTStd-Medium',
                     }}
                     onPress={() => {
+                        navigation.navigate("NaamJaneReport")
                     }}>
-                    {_customlang.submit}
+                    Show Kundli
                 </Button>
 
 
@@ -488,7 +340,6 @@ const KundaliForm = ({ navigation }) => {
     )
 }
 
-export default KundaliForm
+export default NaamJane
 
 const styles = StyleSheet.create({})
-

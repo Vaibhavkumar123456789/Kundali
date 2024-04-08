@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import CustomHeader from '../Custom/CustomHeader';
 import stringsoflanguages from '../language/Language'
 import { TabView, TabBar, SceneMap } from 'react-native-tab-view';
+import Header from '../Custom/Header';
 
 const OnlineJyotish = ({ navigation }) => {
   const { _member, _home } = stringsoflanguages
@@ -79,280 +80,62 @@ const OnlineJyotish = ({ navigation }) => {
 
   ];
 
-  const renderScene = ({ route }) => {
-    switch (route.key) {
-      case 'first':
-        return (
-          <View style={{ flex: 1, }}>
-            <FlatList
-              data={detail}
-              style={{ marginTop: 10, flexGrow: 0 }}
-              renderItem={({ item, index }) => (
 
-                <View style={styles.ex_view}>
-                  {/* <View style={styles.ex_proView}>
-                    <Image style={{ width: 80, height: 80, resizeMode: 'contain' }}
-                      source={require('../assets/add.png')} />
-
-                  </View> */}
-                  <View style={styles.dt_view}>
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginLeft: 2, marginTop: 4 }}>
-                      <View style={{ flexDirection: 'row' }}>
-
-                        <Text numberOfLines={1} style={{ color: '#1E1F20', fontFamily: 'AvenirLTStd-Heavy', fontSize: 16, marginLeft: 7, marginTop: 0, width: window.width - 210 }}>
-                          Deepak Kumar
-                        </Text>
-                      </View>
-                      <View style={{ flexDirection: 'row', alignSelf: 'flex-end', marginRight: 12 }}>
-                        <TouchableOpacity activeOpacity={0.9}>
-                          <Image
-                            style={{
-                              width: 18,
-                              height: 18,
-                              marginRight: 10,
-                              resizeMode: 'contain',
-                            }}
-                            source={require('../assets/edit1.png')}
-                          />
-                        </TouchableOpacity>
-                        <TouchableOpacity activeOpacity={0.9}>
-                          <Image
-                            style={{
-                              width: 18,
-                              height: 18,
-                              marginLeft: 5,
-                              resizeMode: 'contain',
-                            }}
-                            source={require('../assets/delete1.png')}
-                          />
-                        </TouchableOpacity>
-                      </View>
-                    </View>
-                    <View style={styles.dt_view_1}>
-                      <View style={styles.dt_view_11}>
-                        <View
-                          style={{
-                            flexDirection: 'row', marginTop: 2,
-                          }}>
-                          <Text numberOfLines={1}
-                            style={styles.dt_name}>28-01-23, 01:30 PM</Text>
-                          {/* <View style={{
-                            width: 1.5,
-                            backgroundColor: '#A6A7A9',
-                            height: 13,
-                            marginLeft: 5,
-                            marginTop: 5,
-                          }}>
-                          </View>
-                          <Text numberOfLines={1}
-                            style={styles.dt_name}>25 yrs</Text> */}
-                        </View>
-
-                        {/* <View style={styles.dt_viewOpt}>
-                          <Text
-                            style={{
-                              fontSize: 14,
-                              fontFamily: 'AvenirLTStd-Medium',
-                              color: '#A6A7A9',
-                              marginTop: 2,
-                              marginLeft: 9,
-                            }}>
-                            {_member.tob} :2:30PM
-                          </Text>
-
-                        </View> */}
-                      </View>
-                    </View>
-                    <View style={styles.dt_view_2}>
-                      <View style={styles.dt_viewOpt}>
-                        <Text numberOfLines={1} style={styles.dt_viewOptText}>
-                        Amount : ₹ 2000/-
-                        </Text>
-                      </View>
-                      {/* <View style={styles.dt_viewOpt}>
-                        <Text numberOfLines={1} style={styles.dt_viewOptText}>
-                          {_member.whatsapp}: 1234567892
-                        </Text>
-                      </View> */}
-
-                    </View>
-                  </View>
-                </View>
-              )}
-            />
-          </View>
-        )
-      case 'second':
-        return (
-          <View style={{ flex: 1, }}>
-            <FlatList
-              data={detail}
-              style={{ marginTop: 10, flexGrow: 0 }}
-              renderItem={({ item, index }) => (
-
-                <View style={styles.ex_view}>
-                  <View style={styles.ex_proView}>
-                    <Image style={{ width: 80, height: 80, resizeMode: 'contain' }}
-                      source={require('../assets/add.png')} />
-
-                  </View>
-                  <View style={styles.dt_view}>
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginLeft: 2, marginTop: 4 }}>
-                      <View style={{ flexDirection: 'row' }}>
-
-                        <Text numberOfLines={1} style={{ color: '#1E1F20', fontFamily: 'AvenirLTStd-Heavy', fontSize: 16, marginLeft: 7, marginTop: 0, width: window.width - 210 }}>
-                          Deepak Kumar
-                        </Text>
-                      </View>
-                      <View style={{ flexDirection: 'row', alignSelf: 'flex-end', marginRight: 12 }}>
-                        <TouchableOpacity activeOpacity={0.9}>
-                          <Image
-                            style={{
-                              width: 18,
-                              height: 18,
-                              marginRight: 10,
-                              resizeMode: 'contain',
-                            }}
-                            source={require('../assets/edit1.png')}
-                          />
-                        </TouchableOpacity>
-                        <TouchableOpacity activeOpacity={0.9}>
-                          <Image
-                            style={{
-                              width: 18,
-                              height: 18,
-                              marginLeft: 5,
-                              resizeMode: 'contain',
-                            }}
-                            source={require('../assets/delete1.png')}
-                          />
-                        </TouchableOpacity>
-                      </View>
-                    </View>
-                    <View style={styles.dt_view_1}>
-                      <View style={styles.dt_view_11}>
-                        <View
-                          style={{
-                            flexDirection: 'row', marginTop: 2,
-                          }}>
-                          <Text numberOfLines={1}
-                            style={styles.dt_name}>Male</Text>
-                          <View style={{
-                            width: 1.5,
-                            backgroundColor: '#A6A7A9',
-                            height: 13,
-                            marginLeft: 5,
-                            marginTop: 5,
-                          }}>
-                          </View>
-                          <Text numberOfLines={1}
-                            style={styles.dt_name}>25 yrs</Text>
-                        </View>
-
-                        <View style={styles.dt_viewOpt}>
-                          <Text
-                            style={{
-                              fontSize: 14,
-                              fontFamily: 'AvenirLTStd-Medium',
-                              color: '#A6A7A9',
-                              marginTop: 2,
-                              marginLeft: 9,
-                            }}>
-                            {_member.tob} :2:30PM
-                          </Text>
-
-                        </View>
-                      </View>
-                    </View>
-                    <View style={styles.dt_view_2}>
-                      <View style={styles.dt_viewOpt}>
-                        <Text numberOfLines={1} style={styles.dt_viewOptText}>
-                          {_member.pob} :New Delhi
-                        </Text>
-                      </View>
-                      <View style={styles.dt_viewOpt}>
-                        <Text numberOfLines={1} style={styles.dt_viewOptText}>
-                          {_member.whatsapp}: 1234567892
-                        </Text>
-                      </View>
-
-                    </View>
-                  </View>
-                </View>
-              )}
-            />
-          </View>
-        )
-    }
-  }
-
-  const [index, setIndex] = React.useState(0);
-  const [routes] = React.useState([
-    { key: 'first', title: _home.myorderTab1 },
-    { key: 'second', title: _home.myorderTab2  },
-  ]);
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
       <StatusBar barStyle="dark-content" backgroundColor="#FFCC80" />
-      <CustomHeader
-        title={_home.onlineJyotish}
 
+      <Header
         menuOption={() => navigation.goBack()}
-        leftIcon={require('../assets/back.png')}
-        // secondRightIcon={require('../assets/search.png')}
-        // thirdRightIcon={require('../assets/filter.png')}
-        rightOption={() => {
-          navigation.navigate('');
-        }}
-        right3Option={() => {
-          navigation.navigate('');
-        }}
+        leftIcon={require('../assets/backtoback.png')}
+        title={_home.onlineJyotish}
       />
 
-        <FlatList
-            numColumns={3}
-            style={{marginTop:10}}
-            data={detail}
-            renderItem={({ item, index }) => (
-              <TouchableOpacity activeOpacity={0.9}
-                onPress={() => { }}>
-                <View
-                  style={{
-                    width: window.width / 3 - 27,
-                    height: 75,
-                    alignSelf: 'center',
-                    backgroundColor: item.color,
-                    elevation: 5,
-                    bottom: 10,
-                    borderRadius: 10,
-                    marginTop: 15,
-                    marginLeft: 20,
-                  }}>
-                  <Image
-                    style={{
-                      width: 30,
-                      height: 30,
-                      resizeMode: 'contain',
-                      alignSelf: 'center',
-                      marginTop: 15,
-                    }}
-                    source={item.source}
-                  />
-                  <Text
-                    numberOfLines={1}
-                    style={{
-                      textAlign: 'center',
-                      marginTop: 5,
-                      fontSize: 14,
-                      fontFamily: 'AvenirLTStd-Heavy',
-                      color: '#1E1F20',
-                    }}>
-                    {item.title}
-                  </Text>
-                </View>
-              </TouchableOpacity>
-            )}
-          />
+
+      <FlatList
+        numColumns={3}
+        style={{ marginTop: 10 }}
+        data={detail}
+        renderItem={({ item, index }) => (
+          <TouchableOpacity activeOpacity={0.9}
+            onPress={() => { navigation.navigate('NaamJane') }}>
+            <View
+              style={{
+                width: window.width / 3 - 27,
+                height: 75,
+                alignSelf: 'center',
+                backgroundColor: item.color,
+                elevation: 5,
+                bottom: 10,
+                borderRadius: 10,
+                marginTop: 15,
+                marginLeft: 20,
+              }}>
+              <Image
+                style={{
+                  width: 30,
+                  height: 30,
+                  resizeMode: 'contain',
+                  alignSelf: 'center',
+                  marginTop: 15,
+                }}
+                source={item.source}
+              />
+              <Text
+                numberOfLines={1}
+                style={{
+                  textAlign: 'center',
+                  marginTop: 5,
+                  fontSize: 14,
+                  fontFamily: 'AvenirLTStd-Heavy',
+                  color: '#1E1F20',
+                }}>
+                {item.title}
+              </Text>
+            </View>
+          </TouchableOpacity>
+        )}
+      />
     </SafeAreaView>
   )
 }

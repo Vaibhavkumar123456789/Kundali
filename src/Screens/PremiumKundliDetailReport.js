@@ -37,7 +37,7 @@ const PremiumKundliDetailReport = ({ navigation }) => {
       <CustomHeader
         title={_setting.reportdetail}
         menuOption={() => navigation.goBack()}
-        leftIcon={require('../assets/back.png')}
+        leftIcon={require('../assets/backtoback.png')}
 
       />
 

@@ -341,7 +341,7 @@ const Members = ({ navigation }) => {
         title={_member.freemember}
 
         menuOption={() => navigation.goBack()}
-        leftIcon={require('../assets/back.png')}
+        leftIcon={require('../assets/backtoback.png')}
         secondRightIcon={require('../assets/search.png')}
         thirdRightIcon={require('../assets/filter.png')}
         rightOption={() => {

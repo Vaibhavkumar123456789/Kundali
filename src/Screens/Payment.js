@@ -12,7 +12,7 @@ const Payment = ({ navigation, route }) => {
             <StatusBar barStyle="dark-content" backgroundColor="#FFCC80" />
             <Header
                 menuOption={() => navigation.goBack()}
-                leftIcon={require('../assets/back.png')}
+                leftIcon={require('../assets/backtoback.png')}
                 title='Payment'
             />
             <ScrollView style={{ height: '100%' }}>
