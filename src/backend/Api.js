@@ -50,11 +50,11 @@ const requestMultipart = (path, formdata) => {
         return formdata; // this is doing the trick
       },
     }).then(response => {
-      if (response.status == 401) {
-        alert('You are login to another Device');
+      // if (response.status == 401) {
+      //   alert('You are login to another Device');
 
-        return;
-      }
+      //   return;
+      // }
       if (response.ok) {
         resolve(response.data);
       } else {
@@ -93,8 +93,10 @@ const requesth = (path, json) => {
     });
   });
 };
+
+
 export const requestGet = (path, json) => {
-  console.log('Token', store.getState().token);
+  // console.log('Token', store.getState().token);
   return new Promise((resolve, reject) => {
     ApiSauce.get(path, json).then(response => {
       if (response.status == 401) {
@@ -135,9 +137,17 @@ export const MultipleAccountList = json =>
   requesth(PATH_URL.multipleaccount, json);
 
 export const UserSignUp = json => request(PATH_URL.signUp, json);
-
-
-
+export const AstrologerStep1 = json => requesth(PATH_URL.astrologerstep1, json);
+export const AstrologerStep2 = json => requesth(PATH_URL.astrologerstep2, json);
+export const AstrologerStep3 = json => requesth(PATH_URL.astrologerstep3, json);
+export const Consultant = json => requesth(PATH_URL.consultant1, json);
+export const Skill = json => requesth(PATH_URL.skill1, json);
+export const Specialization = json => requesth(PATH_URL.specialization, json);
+export const Language = json => requesth(PATH_URL.language, json);
+export const Country = json => requestGet1(PATH_URL.country1, json);
+export const State1 = json => requestGet1(PATH_URL.state1, json);
+export const City1 = json => requestGet1(PATH_URL.city1, json);
+export const AstrologerStep4 = json => requesth(PATH_URL.astrologerstep4, json);
 
 
 export const AsyncStorageSetUser = user =>

@@ -17,6 +17,7 @@ import {
     StatusBar
 } from 'react-native';
 import StepIndicator from 'react-native-step-indicator';
+import Toast from 'react-native-simple-toast';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import moment from 'moment';
 import DatePicker from 'react-native-date-picker'
@@ -24,7 +25,26 @@ import { RadioButton } from 'react-native-paper';
 import { ButtonStyle } from '../Custom/CustomView';
 import Button from 'react-native-button';
 import Header from '../Custom/Header';
+import Loader from '../utils/Loader';
 import { Dropdown } from 'react-native-element-dropdown';
+import DocumentPicker, { types } from 'react-native-document-picker';
+import {
+    AstrologerStep1,
+    AstrologerStep2,
+    AstrologerStep3,
+    AstrologerStep4,
+    AsyncStorageGettoken,
+    City1,
+    Consultant,
+    Country,
+    Language,
+    Skill,
+    Specialization,
+    State1,
+} from '../backend/Api';
+var validator = require('email-validator');
+import { BASE_URL } from '../backend/Config';
+
 
 const AstrologerRegister = ({ navigation }) => {
 
@@ -51,6 +71,36 @@ const AstrologerRegister = ({ navigation }) => {
     });
     const toggleLoading = bol => setState({ ...state, loading: bol });
 
+    const [name, setName] = React.useState('');
+    const [email, setEmail] = React.useState('');
+    const [mobile, setMobile] = useState('')
+    const [password, setPassword] = useState('')
+    const [experience, setExperience] = useState('')
+    const [hour, setHour] = useState('')
+    const [bankname, setBankName] = useState('')
+    const [accountnumber, setAccountNumber] = useState('')
+    const [ifsc, setIFSC] = useState('')
+    const [input, setInput] = useState([])
+    const [skill, setSkill] = useState([])
+    const [specilization, setSpecilization] = useState([])
+    const [languagelisted, setLanguageListed] = useState([])
+
+    const [passport1Full, setPassport1Full] = useState('')
+    const [passport2Full, setPassport2Full] = useState('')
+    const [resumeFull, setResumeFull] = useState('')
+    const [pancard, setPanCard] = useState('')
+    const [aadharcard, setAadhar] = useState('')
+    const [academicqual, setAcademicQual] = useState('')
+    const [astroqualification, setAstroQualification] = useState('')
+    const [acadmic, setAcadmic] = useState('')
+    const [astrological, setAstrological] = useState('')
+    const [picture, setPicture] = useState('')
+    const [biography, setBiography] = useState('')
+    const [clist, setCList] = useState([])
+    const [statelist1, setStateList] = useState([])
+    const [cityname, setCityName] = useState([])
+    const [address, setAddress] = useState('')
+    const [pincode, setPincode] = useState('')
     const labels = [
         '',
         '',
@@ -85,7 +135,368 @@ const AstrologerRegister = ({ navigation }) => {
         currentStepLabelColor: '#333333',
     };
 
+    useEffect(() => {
+        Skillset()
+        custom()
+        mainset()
+        languagelist()
+        Countrysearch()
+    }, [])
+    const custom = () => {
+        Consultant()
+            .then(data => {
+                if (data.status) {
+                    let tempCArr = []
+                    data?.data.map((i) => {
+                        tempCArr.push({
+                            label: i.name,
+                            value: i.id,
+                        })
+                        setInput(tempCArr)
+                    })
+                } else {
+                    alert(data.msg);
+                }
+            })
+            .catch(error => {
+                toggleLoading(false);
+                console.log('error', error);
+            });
+    }
+    const Skillset = () => {
+        Skill()
+            .then(data => {
+                if (data.status) {
+                    let tempCArr = []
+                    data?.data.map((i) => {
+                        tempCArr.push({
+                            label: i.name,
+                            value: i.id,
+                        })
+                        setSkill(tempCArr)
+                    })
+                } else {
+                    alert(data.msg);
+                }
+            })
+            .catch(error => {
+                toggleLoading(false);
+                console.log('error', error);
+            });
+    }
+    const mainset = () => {
+        Specialization()
+            .then(data => {
+                if (data.status) {
+                    let tempCArr = []
+                    data?.data.map((i) => {
+                        tempCArr.push({
+                            label: i.name,
+                            value: i.id,
+                        })
+                        setSpecilization(tempCArr)
+                    })
+                } else {
+                    alert(data.msg);
+                }
+            })
+            .catch(error => {
+                toggleLoading(false);
+                console.log('error', error);
+            });
+    }
+    const languagelist = () => {
+        Language()
+            .then(data => {
+                if (data.status) {
+                    let tempCArr = []
+                    data?.data.map((i) => {
+                        tempCArr.push({
+                            label: i.name,
+                            value: i.id,
+                        })
+                        setLanguageListed(tempCArr)
+                    })
+                } else {
+                    alert(data.msg);
+                }
+            })
+            .catch(error => {
+                toggleLoading(false);
+                console.log('error', error);
+            });
+    }
 
+    const Countrysearch = () => {
+        Country()
+            .then(data => {
+                if (data.status) {
+
+                    let tempCArr = []
+                    data?.data.map((i) => {
+                        tempCArr.push({
+                            label: i.name,
+                            value: i.id,
+                        })
+                        setCList(tempCArr)
+                    })
+                } else {
+                    alert(data.msg);
+                }
+            })
+            .catch(error => {
+                toggleLoading(false);
+                console.log('error', error);
+            });
+    }
+
+    const statelist = (id) => {
+        toggleLoading(true);
+        let e = {
+            "country_id": id
+        };
+        State1(e)
+            .then(data => {
+                if (data.status) {
+                    toggleLoading(false);
+                    let tempCArr = []
+                    data?.data.map((i) => {
+                        tempCArr.push({
+                            label: i.state_name,
+                            value: i.id,
+                        })
+                        setStateList(tempCArr)
+                    })
+                } else {
+                    alert(data.msg);
+                }
+            })
+            .catch(error => {
+                toggleLoading(false);
+                console.log('error', error);
+            });
+    }
+
+    const citylist = (id) => {
+        toggleLoading(true);
+        let e = {
+            "state_id": id
+        };
+        City1(e)
+            .then(data => {
+                if (data.status) {
+                    toggleLoading(false);
+                    let tempCArr = []
+                    data?.data.map((i) => {
+                        tempCArr.push({
+                            label: i.city_name,
+                            value: i.id,
+                        })
+                        setCityName(tempCArr)
+                    })
+                } else {
+                    alert(data.msg);
+                }
+            })
+            .catch(error => {
+                toggleLoading(false);
+                console.log('error', error);
+            });
+    }
+
+    const getPassport = async (item) => {
+        try {
+            const response = await DocumentPicker.pick({
+                type: [DocumentPicker.types.pdf, DocumentPicker.types.doc, DocumentPicker.types.docx, DocumentPicker.types.images],
+            })
+            if (response) {
+                console.log("document picker response ==", response)
+                if (item == "1") {
+                    setPassport1Full(response)
+                }
+                else if (item == "2") {
+                    setPassport2Full(response)
+                } else if (item == "3") {
+                    setResumeFull(response)
+                } else if (item == "4") {
+                    setAcadmic(response)
+                }
+                else if (item == "5") {
+                    setAstrological(response)
+                }
+                else if (item == "6") {
+                    setPicture(response)
+                }
+
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    const setsubmit = async () => {
+        try {
+            if (pancard == '') {
+                Toast.show('Please enter your Pan Card No.');
+            }
+            else if (pancard.length !== 10) {
+                Toast.show('Please enter your valid Pan Card No.');
+            }
+            else if (aadharcard == '') {
+                Toast.show('Please enter your Aadhar Card No.');
+            }
+            else if (aadharcard.length !== 12) {
+                Toast.show('Please enter your valid Aadhar Card No.');
+            }
+            else if (aadharcard.length == '') {
+                Toast.show('Please enter your valid Aadhar Card No.');
+            } else if (passport1Full == '') {
+                Toast.show('Please upload your Aadhar card Image');
+            }
+            else if (passport2Full == '') {
+                Toast.show('Please upload your Aadhar card Image');
+            } else if (resumeFull == '') {
+                Toast.show('Please upload your Pan card Image');
+            }
+            else {
+                toggleLoading(true)
+                let formData = new FormData();
+                formData.append('pancard', pancard)
+                formData.append('aadhar_number', aadharcard)
+                formData.append('aadharcard_image', {
+                    uri: passport1Full[0].uri,
+                    type: passport1Full[0].type,
+                    name: passport1Full[0].name,
+                });
+
+                formData.append('aadharcard_back_image', {
+                    uri: passport2Full[0].uri,
+                    type: passport2Full[0].type,
+                    name: passport2Full[0].name,
+                })
+
+                formData.append('pancard_image', {
+                    uri: resumeFull[0].uri,
+                    type: resumeFull[0].type,
+                    name: resumeFull[0].name,
+                })
+                console.log(JSON.stringify(formData))
+
+                const token = (await AsyncStorageGettoken() || '')
+                const btoken = `Bearer ${token}`;
+
+                const res = await fetch(`${BASE_URL}astrologer/add-profile-five`, {
+                    method: 'POST',
+                    headers: {
+                        "Accept": "application/json",
+                        "Authorization": btoken,
+                    },
+                    body: formData,
+                });
+                const response1 = await res.json()
+                toggleLoading(false)
+
+                if (response1.status) {
+                    setCurrentPosition(currentPosition + 1)
+                } else {
+                    alert(response1.msg);
+                }
+            }
+        } catch (error) {
+            toggleLoading(false)
+            console.log(error)
+        }
+    };
+
+    const removeItem2 = () => {
+        setPassport1Full('');
+    };
+    const removeItem3 = () => {
+        setPassport2Full('');
+    };
+    const removeItem4 = () => {
+        setResumeFull('');
+    };
+
+    const finalSubmit = async () => {
+        try {
+            if (academicqual == '') {
+                Toast.show('Please enter your Acadmic Qualification');
+            }
+            else if (astroqualification == '') {
+                Toast.show('Please enter your Astrological Qualifications');
+            }
+            else if (acadmic == '') {
+                Toast.show('Please upload your Acadmic Certificate');
+            }
+            else if (astrological == '') {
+                Toast.show('Please upload your Astrological Certificate');
+            } else if (picture == '') {
+                Toast.show('Please upload your Profile Picture');
+            }
+            else if (biography == '') {
+                Toast.show('Please enter Biography');
+            }
+            else {
+                toggleLoading(true)
+                let formData = new FormData();
+                formData.append('academic_qualification', academicqual)
+                formData.append('astrologer_qualification', astroqualification)
+                formData.append('academic_certificate', {
+                    uri: acadmic[0].uri,
+                    type: acadmic[0].type,
+                    name: acadmic[0].name,
+                });
+
+                formData.append('astrologer_certificate', {
+                    uri: astrological[0].uri,
+                    type: astrological[0].type,
+                    name: astrological[0].name,
+                })
+
+                formData.append('profile_picture', {
+                    uri: picture[0].uri,
+                    type: picture[0].type,
+                    name: picture[0].name,
+                })
+                formData.append('biography', biography)
+
+                console.log(JSON.stringify(formData))
+                const token = (await AsyncStorageGettoken() || '')
+                const btoken = `Bearer ${token}`;
+
+                const res = await fetch(`${BASE_URL}astrologer/add-profile-six`, {
+                    method: 'POST',
+                    headers: {
+                        "Accept": "application/json",
+                        "Authorization": btoken,
+                    },
+                    body: formData,
+                });
+                const response1 = await res.json()
+                console.log('Step6', response1)
+                toggleLoading(false)
+                if (response1.status) {
+                    navigation.replace('Package')
+                } else {
+                    alert(response1.msg);
+                }
+            }
+        } catch (error) {
+            toggleLoading(false)
+            console.log(error)
+        }
+    };
+
+    const removeItem5 = () => {
+        setAcadmic('');
+    };
+    const removeItem6 = () => {
+        setAstrological('');
+    };
+    const removeItem7 = () => {
+        setPicture('');
+    };
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
@@ -95,6 +506,7 @@ const AstrologerRegister = ({ navigation }) => {
                 leftIcon={require('../assets/backtoback.png')}
                 title='Astrologer Register'
             />
+            {state.loading && <Loader />}
             <View style={{ marginHorizontal: 5, marginTop: 15 }}>
                 <StepIndicator
                     stepIndicatorLabelUnFinishedColor={0}
@@ -135,6 +547,8 @@ const AstrologerRegister = ({ navigation }) => {
                             }}
                             placeholderTextColor={'#333333'}
                             placeholder={'Name'}
+                            value={name}
+                            onChangeText={(text) => setName(text)}
                         />
 
                         <Text
@@ -163,6 +577,8 @@ const AstrologerRegister = ({ navigation }) => {
                             }}
                             placeholderTextColor={'#333333'}
                             placeholder={'Email'}
+                            value={email}
+                            onChangeText={(text) => setEmail(text)}
                         />
 
                         <Text
@@ -192,6 +608,9 @@ const AstrologerRegister = ({ navigation }) => {
                             placeholderTextColor={'#333333'}
                             keyboardType='numeric'
                             placeholder={'Mobile No.'}
+                            maxLength={10}
+                            value={mobile}
+                            onChangeText={(text) => setMobile(text)}
                         />
 
                         <Text
@@ -211,6 +630,8 @@ const AstrologerRegister = ({ navigation }) => {
                                 placeholder={'Password'}
                                 maxLength={20}
                                 secureTextEntry={VisiblePass ? false : true}
+                                value={password}
+                                onChangeText={(text) => setPassword(text)}
                                 style={{
                                     fontSize: 16,
                                     fontFamily: 'AvenirLTStd-Medium',
@@ -362,11 +783,7 @@ const AstrologerRegister = ({ navigation }) => {
                                 marginRight: 12,
                             }}
                             itemTextStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', textTransform: 'capitalize' }}
-                            data={[
-                                { label: 'Item 1', value: '1' },
-                                { label: 'Item 2', value: '2' },
-                                { label: 'Item 3', value: '3' }]
-                            }
+                            data={input}
                             maxHeight={150}
                             labelField="label"
                             valueField="value"
@@ -400,11 +817,7 @@ const AstrologerRegister = ({ navigation }) => {
                                 marginRight: 12,
                             }}
                             itemTextStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', textTransform: 'capitalize' }}
-                            data={[
-                                { label: 'Item 1', value: '1' },
-                                { label: 'Item 2', value: '2' },
-                                { label: 'Item 3', value: '3' }]
-                            }
+                            data={skill}
                             maxHeight={150}
                             labelField="label"
                             valueField="value"
@@ -438,11 +851,7 @@ const AstrologerRegister = ({ navigation }) => {
                                 marginRight: 12,
                             }}
                             itemTextStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', textTransform: 'capitalize' }}
-                            data={[
-                                { label: 'Item 1', value: '1' },
-                                { label: 'Item 2', value: '2' },
-                                { label: 'Item 3', value: '3' }]
-                            }
+                            data={specilization}
                             maxHeight={150}
                             labelField="label"
                             valueField="value"
@@ -476,11 +885,7 @@ const AstrologerRegister = ({ navigation }) => {
                                 marginRight: 12,
                             }}
                             itemTextStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', textTransform: 'capitalize' }}
-                            data={[
-                                { label: 'Item 1', value: '1' },
-                                { label: 'Item 2', value: '2' },
-                                { label: 'Item 3', value: '3' }]
-                            }
+                            data={languagelisted}
                             maxHeight={150}
                             labelField="label"
                             valueField="value"
@@ -515,6 +920,8 @@ const AstrologerRegister = ({ navigation }) => {
                             }}
                             placeholderTextColor={'#333333'}
                             placeholder={'Experience'}
+                            value={experience}
+                            onChangeText={(text) => setExperience(text)}
                         />
 
                         <Text
@@ -543,6 +950,8 @@ const AstrologerRegister = ({ navigation }) => {
                             }}
                             placeholderTextColor={'#333333'}
                             placeholder={'Daily hours'}
+                            value={hour}
+                            onChangeText={(text) => setHour(text)}
                         />
 
                     </View>
@@ -576,6 +985,8 @@ const AstrologerRegister = ({ navigation }) => {
                             }}
                             placeholderTextColor={'#333333'}
                             placeholder={'Bank Name'}
+                            value={bankname}
+                            onChangeText={(text) => setBankName(text)}
                         />
 
                         <Text
@@ -605,6 +1016,8 @@ const AstrologerRegister = ({ navigation }) => {
                             placeholderTextColor={'#333333'}
                             keyboardType='numeric'
                             placeholder={'Bank Account Number'}
+                            value={accountnumber}
+                            onChangeText={(text) => setAccountNumber(text)}
                         />
 
                         <Text
@@ -634,6 +1047,8 @@ const AstrologerRegister = ({ navigation }) => {
                             autoCapitalize='characters'
                             placeholderTextColor={'#333333'}
                             placeholder={'IFSC Code'}
+                            value={ifsc}
+                            onChangeText={(text) => setIFSC(text)}
                         />
 
 
@@ -668,6 +1083,8 @@ const AstrologerRegister = ({ navigation }) => {
                             }}
                             placeholderTextColor={'#333333'}
                             placeholder={'Address'}
+                            value={address}
+                            onChangeText={(text) => setAddress(text)}
                         />
 
                         <Text
@@ -695,17 +1112,14 @@ const AstrologerRegister = ({ navigation }) => {
                                 marginRight: 12,
                             }}
                             itemTextStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', textTransform: 'capitalize' }}
-                            data={[
-                                { label: 'Item 1', value: '1' },
-                                { label: 'Item 2', value: '2' },
-                                { label: 'Item 3', value: '3' }]
+                            data={clist
                             }
                             maxHeight={150}
                             labelField="label"
                             valueField="value"
                             placeholder="Country"
                             value={should5}
-                            onChange={(item) => setShould5(item.value)}
+                            onChange={(item) => { setShould5(item.value), statelist(item.value) }}
                         />
 
                         <Text
@@ -733,17 +1147,13 @@ const AstrologerRegister = ({ navigation }) => {
                                 marginRight: 12,
                             }}
                             itemTextStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', textTransform: 'capitalize' }}
-                            data={[
-                                { label: 'Item 1', value: '1' },
-                                { label: 'Item 2', value: '2' },
-                                { label: 'Item 3', value: '3' }]
-                            }
+                            data={statelist1}
                             maxHeight={150}
                             labelField="label"
                             valueField="value"
                             placeholder="State"
                             value={should6}
-                            onChange={(item) => setShould6(item.value)}
+                            onChange={(item) => { setShould6(item.value), citylist(item.value) }}
                         />
 
                         <Text
@@ -771,11 +1181,7 @@ const AstrologerRegister = ({ navigation }) => {
                                 marginRight: 12,
                             }}
                             itemTextStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', textTransform: 'capitalize' }}
-                            data={[
-                                { label: 'Item 1', value: '1' },
-                                { label: 'Item 2', value: '2' },
-                                { label: 'Item 3', value: '3' }]
-                            }
+                            data={cityname}
                             maxHeight={150}
                             labelField="label"
                             valueField="value"
@@ -812,6 +1218,8 @@ const AstrologerRegister = ({ navigation }) => {
                             keyboardType='numeric'
                             maxLength={6}
                             placeholder={'Pincode'}
+                            value={pincode}
+                            onChangeText={(text) => setPincode(text)}
                         />
 
 
@@ -848,6 +1256,8 @@ const AstrologerRegister = ({ navigation }) => {
                             maxLength={10}
                             placeholder={'PAN Card No.'}
                             autoCapitalize='characters'
+                            value={pancard}
+                            onChangeText={(text) => setPanCard(text)}
                         />
 
 
@@ -879,6 +1289,8 @@ const AstrologerRegister = ({ navigation }) => {
                             keyboardType='numeric'
                             maxLength={12}
                             placeholder={'Aadhar Card No.'}
+                            value={aadharcard}
+                            onChangeText={(text) => setAadhar(text)}
                         />
 
                         <Text
@@ -893,25 +1305,58 @@ const AstrologerRegister = ({ navigation }) => {
                             Upload Aadhar Card
                         </Text>
                         <View style={{ flexDirection: 'row', marginTop: 10 }}>
-                            <Pressable >
-                                <Image
+                            <Pressable onPress={() => { getPassport("1") }} >
+                                <ImageBackground
+                                    resizeMode='cover'
                                     style={{
                                         width: 100,
                                         height: 80,
-                                        resizeMode: 'contain',
+                                        overflow: 'hidden',
                                         marginLeft: 18,
+                                        borderRadius: 8,
                                     }}
-                                    source={require('../assets/upload.png')} />
+                                    source={passport1Full ? { uri: `${passport1Full[0].uri}` } : require('../assets/upload.png')}
+                                >
+                                    {(passport1Full &&
+                                        <Pressable onPress={() => { removeItem2() }} style={{ alignSelf: 'flex-end', marginTop: 3, marginRight: 5 }}>
+                                            <Image
+                                                style={{
+                                                    width: 18,
+                                                    height: 18,
+                                                    resizeMode: 'contain',
+
+                                                }}
+                                                source={require('../assets/close1.png')} />
+                                        </Pressable>
+                                    )}
+                                </ImageBackground>
+
                             </Pressable>
-                            <Pressable>
-                                <Image
+
+                            <Pressable onPress={() => { getPassport("2") }} >
+                                <ImageBackground
+                                    resizeMode='cover'
                                     style={{
                                         width: 100,
                                         height: 80,
-                                        resizeMode: 'contain',
+                                        overflow: 'hidden',
                                         marginLeft: 15,
+                                        borderRadius: 8,
                                     }}
-                                    source={require('../assets/upload.png')} />
+                                    source={passport2Full ? { uri: `${passport2Full[0].uri}` } : require('../assets/upload.png')}>
+
+                                    {(passport2Full &&
+                                        <Pressable onPress={() => { removeItem3() }} style={{ alignSelf: 'flex-end', marginTop: 3, marginRight: 5 }}>
+                                            <Image
+                                                style={{
+                                                    width: 18,
+                                                    height: 18,
+                                                    resizeMode: 'contain',
+                                                }}
+                                                source={require('../assets/close1.png')} />
+                                        </Pressable>
+                                    )}
+                                </ImageBackground>
                             </Pressable>
                         </View>
 
@@ -926,16 +1371,31 @@ const AstrologerRegister = ({ navigation }) => {
                             }}>
                             Upload PAN Card
                         </Text>
-                        <Pressable >
-                            <Image
+                        <Pressable onPress={() => { getPassport("3") }} >
+                            <ImageBackground
+                                resizeMode='cover'
                                 style={{
                                     width: 100,
                                     height: 80,
-                                    resizeMode: 'contain',
                                     marginLeft: 18,
                                     marginTop: 10,
+                                    overflow: 'hidden',
+                                    borderRadius: 8,
                                 }}
-                                source={require('../assets/upload.png')} />
+                                source={resumeFull ? { uri: `${resumeFull[0].uri}` } : require('../assets/upload.png')}>
+
+                                {(resumeFull &&
+                                    <Pressable onPress={() => { removeItem4() }} style={{ alignSelf: 'flex-end', marginTop: 3, marginRight: 5 }}>
+                                        <Image
+                                            style={{
+                                                width: 18,
+                                                height: 18,
+                                                resizeMode: 'contain',
+                                            }}
+                                            source={require('../assets/close1.png')} />
+                                    </Pressable>
+                                )}
+                            </ImageBackground>
                         </Pressable>
 
                     </View>
@@ -969,6 +1429,8 @@ const AstrologerRegister = ({ navigation }) => {
                             }}
                             placeholderTextColor={'#333333'}
                             placeholder={'Academic Qualification'}
+                            value={academicqual}
+                            onChangeText={(text) => setAcademicQual(text)}
                         />
 
                         <Text
@@ -997,6 +1459,8 @@ const AstrologerRegister = ({ navigation }) => {
                             }}
                             placeholderTextColor={'#333333'}
                             placeholder={'Astrological Qalifications'}
+                            value={astroqualification}
+                            onChangeText={(text) => setAstroQualification(text)}
                         />
 
                         <Text
@@ -1010,16 +1474,31 @@ const AstrologerRegister = ({ navigation }) => {
                             }}>
                             Upload Academic Certificate
                         </Text>
-                        <Pressable >
-                            <Image
+                        <Pressable onPress={() => { getPassport("4") }}>
+                            <ImageBackground
+                                resizeMode='cover'
                                 style={{
                                     width: 100,
                                     height: 80,
-                                    resizeMode: 'contain',
                                     marginLeft: 18,
                                     marginTop: 10,
+                                    overflow: 'hidden',
+                                    borderRadius: 8,
                                 }}
-                                source={require('../assets/upload.png')} />
+                                source={acadmic ? { uri: `${acadmic[0].uri}` } : require('../assets/upload.png')}>
+
+                                {(acadmic &&
+                                    <Pressable onPress={() => { removeItem5() }} style={{ alignSelf: 'flex-end', marginTop: 3, marginRight: 5 }}>
+                                        <Image
+                                            style={{
+                                                width: 18,
+                                                height: 18,
+                                                resizeMode: 'contain',
+                                            }}
+                                            source={require('../assets/close1.png')} />
+                                    </Pressable>
+                                )}
+                            </ImageBackground>
                         </Pressable>
 
                         <Text
@@ -1033,16 +1512,31 @@ const AstrologerRegister = ({ navigation }) => {
                             }}>
                             Upload Astrological Certificate
                         </Text>
-                        <Pressable >
-                            <Image
+                        <Pressable onPress={() => { getPassport("5") }}>
+                            <ImageBackground
+                                resizeMode='cover'
                                 style={{
                                     width: 100,
                                     height: 80,
-                                    resizeMode: 'contain',
                                     marginLeft: 18,
                                     marginTop: 10,
+                                    overflow: 'hidden',
+                                    borderRadius: 8,
                                 }}
-                                source={require('../assets/upload.png')} />
+                                source={astrological ? { uri: `${astrological[0].uri}` } : require('../assets/upload.png')}>
+
+                                {(astrological &&
+                                    <Pressable onPress={() => { removeItem6() }} style={{ alignSelf: 'flex-end', marginTop: 3, marginRight: 5 }}>
+                                        <Image
+                                            style={{
+                                                width: 18,
+                                                height: 18,
+                                                resizeMode: 'contain',
+                                            }}
+                                            source={require('../assets/close1.png')} />
+                                    </Pressable>
+                                )}
+                            </ImageBackground>
                         </Pressable>
 
                         <Text
@@ -1056,19 +1550,32 @@ const AstrologerRegister = ({ navigation }) => {
                             }}>
                             Upload Profile Picture
                         </Text>
-                        <Pressable >
-                            <Image
+                        <Pressable onPress={() => { getPassport("6") }}>
+                            <ImageBackground
+                                resizeMode='cover'
                                 style={{
                                     width: 100,
                                     height: 80,
-                                    resizeMode: 'contain',
                                     marginLeft: 18,
                                     marginTop: 10,
+                                    overflow: 'hidden',
+                                    borderRadius: 8,
                                 }}
-                                source={require('../assets/upload.png')} />
+                                source={picture ? { uri: `${picture[0].uri}` } : require('../assets/upload.png')}>
+
+                                {(picture &&
+                                    <Pressable onPress={() => { removeItem7() }} style={{ alignSelf: 'flex-end', marginTop: 3, marginRight: 5 }}>
+                                        <Image
+                                            style={{
+                                                width: 18,
+                                                height: 18,
+                                                resizeMode: 'contain',
+                                            }}
+                                            source={require('../assets/close1.png')} />
+                                    </Pressable>
+                                )}
+                            </ImageBackground>
                         </Pressable>
-
-
                         <Text
                             style={{
                                 fontFamily: 'AvenirLTStd-Medium',
@@ -1097,6 +1604,8 @@ const AstrologerRegister = ({ navigation }) => {
                             multiline
                             placeholderTextColor={'#333333'}
                             placeholder={'Write something…'}
+                            value={biography}
+                            onChangeText={(text) => setBiography(text)}
                         />
 
                     </View>
@@ -1126,7 +1635,55 @@ const AstrologerRegister = ({ navigation }) => {
                         }}
 
                         onPress={() => {
-                            setCurrentPosition(currentPosition + 1)
+
+                            if (name == '') {
+                                Toast.show('Please enter Name');
+                            } else if (email == '') {
+                                Toast.show('Please enter Email');
+                            }
+                            // else if (validator.validate(email) == false) {
+                            //     Toast.show('Please enter Valid Email Address');
+                            // }
+                            else if (mobile === '' || mobile.length !== 10) {
+                                Toast.show('Please enter your valid phone number');
+                            } else if (password == '') {
+                                Toast.show('Please enter Password');
+                            }
+                            else if (checked === false) {
+                                Toast.show('Please Select Gender');
+                            }
+                            else if (date == '') {
+                                Toast.show('Please Select Date');
+                            }
+                            else {
+                                toggleLoading(true);
+                                let e = {
+                                    "name": name,
+                                    "email": email,
+                                    "password": password,
+                                    "alternate_mobile": mobile,
+                                    "gender": checked === 0 ? "male" : checked === 1 ? "female" : null,
+                                    "dob": date == '' ? '' : moment(date).format('YYYY-MM-DD'),
+                                    "create_profile": 2,
+                                };
+                                console.log(JSON.stringify(e));
+
+                                AstrologerStep1(e)
+                                    .then(data => {
+                                        toggleLoading(false);
+
+                                        if (data.status) {
+                                            setCurrentPosition(currentPosition + 1)
+                                        } else {
+                                            alert(data.msg);
+                                        }
+                                    })
+                                    .catch(error => {
+                                        toggleLoading(false);
+                                        console.log('error', error);
+                                    });
+                            }
+
                         }}>
                         Next
                     </Button>
@@ -1154,7 +1711,51 @@ const AstrologerRegister = ({ navigation }) => {
                         }}
 
                         onPress={() => {
-                            setCurrentPosition(currentPosition + 1)
+                            if (should1 == '') {
+                                Toast.show('Please select consultant');
+                            } else if (should2 == '') {
+                                Toast.show('Please select skill');
+                            } else if (should3 == '') {
+                                Toast.show('Please selct Main Specialization');
+                            } else if (should4 == '') {
+                                Toast.show('Please select Language');
+                            }
+                            else if (experience == '') {
+                                Toast.show('Please enter Experience');
+                            }
+                            else if (hour == '') {
+                                Toast.show('Please enter Contribute daily hour');
+                            }
+                            else {
+                                toggleLoading(true);
+                                let e = {
+                                    "consultation_id": should1,
+                                    "skill_id": should2,
+                                    "specialization_id": should3,
+                                    "langugae_id": should4,
+                                    "experience": experience,
+                                    "contribute_daily": hour,
+                                    "create_profile": 3
+                                };
+                                console.log(JSON.stringify(e));
+
+                                AstrologerStep2(e)
+                                    .then(data => {
+                                        toggleLoading(false);
+
+                                        if (data.status) {
+                                            setCurrentPosition(currentPosition + 1)
+
+                                        } else {
+                                            alert(data.msg);
+                                        }
+                                    })
+                                    .catch(error => {
+                                        toggleLoading(false);
+                                        console.log('error', error);
+                                    });
+                            }
+
                         }}>
                         Next
                     </Button>
@@ -1182,7 +1783,8 @@ const AstrologerRegister = ({ navigation }) => {
                         }}
 
                         onPress={() => {
-                            navigation.navigate('Package')
+
+                            finalSubmit()
                         }}>
                         Next
                     </Button>
@@ -1191,86 +1793,163 @@ const AstrologerRegister = ({ navigation }) => {
 
             </KeyboardAwareScrollView>
 
-            {currentPosition == 2 && (
-                <Button
-                    containerStyle={{
-                        width: '90%',
-                        position: 'absolute',
-                        bottom: 20,
-                        height: 52,
-                        borderRadius: 12,
-                        overflow: 'hidden',
-                        alignSelf: 'center',
-                        justifyContent: 'center',
-                        backgroundColor: '#FFCC80',
-                    }}
-                    style={{
-                        fontSize: 18,
-                        color: '#333333',
-                        alignSelf: 'center',
-                        fontFamily: 'AvenirLTStd-Medium',
-                    }}
+            {
+                currentPosition == 2 && (
+                    <Button
+                        containerStyle={{
+                            width: '90%',
+                            position: 'absolute',
+                            bottom: 20,
+                            height: 52,
+                            borderRadius: 12,
+                            overflow: 'hidden',
+                            alignSelf: 'center',
+                            justifyContent: 'center',
+                            backgroundColor: '#FFCC80',
+                        }}
+                        style={{
+                            fontSize: 18,
+                            color: '#333333',
+                            alignSelf: 'center',
+                            fontFamily: 'AvenirLTStd-Medium',
+                        }}
 
-                    onPress={() => {
-                        setCurrentPosition(currentPosition + 1)
-                    }}>
-                    Next
-                </Button>
-            )}
+                        onPress={() => {
+                            if (bankname == '') {
+                                Toast.show('Please enter Bank Name');
+                            } else if (accountnumber == '') {
+                                Toast.show('Please enter Bank Account Number');
+                            } else if (ifsc == '') {
+                                Toast.show('Please enter IFSC Code');
+                            }
+                            else {
+                                // toggleLoading(true);
+                                let e = {
+                                    "bank_account_number": accountnumber,
+                                    "bank_name": bankname,
+                                    "ifsc_code": ifsc,
+                                    "create_profile": 4
+                                };
+                                console.log(JSON.stringify(e));
 
-            {currentPosition == 3 && (
-                <Button
-                    containerStyle={{
-                        width: '90%',
-                        position: 'absolute',
-                        bottom: 20,
-                        height: 52,
-                        borderRadius: 12,
-                        overflow: 'hidden',
-                        alignSelf: 'center',
-                        justifyContent: 'center',
-                        backgroundColor: '#FFCC80',
-                    }}
-                    style={{
-                        fontSize: 18,
-                        color: '#333333',
-                        alignSelf: 'center',
-                        fontFamily: 'AvenirLTStd-Medium',
-                    }}
+                                AstrologerStep3(e)
+                                    .then(data => {
+                                        toggleLoading(false);
 
-                    onPress={() => {
-                        setCurrentPosition(currentPosition + 1)
-                    }}>
-                    Next
-                </Button>
-            )}
+                                        if (data.status) {
+                                            setCurrentPosition(currentPosition + 1)
 
-            {currentPosition == 4 && (
-                <Button
-                    containerStyle={{
-                        width: '90%',
-                        position: 'absolute',
-                        bottom: 20,
-                        height: 52,
-                        borderRadius: 12,
-                        overflow: 'hidden',
-                        alignSelf: 'center',
-                        justifyContent: 'center',
-                        backgroundColor: '#FFCC80',
-                    }}
-                    style={{
-                        fontSize: 18,
-                        color: '#333333',
-                        alignSelf: 'center',
-                        fontFamily: 'AvenirLTStd-Medium',
-                    }}
+                                        } else {
+                                            alert(data.msg);
+                                        }
+                                    })
+                                    .catch(error => {
+                                        toggleLoading(false);
+                                        console.log('error', error);
+                                    });
+                            }
+                        }}>
+                        Next
+                    </Button>
+                )
+            }
 
-                    onPress={() => {
-                        setCurrentPosition(currentPosition + 1)
-                    }}>
-                    Next
-                </Button>
-            )}
+            {
+                currentPosition == 3 && (
+                    <Button
+                        containerStyle={{
+                            width: '90%',
+                            position: 'absolute',
+                            bottom: 20,
+                            height: 52,
+                            borderRadius: 12,
+                            overflow: 'hidden',
+                            alignSelf: 'center',
+                            justifyContent: 'center',
+                            backgroundColor: '#FFCC80',
+                        }}
+                        style={{
+                            fontSize: 18,
+                            color: '#333333',
+                            alignSelf: 'center',
+                            fontFamily: 'AvenirLTStd-Medium',
+                        }}
+
+                        onPress={() => {
+                            if (address == '') {
+                                Toast.show('Please enter your address');
+                            } else if (should5 == '') {
+                                Toast.show('Please select your country');
+                            } else if (should6 == '') {
+                                Toast.show('Please select your state');
+                            } else if (should7 == '') {
+                                Toast.show('Please select your city');
+                            } else if (pincode == '') {
+                                Toast.show('Please enter your pincode');
+                            }
+                            else {
+                                toggleLoading(true);
+                                let e = {
+                                    "address": address,
+                                    "country": should5,
+                                    "state": should6,
+                                    "city": should7,
+                                    "pincode": pincode,
+                                    "create_profile": 5
+                                };
+                                console.log(JSON.stringify(e));
+
+                                AstrologerStep4(e)
+                                    .then(data => {
+                                        toggleLoading(false);
+
+                                        if (data.status) {
+                                            setCurrentPosition(currentPosition + 1)
+
+                                        } else {
+                                            alert(data.msg);
+                                        }
+                                    })
+                                    .catch(error => {
+                                        toggleLoading(false);
+                                        console.log('error', error);
+                                    });
+                            }
+                        }}>
+                        Next
+                    </Button>
+                )
+            }
+
+            {
+                currentPosition == 4 && (
+                    <Button
+                        containerStyle={{
+                            width: '90%',
+                            position: 'absolute',
+                            bottom: 20,
+                            height: 52,
+                            borderRadius: 12,
+                            overflow: 'hidden',
+                            alignSelf: 'center',
+                            justifyContent: 'center',
+                            backgroundColor: '#FFCC80',
+                        }}
+                        style={{
+                            fontSize: 18,
+                            color: '#333333',
+                            alignSelf: 'center',
+                            fontFamily: 'AvenirLTStd-Medium',
+                        }}
+
+                        onPress={() => {
+                            setsubmit()
+
+                        }}>
+                        Next
+                    </Button>
+                )
+            }
 
 
             <DatePicker
@@ -1286,7 +1965,7 @@ const AstrologerRegister = ({ navigation }) => {
                     setOpen(false);
                 }}
             />
-        </SafeAreaView>
+        </SafeAreaView >
     );
 };
 export default AstrologerRegister;

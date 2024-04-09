@@ -19,7 +19,7 @@ const Loader = () => {
           style={{marginTop: 30}}
           animating={true}
           size="large"
-          color="#3DC6C6"
+          color="#FFCC80"
         />
       </View>
     </View>
