@@ -1886,6 +1886,8 @@ const AstrologerRegister = ({ navigation }) => {
                                 Toast.show('Please select your city');
                             } else if (pincode == '') {
                                 Toast.show('Please enter your pincode');
+                            } else if (pincode.length !== 6) {
+                                Toast.show('Please enter valid pincode');
                             }
                             else {
                                 toggleLoading(true);

@@ -34,7 +34,7 @@ const SignUp = ({ navigation }) => {
             Toast.show('Please enter Name');
         } else if (email == '') {
             Toast.show('Please enter Email');
-        } 
+        }
         // else if (validateEmail.validate(email) == false) {
         //     Toast.show('Please enter Valid Email Address');
         // }
