@@ -348,15 +348,13 @@ const AstrologerRegister = ({ navigation }) => {
             else if (aadharcard.length !== 12) {
                 Toast.show('Please enter your valid Aadhar Card No.');
             }
-            else if (aadharcard.length == '') {
-                Toast.show('Please enter your valid Aadhar Card No.');
-            } else if (passport1Full == '') {
-                Toast.show('Please upload your Aadhar card Image');
+            else if (passport1Full == '') {
+                Toast.show('Please upload your Aadhar card');
             }
             else if (passport2Full == '') {
-                Toast.show('Please upload your Aadhar card Image');
+                Toast.show('Please upload your Aadhar card');
             } else if (resumeFull == '') {
-                Toast.show('Please upload your Pan card Image');
+                Toast.show('Please upload your Pan card');
             }
             else {
                 toggleLoading(true)
@@ -579,6 +577,7 @@ const AstrologerRegister = ({ navigation }) => {
                             placeholder={'Email'}
                             value={email}
                             onChangeText={(text) => setEmail(text)}
+                            autoCapitalize='none'
                         />
 
                         <Text

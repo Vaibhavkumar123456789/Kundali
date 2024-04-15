@@ -89,7 +89,7 @@ const SignUp = ({ navigation }) => {
             <StatusBar barStyle="dark-content" backgroundColor="white" />
             {state.loading && <Loader />}
             <ScrollView style={{ marginBottom: 40 }}>
-                <Pressable>
+                <Pressable onPress={() => navigation.replace('DrawerNavigator')}>
                     <Text
                         style={{
                             fontFamily: 'AvenirLTStd-Medium',
@@ -181,6 +181,7 @@ const SignUp = ({ navigation }) => {
                     placeholderTextColor={'#333333'}
                     placeholder={'Email Address'}
                     value={email}
+                    autoCapitalize='none'
                     onChangeText={(text) => setEmail(text)}
                 />
 
