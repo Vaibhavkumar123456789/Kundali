@@ -1,3 +1,5 @@
+import { AsyncStorageSetUser, AsyncStorageSettoken } from "../backend/Api";
+
 const data = {
   user: {},
   coords: {},

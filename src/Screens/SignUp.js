@@ -10,6 +10,7 @@ import {
 import * as actions from '../redux/actions';
 import { AsyncStorageSettoken } from '../backend/Api';
 import Loader from '../utils/Loader';
+import { validateEmail } from '../utils/utils';
 var validator = require('email-validator');
 const SignUp = ({ navigation }) => {
     const window = Dimensions.get('window');
@@ -35,9 +36,9 @@ const SignUp = ({ navigation }) => {
         } else if (email == '') {
             Toast.show('Please enter Email');
         }
-        // else if (validateEmail.validate(email) == false) {
-        //     Toast.show('Please enter Valid Email Address');
-        // }
+        else if (!validateEmail(email)) {
+            Toast.show('Please enter your valid email address');
+        }
         else if (mobile === '' || mobile.length !== 10) {
             Toast.show('Please enter your valid phone number');
         } else if (password == '') {

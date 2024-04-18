@@ -1,8 +1,7 @@
-import { Dimensions, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, View, TextInput, } from 'react-native'
+import { Dimensions, Image, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, View, TextInput, } from 'react-native'
 import React, { useState } from 'react'
 import CustomHeader from '../Custom/CustomHeader';
 import stringsoflanguages from '../language/Language';
-import { Image } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
 import Button from 'react-native-button';
 
@@ -19,14 +18,7 @@ const Prashna = ({ navigation }) => {
         title={_kundali.prashanLagan}
         menuOption={() => navigation.goBack()}
         leftIcon={require('../assets/backtoback.png')}
-        // secondRightIcon={require('../assets/search.png')}
-        // thirdRightIcon={require('../assets/filter.png')}
-        rightOption={() => {
-          navigation.navigate('');
-        }}
-        right3Option={() => {
-          navigation.navigate('');
-        }}
+
       />
       <ScrollView>
         <Image
@@ -107,7 +99,7 @@ const Prashna = ({ navigation }) => {
             color: '#ADADAD',
             fontSize: 18,
             letterSpacing: -0.2,
-            marginTop: 20,
+            marginTop: 19,
             marginHorizontal: 18,
           }}>
           Whatsapp No.
@@ -126,7 +118,7 @@ const Prashna = ({ navigation }) => {
             color: '#333333',
           }}
           placeholderTextColor={'gray'}
-          placeholder={'+91 8945783345'}
+          placeholder={'Whatsapp No.'}
         />
 
         <Text
@@ -135,7 +127,7 @@ const Prashna = ({ navigation }) => {
             color: '#ADADAD',
             fontSize: 18,
             letterSpacing: -0.2,
-            marginTop: 30,
+            marginTop: 19,
             marginHorizontal: 18,
           }}>
           Ask a Question

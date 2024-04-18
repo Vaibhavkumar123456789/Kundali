@@ -1,11 +1,16 @@
 import { View, Text, StatusBar, StyleSheet, Image, FlatList, TouchableOpacity, Alert } from 'react-native'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { ScrollView } from 'react-native-gesture-handler'
 import stringsoflanguages from '../language/Language'
 import { TabActions } from '@react-navigation/native';
+import { useIsFocused } from '@react-navigation/native';
+import { GetProfile } from '../backend/Api'
 const CustomDrawer = ({ navigation }) => {
     const { _drawer } = stringsoflanguages
+    const isFocused = useIsFocused();
+    const [type, setType] = useState()
+    const [pathurl, setPathurl] = useState('')
     const data = [
         {
             icon: require('../assets/sidebar-home.png'),
@@ -48,6 +53,23 @@ const CustomDrawer = ({ navigation }) => {
             input: _drawer.setting
         },
     ];
+    useEffect(() => {
+        GetProfile()
+            .then(data => {
+                // alert(JSON.stringify(data, null, 2))
+                if (data.status) {
+                    setType(data?.data)
+                    setPathurl(data)
+                } else {
+                    alert(data.msg);
+                }
+            })
+            .catch(error => {
+
+                console.log('error', error);
+            });
+    }, [isFocused])
+
 
     const onPressHandler = input => {
 
@@ -96,28 +118,33 @@ const CustomDrawer = ({ navigation }) => {
 
             <ScrollView style={{ height: '100%' }}>
                 <View style={{ flexDirection: 'row' }}>
-                    <Image
-                        style={{
-                            width: 75,
-                            height: 75,
-                            resizeMode: 'contain',
-                            marginTop: 20,
-                            marginLeft: 20,
-                        }}
-                        source={require('../assets/add.png')}
-                    />
-                    <View style={{ marginLeft: 15, width: '50%' }}>
-                        <Text numberOfLines={1}
+                    {(type &&
+                        <Image
                             style={{
-                                marginTop: 30,
-                                fontSize: 16,
-                                fontFamily: 'AvenirLTStd-Medium',
-                                color: '#1E1F20',
-                            }}>
-                            Deepak Kumar
-                        </Text>
+                                width: 75,
+                                height: 75,
+                                resizeMode: 'contain',
+                                marginTop: 20,
+                                marginLeft: 20,
+                                borderRadius: 50,
+                            }}
+                            source={type?.profile_picture !== '' ? { uri: `${pathurl?.path}/${type?.profile_picture}` } : require('../assets/defaultimage.png')}
+                        />
+                    )}
+                    <View style={{ marginLeft: 15, width: '50%' }}>
+                        {(type &&
+                            <Text numberOfLines={1}
+                                style={{
+                                    marginTop: 30,
+                                    fontSize: 16,
+                                    fontFamily: 'AvenirLTStd-Medium',
+                                    color: '#1E1F20',
+                                }}>
+                                {type?.name}
+                            </Text>
+                        )}
                         <TouchableOpacity activeOpacity={0.9}
-                            onPress={() => navigation.navigate('Profile')}>
+                            onPress={() => navigation.navigate('Profile', pathurl)}>
                             <Text
                                 style={{
                                     marginTop: 5,
@@ -179,3 +206,4 @@ const CustomDrawer = ({ navigation }) => {
 
 export default CustomDrawer;
 const styles = StyleSheet.create({});
+

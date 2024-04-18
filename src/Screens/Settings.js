@@ -18,12 +18,28 @@ import {
 } from 'react-native';
 import Header from '../Custom/Header';
 import stringsoflanguages from '../language/Language'
-import Button from 'react-native-button';
+import {useDispatch, useSelector} from 'react-redux';
+  import * as actions from '../redux/actions';
+import { _RemoveAuthToken } from '../backend/ApiSauce';
+import { AsyncStorageClear, AsyncStorageSettoken } from '../backend/Api';
 
 const Settings = ({ navigation }) => {
     const window = Dimensions.get('window');
     const { width, height } = Dimensions.get('window');
     const { _member, _invoice, _kundali, _drawer, _setting } = stringsoflanguages
+
+    const onLogoutHandler = () => {
+        actions.Logout({});
+        navigation.reset({
+            index: 0,
+            routes: [{ name: 'SelectType' }],
+        });
+        // setTimeout(() => {
+        //     _RemoveAuthToken();
+        //     AsyncStorageSettoken('');
+        //     AsyncStorageClear()
+        // }, 2000)
+    }
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
@@ -120,10 +136,20 @@ const Settings = ({ navigation }) => {
                         </View>
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => {
-                        navigation.reset({
-                            index: 0,
-                            routes: [{ name: 'SignIn' }],
-                        })
+
+                        Alert.alert(
+                            'Logout',
+                            `Do you want to logout.`,
+                            [
+                                {
+                                    text: 'No',
+                                    style: 'cancel',
+                                },
+                                { text: 'Yes', onPress: onLogoutHandler },
+                            ],
+                            { cancelable: false },
+                        );
+
                     }}>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 20, }}>
                             <View style={{ flexDirection: 'row' }}>
@@ -175,3 +201,5 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
     }
 })
+
+

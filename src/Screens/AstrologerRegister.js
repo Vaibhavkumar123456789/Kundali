@@ -14,7 +14,7 @@ import {
     FlatList,
     SafeAreaView,
     ScrollView,
-    StatusBar
+    StatusBar, Modal
 } from 'react-native';
 import StepIndicator from 'react-native-step-indicator';
 import Toast from 'react-native-simple-toast';
@@ -29,10 +29,7 @@ import Loader from '../utils/Loader';
 import { Dropdown } from 'react-native-element-dropdown';
 import DocumentPicker, { types } from 'react-native-document-picker';
 import {
-    AstrologerStep1,
-    AstrologerStep2,
-    AstrologerStep3,
-    AstrologerStep4,
+    AstrologerCheckMobile,
     AsyncStorageGettoken,
     City1,
     Consultant,
@@ -44,6 +41,9 @@ import {
 } from '../backend/Api';
 var validator = require('email-validator');
 import { BASE_URL } from '../backend/Config';
+import { validateEmail } from '../utils/utils';
+import GLobal from './GLobal';
+
 
 
 const AstrologerRegister = ({ navigation }) => {
@@ -70,7 +70,7 @@ const AstrologerRegister = ({ navigation }) => {
         loading: false,
     });
     const toggleLoading = bol => setState({ ...state, loading: bol });
-
+    const [exist, setExist] = useState({})
     const [name, setName] = React.useState('');
     const [email, setEmail] = React.useState('');
     const [mobile, setMobile] = useState('')
@@ -84,7 +84,7 @@ const AstrologerRegister = ({ navigation }) => {
     const [skill, setSkill] = useState([])
     const [specilization, setSpecilization] = useState([])
     const [languagelisted, setLanguageListed] = useState([])
-
+    const [modalVisible, setModalVisible] = useState(false);
     const [passport1Full, setPassport1Full] = useState('')
     const [passport2Full, setPassport2Full] = useState('')
     const [resumeFull, setResumeFull] = useState('')
@@ -257,8 +257,8 @@ const AstrologerRegister = ({ navigation }) => {
         };
         State1(e)
             .then(data => {
+                toggleLoading(false);
                 if (data.status) {
-                    toggleLoading(false);
                     let tempCArr = []
                     data?.data.map((i) => {
                         tempCArr.push({
@@ -284,8 +284,8 @@ const AstrologerRegister = ({ navigation }) => {
         };
         City1(e)
             .then(data => {
+                toggleLoading(false);
                 if (data.status) {
-                    toggleLoading(false);
                     let tempCArr = []
                     data?.data.map((i) => {
                         tempCArr.push({
@@ -1637,12 +1637,13 @@ const AstrologerRegister = ({ navigation }) => {
 
                             if (name == '') {
                                 Toast.show('Please enter Name');
-                            } else if (email == '') {
+                            }
+                            else if (email == '') {
                                 Toast.show('Please enter Email');
                             }
-                            // else if (validator.validate(email) == false) {
-                            //     Toast.show('Please enter Valid Email Address');
-                            // }
+                            else if (!validateEmail(email)) {
+                                Toast.show('Please enter your valid email address');
+                            }
                             else if (mobile === '' || mobile.length !== 10) {
                                 Toast.show('Please enter your valid phone number');
                             } else if (password == '') {
@@ -1655,26 +1656,20 @@ const AstrologerRegister = ({ navigation }) => {
                                 Toast.show('Please Select Date');
                             }
                             else {
-                                toggleLoading(true);
+
                                 let e = {
-                                    "name": name,
-                                    "email": email,
-                                    "password": password,
-                                    "alternate_mobile": mobile,
-                                    "gender": checked === 0 ? "male" : checked === 1 ? "female" : null,
-                                    "dob": date == '' ? '' : moment(date).format('YYYY-MM-DD'),
-                                    "create_profile": 2,
+                                    "mobile": mobile
                                 };
                                 console.log(JSON.stringify(e));
 
-                                AstrologerStep1(e)
+                                AstrologerCheckMobile(e)
                                     .then(data => {
-                                        toggleLoading(false);
 
-                                        if (data.status) {
+                                        if (data.signupstatus == 1) {                  // new user
                                             setCurrentPosition(currentPosition + 1)
                                         } else {
-                                            alert(data.msg);
+                                            Toast.show(data?.msg)                      // already register
+                                            return
                                         }
                                     })
                                     .catch(error => {
@@ -1726,33 +1721,8 @@ const AstrologerRegister = ({ navigation }) => {
                                 Toast.show('Please enter Contribute daily hour');
                             }
                             else {
-                                toggleLoading(true);
-                                let e = {
-                                    "consultation_id": should1,
-                                    "skill_id": should2,
-                                    "specialization_id": should3,
-                                    "langugae_id": should4,
-                                    "experience": experience,
-                                    "contribute_daily": hour,
-                                    "create_profile": 3
-                                };
-                                console.log(JSON.stringify(e));
+                                setCurrentPosition(currentPosition + 1)
 
-                                AstrologerStep2(e)
-                                    .then(data => {
-                                        toggleLoading(false);
-
-                                        if (data.status) {
-                                            setCurrentPosition(currentPosition + 1)
-
-                                        } else {
-                                            alert(data.msg);
-                                        }
-                                    })
-                                    .catch(error => {
-                                        toggleLoading(false);
-                                        console.log('error', error);
-                                    });
                             }
 
                         }}>
@@ -1783,7 +1753,89 @@ const AstrologerRegister = ({ navigation }) => {
 
                         onPress={() => {
 
-                            finalSubmit()
+                            if (academicqual == '') {
+                                Toast.show('Please enter your Acadmic Qualification');
+                            }
+                            else if (astroqualification == '') {
+                                Toast.show('Please enter your Astrological Qualifications');
+                            }
+                            else if (acadmic == '') {
+                                Toast.show('Please upload your Acadmic Certificate');
+                            }
+                            else if (astrological == '') {
+                                Toast.show('Please upload your Astrological Certificate');
+                            } else if (picture == '') {
+                                Toast.show('Please upload your Profile Picture');
+                            }
+                            else if (biography == '') {
+                                Toast.show('Please enter Biography');
+                            }
+                            else {
+                                let astrologer = {
+                                    newsignup: 1,
+                                    name,
+                                    email,
+                                    mobile,
+                                    status: 1,
+                                    password,
+                                    gender: checked === 0 ? "male" : checked === 1 ? "female" : null,
+                                    dob: date == '' ? '' : moment(date).format('YYYY-MM-DD'),
+                                    create_profile: 1,
+                                    should1,
+                                    should2,
+                                    should3,
+                                    should4,
+                                    experience,
+                                    hour,
+                                    accountnumber,
+                                    bankname,
+                                    ifsc,
+                                    address,
+                                    should5,
+                                    should6,
+                                    should7,
+                                    pincode,
+                                    pancard,
+                                    aadharcard,
+                                    'aadharcard_image': {
+                                        uri: passport1Full[0].uri,
+                                        type: passport1Full[0].type,
+                                        name: passport1Full[0].name,
+                                    },
+                                    'aadharcard_back_image': {
+                                        uri: passport2Full[0].uri,
+                                        type: passport2Full[0].type,
+                                        name: passport2Full[0].name,
+                                    },
+                                    'pancard_image': {
+                                        uri: resumeFull[0].uri,
+                                        type: resumeFull[0].type,
+                                        name: resumeFull[0].name,
+                                    },
+
+                                    academicqual,
+                                    astroqualification,
+                                    'academic_certificate': {
+                                        uri: acadmic[0].uri,
+                                        type: acadmic[0].type,
+                                        name: acadmic[0].name,
+                                    },
+                                    'astrologer_certificate': {
+                                        uri: astrological[0].uri,
+                                        type: astrological[0].type,
+                                        name: astrological[0].name,
+                                    },
+                                    'profile_picture': {
+                                        uri: picture[0].uri,
+                                        type: picture[0].type,
+                                        name: picture[0].name,
+                                    },
+                                    biography
+                                };
+                                console.log('step 6', astrologer)
+                                GLobal.user = astrologer
+                                navigation.replace('Package')
+                            }
                         }}>
                         Next
                     </Button>
@@ -1822,30 +1874,7 @@ const AstrologerRegister = ({ navigation }) => {
                                 Toast.show('Please enter IFSC Code');
                             }
                             else {
-                                // toggleLoading(true);
-                                let e = {
-                                    "bank_account_number": accountnumber,
-                                    "bank_name": bankname,
-                                    "ifsc_code": ifsc,
-                                    "create_profile": 4
-                                };
-                                console.log(JSON.stringify(e));
-
-                                AstrologerStep3(e)
-                                    .then(data => {
-                                        toggleLoading(false);
-
-                                        if (data.status) {
-                                            setCurrentPosition(currentPosition + 1)
-
-                                        } else {
-                                            alert(data.msg);
-                                        }
-                                    })
-                                    .catch(error => {
-                                        toggleLoading(false);
-                                        console.log('error', error);
-                                    });
+                                setCurrentPosition(currentPosition + 1)
                             }
                         }}>
                         Next
@@ -1889,32 +1918,7 @@ const AstrologerRegister = ({ navigation }) => {
                                 Toast.show('Please enter valid pincode');
                             }
                             else {
-                                toggleLoading(true);
-                                let e = {
-                                    "address": address,
-                                    "country": should5,
-                                    "state": should6,
-                                    "city": should7,
-                                    "pincode": pincode,
-                                    "create_profile": 5
-                                };
-                                console.log(JSON.stringify(e));
-
-                                AstrologerStep4(e)
-                                    .then(data => {
-                                        toggleLoading(false);
-
-                                        if (data.status) {
-                                            setCurrentPosition(currentPosition + 1)
-
-                                        } else {
-                                            alert(data.msg);
-                                        }
-                                    })
-                                    .catch(error => {
-                                        toggleLoading(false);
-                                        console.log('error', error);
-                                    });
+                                setCurrentPosition(currentPosition + 1)
                             }
                         }}>
                         Next
@@ -1944,7 +1948,30 @@ const AstrologerRegister = ({ navigation }) => {
                         }}
 
                         onPress={() => {
-                            setsubmit()
+                            if (pancard == '') {
+                                Toast.show('Please enter your Pan Card No.');
+                            }
+                            else if (pancard.length !== 10) {
+                                Toast.show('Please enter your valid Pan Card No.');
+                            }
+                            else if (aadharcard == '') {
+                                Toast.show('Please enter your Aadhar Card No.');
+                            }
+                            else if (aadharcard.length !== 12) {
+                                Toast.show('Please enter your valid Aadhar Card No.');
+                            }
+                            else if (passport1Full == '') {
+                                Toast.show('Please upload your Aadhar card');
+                            }
+                            else if (passport2Full == '') {
+                                Toast.show('Please upload your Aadhar card');
+                            } else if (resumeFull == '') {
+                                Toast.show('Please upload your Pan card');
+                            }
+                            else {
+
+                                setCurrentPosition(currentPosition + 1)
+                            }
 
                         }}>
                         Next
@@ -1966,6 +1993,8 @@ const AstrologerRegister = ({ navigation }) => {
                     setOpen(false);
                 }}
             />
+
+
         </SafeAreaView >
     );
 };

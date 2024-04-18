@@ -137,19 +137,25 @@ export const MultipleAccountList = json =>
   requesth(PATH_URL.multipleaccount, json);
 
 export const UserSignUp = json => request(PATH_URL.signUp, json);
-export const AstrologerStep1 = json => requesth(PATH_URL.astrologerstep1, json);
-export const AstrologerStep2 = json => requesth(PATH_URL.astrologerstep2, json);
-export const AstrologerStep3 = json => requesth(PATH_URL.astrologerstep3, json);
-export const Consultant = json => requesth(PATH_URL.consultant1, json);
-export const Skill = json => requesth(PATH_URL.skill1, json);
-export const Specialization = json => requesth(PATH_URL.specialization, json);
-export const Language = json => requesth(PATH_URL.language, json);
-export const Country = json => requestGet1(PATH_URL.country1, json);
-export const State1 = json => requestGet1(PATH_URL.state1, json);
-export const City1 = json => requestGet1(PATH_URL.city1, json);
-export const AstrologerStep4 = json => requesth(PATH_URL.astrologerstep4, json);
+export const Astrologersignup = json => request(PATH_URL.astrologersignup, json);
+export const AstrologerCheckMobile = json => request(PATH_URL.checkmobile, json);
+export const Consultant = json => request(PATH_URL.consultant1, json);
+export const Skill = json => request(PATH_URL.skill1, json);
+export const Specialization = json => request(PATH_URL.specialization, json);
+export const Language = json => request(PATH_URL.language, json);
+export const Country = json => requestGet(PATH_URL.country1, json);
+export const State1 = json => requestGet(PATH_URL.state1, json);
+export const City1 = json => requestGet(PATH_URL.city1, json);
+export const Packagelist = json => request(PATH_URL.package, json);
+//token
+export const Homebanner = json => requesth(PATH_URL.homebanner, json);
+export const GetProfile = json => requesth(PATH_URL.drawerprofile, json);
+export const Astroreport = json => requestGet1(PATH_URL.astroreport, json);
+export const ReportDetailApi = json => requesth(PATH_URL.reportdetail, json);
+export const UpdateProfile = json => requesth(PATH_URL.updateProfile, json);
 
 
+// localstorage
 export const AsyncStorageSetUser = user =>
   AsyncStorage.setItem('user', JSON.stringify(user));
 export const AsyncStorageSettoken = user => AsyncStorage.setItem('token', user);

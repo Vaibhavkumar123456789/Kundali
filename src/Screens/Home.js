@@ -3,25 +3,65 @@ import React, { useEffect, useState } from 'react'
 import Carousel from 'react-native-banner-carousel';
 import stringsoflanguages from '../language/Language'
 import { TabActions } from '@react-navigation/native';
-
+import { Astroreport, Homebanner } from '../backend/Api';
+import { useIsFocused } from '@react-navigation/native';
+import Loader from '../utils/Loader';
 const Home = ({ navigation }) => {
     const window = Dimensions.get('window');
     const { width, height } = Dimensions.get('window');
-    const [checked1, setChecked1] = useState(0);
-    const [popupVisible, setPopupVisible] = useState(false);
+    const isFocused = useIsFocused();
+    const [bannerimage, setBannerImage] = useState([])
+    const [bannerpath, setBannerPath] = useState()
+    const [astro, setAstro] = useState([])
+    const [report, setReport] = useState()
     const { _home } = stringsoflanguages
+    const [state, setState] = useState({
+        loading: false,
+    });
+    const toggleLoading = bol => setState({ ...state, loading: bol });
 
-    const images = [
-        {
-            source: require('../assets/banner.png'),
-        },
-        {
-            source: require('../assets/banner.png'),
-        },
-        {
-            source: require('../assets/banner.png'),
-        },
-    ];
+    useEffect(() => {
+        banner()
+        reportapi()
+    }, [isFocused])
+
+    const banner = () => {
+        toggleLoading(true);
+        Homebanner()
+            .then(data => {
+                // alert(JSON.stringify(data, null, 2))
+                toggleLoading(false);
+                if (data.status) {
+                    setBannerImage(data?.docs)
+                    setBannerPath(data?.path)
+                } else {
+                    alert(data.msg);
+                }
+            })
+            .catch(error => {
+                toggleLoading(false);
+                console.log('error', error);
+            });
+    }
+
+    const reportapi = () => {
+        toggleLoading(true);
+        Astroreport()
+            .then(data => {
+                // alert(JSON.stringify(data, null, 2))
+                toggleLoading(false);
+                if (data.status) {
+                    setAstro(data.data)
+                    setReport(data.path)
+                } else {
+                    alert(data.msg);
+                }
+            })
+            .catch(error => {
+                toggleLoading(false);
+                console.log('error', error);
+            });
+    }
 
     const data = [
         {
@@ -90,18 +130,6 @@ const Home = ({ navigation }) => {
         },
     ]
 
-    const data2 = [
-        {
-
-        },
-        {
-
-        },
-        {
-
-        },
-
-    ]
 
     const renderPage = (item, index) => {
         return (
@@ -114,7 +142,8 @@ const Home = ({ navigation }) => {
                         alignSelf: 'center',
                         borderRadius: 8,
                     }}
-                    source={item.source}
+                    // source={{ uri: bannerpath + item.image }}
+                    source={{ uri: `${bannerpath}/${item.image}` }}
                 />
             </View>
         );
@@ -214,10 +243,11 @@ const Home = ({ navigation }) => {
                     </TouchableOpacity>
                 </View>
             </View>
+            {state.loading && <Loader />}
             <ScrollView >
                 <View style={{ justifyContent: 'center', marginTop: 15 }}>
-                    <Carousel autoplay autoplayTimeout={5000} loop={false} index={0}>
-                        {images.map((image, index) => renderPage(image, index))}
+                    <Carousel autoplay autoplayTimeout={5000} loop={true} index={0}>
+                        {bannerimage.map((image, index) => renderPage(image, index))}
                     </Carousel>
                 </View>
 
@@ -357,7 +387,7 @@ const Home = ({ navigation }) => {
                         horizontal
                         showsHorizontalScrollIndicator={false}
                         // style={{ marginTop: 10, }}
-                        data={data2}
+                        data={astro}
                         renderItem={({ item, index }) => (
 
                             <View
@@ -365,7 +395,7 @@ const Home = ({ navigation }) => {
                                     width: window.width - 60,
                                     paddingVertical: 11,
                                     alignSelf: 'center',
-                                    backgroundColor: '#FFEBEE',
+                                    backgroundColor: item.back_color,
                                     elevation: 2,
                                     bottom: 5,
                                     borderRadius: 20,
@@ -379,7 +409,7 @@ const Home = ({ navigation }) => {
                                         fontFamily: 'AvenirLTStd-Medium',
                                         color: '#F44336',
                                     }}>
-                                    {_home.premium}
+                                    {item.report_name}
                                 </Text>
                                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 8 }}>
                                     <View >
@@ -393,7 +423,7 @@ const Home = ({ navigation }) => {
                                                 color: '#33333380',
                                                 width: window.width - 200,
                                             }}>
-                                            Lorem Ipsum is simply dummy text of the printing and typesetting industry Lorem Ipsum is simply dummy.
+                                            {item.about_report}
                                         </Text>
 
                                         <Text style={{
@@ -404,17 +434,16 @@ const Home = ({ navigation }) => {
                                             marginTop: 5,
                                             width: window.width - 200,
                                         }}>
-                                            {_home.price} ₹18000&nbsp;
+                                            {_home.price} ₹{item.general_discount_price}&nbsp;
                                             <Text
-                                                onPress={() => {
-                                                }}
+
                                                 style={{
                                                     color: '#333333',
                                                     fontFamily: 'AvenirLTStd-Medium',
                                                     fontSize: 11,
                                                     textDecorationLine: 'line-through',
                                                 }}>
-                                                20000&nbsp;
+                                                {item.general_price}&nbsp;
                                             </Text>
 
                                         </Text>
@@ -428,7 +457,8 @@ const Home = ({ navigation }) => {
                                             alignSelf: 'center',
                                             marginRight: 8,
                                         }}
-                                        source={require('../assets/book.png')}
+                                        // source={require('../assets/book.png')}
+                                        source={{ uri: `${report}/${item.image}` }}
                                     />
                                 </View>
                                 <View style={{ flexDirection: 'row', marginTop: 5 }}>
@@ -445,7 +475,7 @@ const Home = ({ navigation }) => {
                                             {_home.viewsample}
                                         </Text>
                                     </Pressable>
-                                    <Pressable onPress={() => { navigation.navigate('PremiumKundliDetailReport') }}>
+                                    <Pressable onPress={() => { navigation.navigate('PremiumKundliDetailReport', item) }}>
                                         <Image
                                             style={{
                                                 width: 30,

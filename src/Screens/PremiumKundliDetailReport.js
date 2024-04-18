@@ -2,33 +2,51 @@ import { View, Text, Image, StyleSheet, Dimensions, FlatList, TextInput, StatusB
 import React, { useEffect, useState } from 'react'
 import CustomHeader from '../Custom/CustomHeader';
 import stringsoflanguages from '../language/Language'
-import { TabView, TabBar, SceneMap } from 'react-native-tab-view';
 import Button from 'react-native-button';
+import { ReportDetailApi } from '../backend/Api';
+import { useIsFocused } from '@react-navigation/native';
+import Loader from '../utils/Loader';
 
-const PremiumKundliDetailReport = ({ navigation }) => {
+const PremiumKundliDetailReport = ({ navigation, route }) => {
+  // alert(JSON.stringify(route.params, null, 2))
   const { _member, _home, _kundali, _setting } = stringsoflanguages
   const window = Dimensions.get('window');
   const { width, height } = Dimensions.get('window');
+  const isFocused = useIsFocused();
+  const [astro, setAstro] = useState([])
+  const [report, setReport] = useState()
+  const [state, setState] = useState({
+    loading: false,
+  });
+  const toggleLoading = bol => setState({ ...state, loading: bol });
 
-  const detail = [
-    {
-      title: "Kundli",
-      color: "#FFEBEE",
-      source: require("../assets/kundli-icon.png")
-    },
-    {
-      title: "Match Making",
-      color: "#EDE7F6",
-      source: require("../assets/making-icon.png")
-    },
-    {
-      title: "Lal Kitab",
-      color: "#E1F5FF",
-      source: require("../assets/lal-kitab-icon.png")
-    },
 
-  ];
+  useEffect(() => {
+    reportdetail()
+  }, [isFocused])
 
+  const reportdetail = () => {
+    toggleLoading(true);
+    let e = {
+      astro_id: route.params.id
+    };
+    ReportDetailApi(e)
+      .then(data => {
+        // alert(JSON.stringify(data, null, 2))
+        toggleLoading(false);
+        if (data.status) {
+          setAstro(data.data)
+          setReport(data.path)
+
+        } else {
+          alert(data.msg);
+        }
+      })
+      .catch(error => {
+        toggleLoading(false);
+        console.log('error', error);
+      });
+  }
 
 
   return (
@@ -40,31 +58,33 @@ const PremiumKundliDetailReport = ({ navigation }) => {
         leftIcon={require('../assets/backtoback.png')}
 
       />
-
+      {state.loading && <Loader />}
       <ScrollView>
-        <Text
-          style={{
-            color: '#333333',
-            fontFamily: 'AvenirLTStd-Heavy',
-            fontSize: 20,
-            alignSelf: 'center',
-            marginTop: 18,
-          }}>
-          Natal Chart Reports{' '}
-        </Text>
-
-        <Image
-          style={{
-            width: 150,
-            height: 167.95,
-            marginTop: 24,
-            marginBottom: 22.5,
-            resizeMode: 'contain',
-            alignSelf: 'center',
-          }}
-          source={require('../assets/book.png')}
-        />
-
+        {(astro &&
+          <Text
+            style={{
+              color: '#333333',
+              fontFamily: 'AvenirLTStd-Heavy',
+              fontSize: 20,
+              alignSelf: 'center',
+              marginTop: 18,
+            }}>
+            {astro[0]?.report_detail_name}{' '}
+          </Text>
+        )}
+        {(report &&
+          <Image
+            style={{
+              width: 150,
+              height: 167.95,
+              marginTop: 24,
+              marginBottom: 22.5,
+              resizeMode: 'contain',
+              alignSelf: 'center',
+            }}
+            source={{ uri: `${report}/${astro[0]?.image}` }}
+          />
+        )}
         <View style={styles.ex_view}>
           <View style={styles.dt_view}>
             <View
@@ -72,7 +92,6 @@ const PremiumKundliDetailReport = ({ navigation }) => {
                 flexDirection: 'row',
                 justifyContent: 'space-between',
                 marginLeft: 2,
-                marginTop: 4,
               }}>
               <View style={{ flexDirection: 'row' }}>
                 <Text
@@ -90,25 +109,27 @@ const PremiumKundliDetailReport = ({ navigation }) => {
               </View>
 
             </View>
-            <View style={styles.dt_view_1}>
-              <View style={styles.dt_view_11}>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    marginTop: 2,
-                  }}>
-                  <Text style={styles.dt_name}>
-                    Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown.
-                  </Text>
+            {(astro &&
+              <View style={styles.dt_view_1}>
+                <View style={styles.dt_view_11}>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      marginTop: 2,
+                    }}>
+                    <Text style={styles.dt_name}>
+                      {astro[0]?.about_report}
+                    </Text>
+                  </View>
                 </View>
               </View>
-            </View>
+            )}
           </View>
         </View>
 
-        
+
         <View style={{
-          marginTop: 20, backgroundColor: 'white', elevation: 5,
+          marginTop: 10, backgroundColor: 'white', elevation: 5,
           marginHorizontal: 18, flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 10,
           borderRadius: 8
         }}>
@@ -124,16 +145,18 @@ const PremiumKundliDetailReport = ({ navigation }) => {
               }}>
               General Price
             </Text>
-            <Text
-              style={{
-                color: '#1E1F20',
-                fontFamily: 'AvenirLTStd-Heavy',
-                fontSize: 18,
-                marginLeft: 7,
-                marginTop: 0,
-              }}>
-              ₹ 599
-            </Text>
+            {(astro &&
+              <Text
+                style={{
+                  color: '#1E1F20',
+                  fontFamily: 'AvenirLTStd-Heavy',
+                  fontSize: 18,
+                  marginLeft: 7,
+                  marginTop: 0,
+                }}>
+                ₹ {astro[0]?.general_price}
+              </Text>
+            )}
           </View>
 
           <View>
@@ -148,29 +171,30 @@ const PremiumKundliDetailReport = ({ navigation }) => {
               }}>
               Astrologer Price
             </Text>
-            <Text
-              style={{
-                color: '#1E1F20',
-                fontFamily: 'AvenirLTStd-Heavy',
-                fontSize: 18,
-                marginRight: 7,
-                marginTop: 0,
-                textAlign: 'right',
-              }}>
-              ₹ 599
-            </Text>
+            {(astro &&
+              <Text
+                style={{
+                  color: '#1E1F20',
+                  fontFamily: 'AvenirLTStd-Heavy',
+                  fontSize: 18,
+                  marginRight: 7,
+                  marginTop: 0,
+                  textAlign: 'right',
+                }}>
+                ₹ {astro[0]?.astrologer_price}
+              </Text>
+            )}
           </View>
 
         </View>
 
-        <View style={styles.ex_view}>
+        <View style={styles.ex_view1}>
           <View style={styles.dt_view}>
             <View
               style={{
                 flexDirection: 'row',
                 justifyContent: 'space-between',
                 marginLeft: 2,
-                marginTop: 4,
               }}>
               <View style={{ flexDirection: 'row' }}>
                 <Text
@@ -191,7 +215,7 @@ const PremiumKundliDetailReport = ({ navigation }) => {
             <View style={styles.dt_view_1}>
               <View style={styles.dt_view_11}>
                 <FlatList
-                  data={detail}
+                  data={astro[0]?.inclusion?.split(',')}
                   renderItem={({ item, index }) => (
                     <View
                       style={{
@@ -199,7 +223,7 @@ const PremiumKundliDetailReport = ({ navigation }) => {
                         marginTop: 2,
                       }}>
                       <Text style={styles.dt_name}>
-                        {`\u2022 Lorem Ipsum is simply dummy text of the printing and typesetting industry. `}
+                        {`\u2022 ${item}`}
                       </Text>
                     </View>
                   )}
@@ -294,6 +318,20 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     margin: 7,
     marginTop: 10,
+    paddingVertical: 10,
+    alignSelf: 'center',
+    width: '90%',
+    borderRadius: 10,
+    overflow: 'hidden',
+    backgroundColor: '#FFFFFF',
+    shadowColor: '#000000',
+    elevation: 5,
+
+  },
+  ex_view1: {
+    flexDirection: 'row',
+    margin: 7,
+    marginTop: 18,
     paddingVertical: 10,
     alignSelf: 'center',
     width: '90%',

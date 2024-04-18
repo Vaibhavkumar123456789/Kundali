@@ -8,9 +8,10 @@ export const GOOGLE_MAPS_APIKEY = 'AIzaSyA_23OZbQeEKQeLfMBTJ6xd3-hCa33tK4A';
 export const PATH_URL = {
 
   signUp: 'astrologer/authUser',
-  astrologerstep1: 'astrologer/add-profile-one',
-  astrologerstep2: 'astrologer/add-profile-two',
-  astrologerstep3: 'astrologer/add-profile-three',
+  checkmobile: 'astrologer/check-mobile',
+  package: 'packages',
+  astrologersignup: 'astrologer/signup',
+  homebanner: 'home-banner',
   consultant1: 'consultant',
   skill1: 'skill',
   specialization: 'main_specialization',
@@ -18,7 +19,11 @@ export const PATH_URL = {
   country1: 'country',
   state1: 'state',
   city1: 'city',
-  astrologerstep4: 'astrologer/add-profile-four'
+  drawerprofile: 'astrologer/home',
+  astroreport: 'astro-report',
+  reportdetail:'astro-report-detail',
+  updateProfile: 'astrologer-user/edit-profile',
+
 };
 
 export const ApiSauceJson = {
