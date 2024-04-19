@@ -40,7 +40,7 @@ const Splash = ({ navigation }) => {
                     resizeMode: 'cover',
 
                 }}
-                source={require('../assets/splash.png')} />
+                source={require('../assets/splash1.png')} />
         </SafeAreaView>
     )
 }

@@ -17,6 +17,7 @@ import {
     StatusBar
 } from 'react-native';
 import Header from '../Custom/Header';
+import axios from 'axios';
 import * as actions from '../redux/actions';
 import { Packagelist, AsyncStorageSetUser, AsyncStorageSettoken } from '../backend/Api';
 import Loader from '../utils/Loader';
@@ -55,7 +56,7 @@ const Package = ({ navigation }) => {
         try {
             let formData = new FormData();
             formData.append('newsignup', 1)
-            formData.append('user_type', 2)           //astrologer
+            formData.append('user_type', field.type)             //astrologer == 2 , user == 1
             formData.append('name', field.name)
             formData.append('email', field.email)
             formData.append('mobile', field.mobile)
@@ -119,24 +120,57 @@ const Package = ({ navigation }) => {
             formData.append('package_id', input[0].id)
             formData.append('amount', input[0].amount)
 
-            const res = await fetch(`${BASE_URL}astrologer/signup`, {
-                method: 'POST',
-                headers: {
-                    "Accept": "application/json",
-                },
-                body: formData,
-            });
-            const response1 = await res.json()
-            console.log('free Package', response1)
-            if (response1.status) {
-                actions.Login(response1.user_detail);
-                actions.Token(response1.token);
-                AsyncStorageSettoken(response1.token);
-                AsyncStorageSetUser(response1.user_detail);
-                navigation.replace('DrawerNavigator')
-            } else {
-                alert(response1.msg);
-            }
+            // alert(JSON.stringify(formData, null, 2))
+                toggleLoading(true);
+                axios
+                    .post(
+                        `${BASE_URL}astrologer/signup`,
+                        formData,
+                        {
+                            headers: {
+                                'Content-Type': 'multipart/form-data',
+                                // Add any additional headers as needed
+                            },
+                        },
+                    )
+                    .then(response => {
+                        toggleLoading(false);
+                        actions.Login(response.data?.user_detail);
+                        actions.Token(response.data?.token);
+                        AsyncStorageSettoken(response.data?.token);
+                        AsyncStorageSetUser(response.data?.user_detail);
+                        navigation.replace('DrawerNavigator')
+                    })
+                    .catch(error => {
+                        toggleLoading(true);
+                        axios
+                            .post(
+                                `${BASE_URL}astrologer/signup`,
+                                formData,
+                                {
+                                    headers: {
+                                        'Content-Type': 'multipart/form-data',
+                                        // Add any additional headers as needed
+                                    },
+                                },
+                            )
+                            .then(response => {
+                                toggleLoading(false);
+                                actions.Login(response.data?.user_detail);
+                                actions.Token(response.data?.token);
+                                AsyncStorageSettoken(response.data?.token);
+                                AsyncStorageSetUser(response.data?.user_detail);
+                                navigation.replace('DrawerNavigator')
+                            })
+                            .catch(error => {
+                                // Handle errors
+                                toggleLoading(false);
+                                console.error('Error uploading files', error);
+                            });
+                        // Handle errors
+                        toggleLoading(false);
+                        console.error('Error uploading files1', error);
+                    });
 
         } catch (error) {
             toggleLoading(false)
@@ -144,6 +178,79 @@ const Package = ({ navigation }) => {
         }
     }
 
+    const nn = async () => {
+        try {
+
+            let formData = new FormData();
+            formData.append('newsignup', 1)
+            formData.append('user_type', field.type)           //astrologer == 2 , user == 1
+            formData.append('create_profile ', 1)
+            formData.append('name', field.name)
+            formData.append('email', field.email)
+            formData.append('mobile', field.mobile)
+            formData.append('status', 1)
+            formData.append('password', field.password)
+            formData.append('experience', null)
+
+                toggleLoading(true);
+                axios
+                    .post(
+                        `${BASE_URL}astrologer/signup`,
+                        formData,
+                        {
+                            headers: {
+                                'Content-Type': 'multipart/form-data',
+                                // Add any additional headers as needed
+                            },
+                        },
+                    )
+                    .then(response => {
+                        toggleLoading(false);
+                        // alert(JSON.stringify(response.data?.token))
+                        actions.Login(response.data?.user_detail);
+                        actions.Token(response.data?.token);
+                        AsyncStorageSettoken(response.data?.token);
+                        AsyncStorageSetUser(response.data?.user_detail);
+                        navigation.replace('DrawerNavigator')
+                    })
+                    .catch(error => {
+                        toggleLoading(true);
+                        axios
+                            .post(
+                                `${BASE_URL}astrologer/signup`,
+                                formData,
+                                {
+                                    headers: {
+                                        'Content-Type': 'multipart/form-data',
+                                        // Add any additional headers as needed
+                                    },
+                                },
+                            )
+                            .then(response => {
+                                toggleLoading(false);
+
+                                actions.Login(response.data?.user_detail);
+                                actions.Token(response.data?.token);
+                                AsyncStorageSettoken(response.data?.token);
+                                AsyncStorageSetUser(response.data?.user_detail);
+                                navigation.replace('DrawerNavigator')
+                            })
+                            .catch(error => {
+                                // Handle errors
+                                toggleLoading(false);
+                                console.error('Error uploading files', error);
+                            });
+                        // Handle errors
+                        toggleLoading(false);
+                        console.error('Error uploading files1', error);
+                    });
+
+
+        } catch (error) {
+            toggleLoading(false)
+            console.log(error)
+        }
+    }
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
@@ -163,7 +270,9 @@ const Package = ({ navigation }) => {
                         <View>
                             <Pressable onPress={() => {
                                 if (item.is_free == 1) {
-                                    Freepackage()                                         //free
+                                    field.type == 1 ? nn() :
+                                        Freepackage()
+                                    //free
 
                                 } else if (item.is_free == 0) {
                                     GLobal.id = item.id

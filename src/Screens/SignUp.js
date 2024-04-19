@@ -4,6 +4,7 @@ import CheckBox from '@react-native-community/checkbox';
 import Button from 'react-native-button';
 import Toast from 'react-native-simple-toast';
 import {
+    AstrologerCheckMobile,
     AsyncStorageSetUser,
     UserSignUp,
 } from '../backend/Api';
@@ -11,7 +12,10 @@ import * as actions from '../redux/actions';
 import { AsyncStorageSettoken } from '../backend/Api';
 import Loader from '../utils/Loader';
 import { validateEmail } from '../utils/utils';
+import { BASE_URL } from '../backend/Config';
 var validator = require('email-validator');
+import GLobal, { data } from './GLobal';
+
 const SignUp = ({ navigation }) => {
     const window = Dimensions.get('window');
     const { width, height } = Dimensions.get('window');
@@ -30,7 +34,7 @@ const SignUp = ({ navigation }) => {
     const [mobile, setMobile] = useState('')
     const [password, setPassword] = useState('')
 
-    const buttonClickListenerstarted = () => {
+    const buttonClickListenerstarted = async () => {
         if (name == '') {
             Toast.show('Please enter Name');
         } else if (email == '') {
@@ -48,42 +52,40 @@ const SignUp = ({ navigation }) => {
             Toast.show('Please accept terms and conditions');
         }
         else {
-            toggleLoading(true);
-
-            let e = {
-                "name": name,
-                "email": email,
-                "mobile": mobile,
-                "password": password,
-                "device_id": Platform.OS === 'ios' ? 'IOS' : 'Android',
-                "device_token": "123",
-                "device_type": Platform.OS === 'ios' ? 'IOS' : 'Android',
-                "loginTime": "123",
-                "newsignup": 1
-            };
-            console.log(JSON.stringify(e));
-
-            UserSignUp(e)
-                .then(data => {
-                    toggleLoading(false);
-                    console.log(JSON.stringify(data));
-
-                    if (data.status) {
-                        actions.Login(data.user_detail);
-                        actions.Token(data.token);
-                        AsyncStorageSettoken(data.token);
-                        AsyncStorageSetUser(data.user_detail);
-                        navigation.navigate('Otp')
-                    } else {
-                        alert(data.msg);
-                    }
-                })
-                .catch(error => {
-                    toggleLoading(false);
-                    console.log('error', error);
-                });
+            check()
         }
     };
+
+    const check = () => {
+        toggleLoading(true);
+        let e = {
+            "mobile": mobile
+        };
+        console.log(JSON.stringify(e));
+
+        AstrologerCheckMobile(e)
+            .then(data => {
+                toggleLoading(false);
+                if (data.signupstatus == 1) {                  // new user
+                    // nn()
+                    GLobal.user = {
+                        name,
+                        email,
+                        mobile
+                        , password,
+                        type: 1
+                    }
+                    navigation.replace('Otp')
+                } else {
+                    Toast.show(data?.msg)                      // already register
+                    return
+                }
+            })
+            .catch(error => {
+                toggleLoading(false);
+                console.log('error', error);
+            });
+    }
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>

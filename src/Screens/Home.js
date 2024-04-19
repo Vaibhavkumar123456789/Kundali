@@ -540,7 +540,6 @@ const Home = ({ navigation }) => {
             </ScrollView>
 
 
-
         </SafeAreaView>
 
     )

@@ -1774,6 +1774,7 @@ const AstrologerRegister = ({ navigation }) => {
                                 let astrologer = {
                                     newsignup: 1,
                                     name,
+                                    type: 2,
                                     email,
                                     mobile,
                                     status: 1,

@@ -4,19 +4,25 @@ import Button from 'react-native-button';
 import GLobal, { data } from './GLobal';
 import { BASE_URL } from '../backend/Config';
 import * as actions from '../redux/actions';
+import axios from 'axios';
 import { AsyncStorageSetUser, AsyncStorageSettoken } from '../backend/Api';
+import Loader from '../utils/Loader';
+
 const PaymentSuccessfully = ({ navigation, route }) => {
 
   const window = Dimensions.get('window');
   const { width, height } = Dimensions.get('window');
   const [field, setField] = useState(GLobal.user)
-
+  const [state, setState] = useState({
+    loading: false,
+  });
+  const toggleLoading = bol => setState({ ...state, loading: bol });
 
   const Freepackage = async () => {
     try {
       let formData = new FormData();
       formData.append('newsignup', 1)
-      formData.append('user_type', 2)           //astrologer
+      formData.append('user_type', field.type)           //astrologer == 2 , user == 1
       formData.append('name', field.name)
       formData.append('email', field.email)
       formData.append('mobile', field.mobile)
@@ -80,26 +86,130 @@ const PaymentSuccessfully = ({ navigation, route }) => {
       formData.append('package_id', GLobal.id)
       formData.append('amount', GLobal.amount)
 
-      const res = await fetch(`${BASE_URL}astrologer/signup`, {
-        method: 'POST',
-        headers: {
-          "Accept": "application/json",
-        },
-        body: formData,
-      });
-      const response1 = await res.json()
-      console.log('Membership Package', response1)
-      if (response1.status) {
-        actions.Login(response1.user_detail);
-        actions.Token(response1.token);
-        AsyncStorageSettoken(response1.token);
-        AsyncStorageSetUser(response1.user_detail);
-        navigation.replace('DrawerNavigator')
-      } else {
-        alert(response1.msg);
-      }
+        toggleLoading(true);
+        axios
+          .post(
+            `${BASE_URL}astrologer/signup`,
+            formData,
+            {
+              headers: {
+                'Content-Type': 'multipart/form-data',
+                // Add any additional headers as needed
+              },
+            },
+          )
+          .then(response => {
+            toggleLoading(false);
+            actions.Login(response.data?.user_detail);
+            actions.Token(response.data?.token);
+            AsyncStorageSettoken(response.data?.token);
+            AsyncStorageSetUser(response.data?.user_detail);
+            navigation.replace('DrawerNavigator')
+          })
+          .catch(error => {
+            toggleLoading(true);
+            axios
+              .post(
+                `${BASE_URL}astrologer/signup`,
+                formData,
+                {
+                  headers: {
+                    'Content-Type': 'multipart/form-data',
+                    // Add any additional headers as needed
+                  },
+                },
+              )
+              .then(response => {
+                toggleLoading(false);
+                actions.Login(response.data?.user_detail);
+                actions.Token(response.data?.token);
+                AsyncStorageSettoken(response.data?.token);
+                AsyncStorageSetUser(response.data?.user_detail);
+                navigation.replace('DrawerNavigator')
+              })
+              .catch(error => {
+                // Handle errors
+                toggleLoading(false);
+                console.error('Error uploading files', error);
+              });
+            // Handle errors
+            toggleLoading(false);
+            console.error('Error uploading files1', error);
+          });
 
     } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const nn = async () => {
+    try {
+
+      let formData = new FormData();
+      formData.append('newsignup', 1)
+      formData.append('user_type', field.type)           //astrologer == 2 , user == 1
+      formData.append('create_profile ', 1)
+      formData.append('name', field.name)
+      formData.append('email', field.email)
+      formData.append('mobile', field.mobile)
+      formData.append('status', 1)
+      formData.append('password', field.password)
+      formData.append('experience', null)
+
+        toggleLoading(true);
+        axios
+          .post(
+            `${BASE_URL}astrologer/signup`,
+            formData,
+            {
+              headers: {
+                'Content-Type': 'multipart/form-data',
+                // Add any additional headers as needed
+              },
+            },
+          )
+          .then(response => {
+            toggleLoading(false);
+            actions.Login(response.data?.user_detail);
+            actions.Token(response.data?.token);
+            AsyncStorageSettoken(response.data?.token);
+            AsyncStorageSetUser(response.data?.user_detail);
+            navigation.replace('DrawerNavigator')
+          })
+          .catch(error => {
+            toggleLoading(true);
+            axios
+              .post(
+                `${BASE_URL}astrologer/signup`,
+                formData,
+                {
+                  headers: {
+                    'Content-Type': 'multipart/form-data',
+                    // Add any additional headers as needed
+                  },
+                },
+              )
+              .then(response => {
+                toggleLoading(false);
+                actions.Login(response.data?.user_detail);
+                actions.Token(response.data?.token);
+                AsyncStorageSettoken(response.data?.token);
+                AsyncStorageSetUser(response.data?.user_detail);
+                navigation.replace('DrawerNavigator')
+              })
+              .catch(error => {
+                // Handle errors
+                toggleLoading(false);
+                console.error('Error uploading files', error);
+              });
+            // Handle errors
+            toggleLoading(false);
+            console.error('Error uploading files1', error);
+          });
+
+
+    } catch (error) {
+      toggleLoading(false)
       console.log(error)
     }
   }
@@ -107,7 +217,7 @@ const PaymentSuccessfully = ({ navigation, route }) => {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#FFCC80' }}>
       <StatusBar barStyle="dark-content" backgroundColor="#FFCC80" />
-
+      {state.loading && <Loader />}
       <Image
         style={{
           width: 100,
@@ -175,7 +285,8 @@ const PaymentSuccessfully = ({ navigation, route }) => {
           fontFamily: 'AvenirLTStd-Medium',
         }}
         onPress={() => {
-          Freepackage()
+          field.type == 1 ? nn() :
+            Freepackage()
         }}>
         Go to Homepage
       </Button>
