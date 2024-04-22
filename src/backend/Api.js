@@ -133,8 +133,6 @@ export const requestGet1 = (path, json) => {
   });
 };
 
-export const MultipleAccountList = json =>
-  requesth(PATH_URL.multipleaccount, json);
 
 export const UserSignUp = json => request(PATH_URL.signUp, json);
 export const Astrologersignup = json => request(PATH_URL.astrologersignup, json);
@@ -161,7 +159,9 @@ export const AsyncStorageSetUser = user =>
 export const AsyncStorageSettoken = user => AsyncStorage.setItem('token', user);
 export const AsyncStorageGetUser = () => AsyncStorage.getItem('user');
 export const AsyncStorageGettoken = user => AsyncStorage.getItem('token');
-
+export const AsyncStorageSetLanguage = user =>
+  AsyncStorage.setItem('lang', user);
+export const AsyncStorageGetLanguage = () => AsyncStorage.getItem('lang');
 export const AsyncStorageClear = () => AsyncStorage.clear();
 
 export const AspectRatio = () =>

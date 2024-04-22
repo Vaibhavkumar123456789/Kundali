@@ -1,9 +1,11 @@
 import { View, Text, Image, StyleSheet, StatusBar, SafeAreaView, } from 'react-native'
 import React, { useEffect } from 'react'
 import * as actions from '../redux/actions';
-import { AsyncStorageGettoken, AsyncStorageGetUser } from '../backend/Api';
+import { AsyncStorageGetLanguage, AsyncStorageGettoken, AsyncStorageGetUser } from '../backend/Api';
 import store from '../redux/store';
 import { _SetAuthToken } from '../backend/ApiSauce'
+import GLobal from './GLobal';
+import stringsoflanguages from '../language/Language';
 
 const Splash = ({ navigation }) => {
     // useEffect(() => {
@@ -28,7 +30,23 @@ const Splash = ({ navigation }) => {
                 navigation.replace('DrawerNavigator');
             }
         }, 3000);
+        setLanguage()
     }, []);
+
+    const setLanguage = async () => {
+        const lang = await AsyncStorageGetLanguage();
+
+        if (lang == null) {
+            stringsoflanguages.setLanguage('en');
+        } else {
+            if (lang == 'en') {
+                stringsoflanguages.setLanguage('en');
+            } else if (lang == 'hi') {
+                stringsoflanguages.setLanguage('hi');
+            }
+            GLobal.language = lang;
+        }
+    };
 
     return (
         <SafeAreaView style={{ flex: 1 }}>

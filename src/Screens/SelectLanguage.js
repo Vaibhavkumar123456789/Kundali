@@ -16,6 +16,7 @@ import * as actions from '../redux/actions';
 import { FlatList } from 'react-native-gesture-handler';
 import Button from 'react-native-button';
 import stringsoflanguages from '../language/Language';
+import { AsyncStorageSetLanguage } from '../backend/Api';
 const SelectLanguage = ({ navigation }) => {
     const [languageSelect] = useState([
         { language: 'English', lang: 'en' },
@@ -27,6 +28,7 @@ const SelectLanguage = ({ navigation }) => {
     const changeLanguageHandler = language => {
         stringsoflanguages.setLanguage(language);
         dispatch(actions.Language(language));
+        AsyncStorageSetLanguage(language);
     };
     const languageFunction = ({ item, index }) => {
         return (
