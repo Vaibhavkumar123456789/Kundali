@@ -386,8 +386,7 @@ const Home = ({ navigation }) => {
                     <FlatList
                         horizontal
                         showsHorizontalScrollIndicator={false}
-                        // style={{ marginTop: 10, }}
-                        data={astro}
+                        data={astro?.slice(0, 3)}
                         renderItem={({ item, index }) => (
 
                             <View

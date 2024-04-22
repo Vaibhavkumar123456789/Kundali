@@ -162,7 +162,13 @@ export const AsyncStorageGettoken = user => AsyncStorage.getItem('token');
 export const AsyncStorageSetLanguage = user =>
   AsyncStorage.setItem('lang', user);
 export const AsyncStorageGetLanguage = () => AsyncStorage.getItem('lang');
+
+export const AsyncStorageSetFcmtoken = user =>
+  AsyncStorage.setItem('fcmtoken', user);
+export const AsyncStorageGetFcmtoken = () => AsyncStorage.getItem('fcmtoken');
+
 export const AsyncStorageClear = () => AsyncStorage.clear();
+
 
 export const AspectRatio = () =>
   Dimensions.get('window').width / Dimensions.get('window').height;
