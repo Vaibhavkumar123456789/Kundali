@@ -22,9 +22,11 @@ import * as actions from '../redux/actions';
 import { Packagelist, AsyncStorageSetUser, AsyncStorageSettoken } from '../backend/Api';
 import Loader from '../utils/Loader';
 import GLobal, { data } from './GLobal';
+import stringsoflanguages from '../language/Language'
 import { BASE_URL } from '../backend/Config';
 
 const Package = ({ navigation }) => {
+    const { _astrologerForm } = stringsoflanguages
     const window = Dimensions.get('window');
     const { width, height } = Dimensions.get('window');
     const [state, setState] = useState({
@@ -121,56 +123,56 @@ const Package = ({ navigation }) => {
             formData.append('amount', input[0].amount)
 
             // alert(JSON.stringify(formData, null, 2))
-                toggleLoading(true);
-                axios
-                    .post(
-                        `${BASE_URL}astrologer/signup`,
-                        formData,
-                        {
-                            headers: {
-                                'Content-Type': 'multipart/form-data',
-                                // Add any additional headers as needed
-                            },
+            toggleLoading(true);
+            axios
+                .post(
+                    `${BASE_URL}astrologer/signup`,
+                    formData,
+                    {
+                        headers: {
+                            'Content-Type': 'multipart/form-data',
+                            // Add any additional headers as needed
                         },
-                    )
-                    .then(response => {
-                        toggleLoading(false);
-                        actions.Login(response.data?.user_detail);
-                        actions.Token(response.data?.token);
-                        AsyncStorageSettoken(response.data?.token);
-                        AsyncStorageSetUser(response.data?.user_detail);
-                        navigation.replace('DrawerNavigator')
-                    })
-                    .catch(error => {
-                        toggleLoading(true);
-                        axios
-                            .post(
-                                `${BASE_URL}astrologer/signup`,
-                                formData,
-                                {
-                                    headers: {
-                                        'Content-Type': 'multipart/form-data',
-                                        // Add any additional headers as needed
-                                    },
+                    },
+                )
+                .then(response => {
+                    toggleLoading(false);
+                    actions.Login(response.data?.user_detail);
+                    actions.Token(response.data?.token);
+                    AsyncStorageSettoken(response.data?.token);
+                    AsyncStorageSetUser(response.data?.user_detail);
+                    navigation.replace('DrawerNavigator')
+                })
+                .catch(error => {
+                    toggleLoading(true);
+                    axios
+                        .post(
+                            `${BASE_URL}astrologer/signup`,
+                            formData,
+                            {
+                                headers: {
+                                    'Content-Type': 'multipart/form-data',
+                                    // Add any additional headers as needed
                                 },
-                            )
-                            .then(response => {
-                                toggleLoading(false);
-                                actions.Login(response.data?.user_detail);
-                                actions.Token(response.data?.token);
-                                AsyncStorageSettoken(response.data?.token);
-                                AsyncStorageSetUser(response.data?.user_detail);
-                                navigation.replace('DrawerNavigator')
-                            })
-                            .catch(error => {
-                                // Handle errors
-                                toggleLoading(false);
-                                console.error('Error uploading files', error);
-                            });
-                        // Handle errors
-                        toggleLoading(false);
-                        console.error('Error uploading files1', error);
-                    });
+                            },
+                        )
+                        .then(response => {
+                            toggleLoading(false);
+                            actions.Login(response.data?.user_detail);
+                            actions.Token(response.data?.token);
+                            AsyncStorageSettoken(response.data?.token);
+                            AsyncStorageSetUser(response.data?.user_detail);
+                            navigation.replace('DrawerNavigator')
+                        })
+                        .catch(error => {
+                            // Handle errors
+                            toggleLoading(false);
+                            console.error('Error uploading files', error);
+                        });
+                    // Handle errors
+                    toggleLoading(false);
+                    console.error('Error uploading files1', error);
+                });
 
         } catch (error) {
             toggleLoading(false)
@@ -192,58 +194,58 @@ const Package = ({ navigation }) => {
             formData.append('password', field.password)
             formData.append('experience', null)
 
-                toggleLoading(true);
-                axios
-                    .post(
-                        `${BASE_URL}astrologer/signup`,
-                        formData,
-                        {
-                            headers: {
-                                'Content-Type': 'multipart/form-data',
-                                // Add any additional headers as needed
-                            },
+            toggleLoading(true);
+            axios
+                .post(
+                    `${BASE_URL}astrologer/signup`,
+                    formData,
+                    {
+                        headers: {
+                            'Content-Type': 'multipart/form-data',
+                            // Add any additional headers as needed
                         },
-                    )
-                    .then(response => {
-                        toggleLoading(false);
-                        // alert(JSON.stringify(response.data?.token))
-                        actions.Login(response.data?.user_detail);
-                        actions.Token(response.data?.token);
-                        AsyncStorageSettoken(response.data?.token);
-                        AsyncStorageSetUser(response.data?.user_detail);
-                        navigation.replace('DrawerNavigator')
-                    })
-                    .catch(error => {
-                        toggleLoading(true);
-                        axios
-                            .post(
-                                `${BASE_URL}astrologer/signup`,
-                                formData,
-                                {
-                                    headers: {
-                                        'Content-Type': 'multipart/form-data',
-                                        // Add any additional headers as needed
-                                    },
+                    },
+                )
+                .then(response => {
+                    toggleLoading(false);
+                    // alert(JSON.stringify(response.data?.token))
+                    actions.Login(response.data?.user_detail);
+                    actions.Token(response.data?.token);
+                    AsyncStorageSettoken(response.data?.token);
+                    AsyncStorageSetUser(response.data?.user_detail);
+                    navigation.replace('DrawerNavigator')
+                })
+                .catch(error => {
+                    toggleLoading(true);
+                    axios
+                        .post(
+                            `${BASE_URL}astrologer/signup`,
+                            formData,
+                            {
+                                headers: {
+                                    'Content-Type': 'multipart/form-data',
+                                    // Add any additional headers as needed
                                 },
-                            )
-                            .then(response => {
-                                toggleLoading(false);
+                            },
+                        )
+                        .then(response => {
+                            toggleLoading(false);
 
-                                actions.Login(response.data?.user_detail);
-                                actions.Token(response.data?.token);
-                                AsyncStorageSettoken(response.data?.token);
-                                AsyncStorageSetUser(response.data?.user_detail);
-                                navigation.replace('DrawerNavigator')
-                            })
-                            .catch(error => {
-                                // Handle errors
-                                toggleLoading(false);
-                                console.error('Error uploading files', error);
-                            });
-                        // Handle errors
-                        toggleLoading(false);
-                        console.error('Error uploading files1', error);
-                    });
+                            actions.Login(response.data?.user_detail);
+                            actions.Token(response.data?.token);
+                            AsyncStorageSettoken(response.data?.token);
+                            AsyncStorageSetUser(response.data?.user_detail);
+                            navigation.replace('DrawerNavigator')
+                        })
+                        .catch(error => {
+                            // Handle errors
+                            toggleLoading(false);
+                            console.error('Error uploading files', error);
+                        });
+                    // Handle errors
+                    toggleLoading(false);
+                    console.error('Error uploading files1', error);
+                });
 
 
         } catch (error) {
@@ -258,7 +260,7 @@ const Package = ({ navigation }) => {
             <Header
                 menuOption={() => navigation.goBack()}
                 leftIcon={require('../assets/backtoback.png')}
-                title='Package'
+                title={_astrologerForm.package}
             />
             {state.loading && <Loader />}
 

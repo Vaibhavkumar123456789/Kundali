@@ -6,7 +6,7 @@ function CustomHeader(props) {
     const window = Dimensions.get('window');
     const { width, height } = Dimensions.get('window');
     return (
-        <View
+        <SafeAreaView
             style={{
                 backgroundColor: '#FFCC80',
                 height: 60,
@@ -68,7 +68,7 @@ function CustomHeader(props) {
                     />
                 </TouchableOpacity>
             </View>
-        </View>
+        </SafeAreaView>
     );
 }
 export default CustomHeader;

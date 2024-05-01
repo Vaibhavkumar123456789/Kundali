@@ -1,18 +1,65 @@
 import { View, Text, Image, StyleSheet, Dimensions, TextInput, StatusBar, SafeAreaView, ImageBackground, Pressable, ScrollView, TouchableOpacity, } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import Button from 'react-native-button';
+import stringsoflanguages from '../language/Language'
+import Loader from '../utils/Loader';
+import * as actions from '../redux/actions';
+import { AstrologerUserApi, AsyncStorageSetUser, AsyncStorageSettoken } from '../backend/Api';
+import Toast from 'react-native-simple-toast';
 
 const SignIn = ({ navigation }) => {
+    const { _astrologerForm, _kundali } = stringsoflanguages
     const window = Dimensions.get('window');
     const { width, height } = Dimensions.get('window');
     const [VisiblePass, setVisiblePass] = useState(false)
     const makePassVisible = () => {
         setVisiblePass(prevState => !prevState);
     };
+    const [state, setState] = useState({
+        loading: false,
+    });
+    const toggleLoading = bol => setState({ ...state, loading: bol });
+    const [mobile, setMobile] = useState('9878987808')
+    const [password, setPassword] = useState('123456')
+
+    const login = () => {
+        if (mobile === '' || mobile.length !== 10) {
+            Toast.show('Please enter your valid phone number');
+        }
+        else if (password.trim() == '') {
+            Toast.show('Please enter Password');
+        }
+        else {
+            toggleLoading(true);
+            let e = {
+                mobile: mobile,
+                password: password,
+            };
+            AstrologerUserApi(e)
+                .then(data => {
+                    toggleLoading(false);
+                    if (data) {
+                        actions.Login(data?.user_detail);
+                        actions.Token(data?.token);
+                        AsyncStorageSettoken(data?.token);
+                        AsyncStorageSetUser(data?.user_detail);
+                        navigation.replace('DrawerNavigator')
+                    } else {
+                        alert(data.error);
+                    }
+                })
+                .catch(error => {
+                    toggleLoading(false);
+                    console.log('error', error);
+                });
+        }
+    }
+
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
             <StatusBar barStyle="dark-content" backgroundColor="white" />
+            {state.loading && <Loader />}
             <ScrollView>
                 <Pressable>
                     <Text
@@ -24,7 +71,7 @@ const SignIn = ({ navigation }) => {
                             marginRight: 18,
                             alignSelf: 'flex-end',
                         }}>
-                        SKIP
+                        {_astrologerForm.skip}
                     </Text>
                 </Pressable>
 
@@ -36,7 +83,7 @@ const SignIn = ({ navigation }) => {
                         marginTop: 14,
                         marginHorizontal: 18,
                     }}>
-                    Let’s Sign You Up
+                    {_astrologerForm.signuptitle}
                 </Text>
                 <Text
                     style={{
@@ -46,7 +93,7 @@ const SignIn = ({ navigation }) => {
                         marginTop: 10,
                         marginHorizontal: 18,
                     }}>
-                    Welcome to You !
+                    {_astrologerForm.welcometext}
                 </Text>
 
                 <Text
@@ -58,7 +105,7 @@ const SignIn = ({ navigation }) => {
                         marginTop: 30,
                         marginHorizontal: 18,
                     }}>
-                    Mobile No.
+                    {_kundali.mobile}
                 </Text>
                 <TextInput
                     style={{
@@ -76,7 +123,9 @@ const SignIn = ({ navigation }) => {
                     placeholderTextColor={'#333333'}
                     keyboardType='numeric'
                     maxLength={10}
-                    placeholder={'Mobile No.'}
+                    placeholder={_kundali.mobile}
+                    value={mobile}
+                    onChangeText={(text) => setMobile(text)}
                 />
 
                 <Text
@@ -88,14 +137,16 @@ const SignIn = ({ navigation }) => {
                         marginTop: 19,
                         marginHorizontal: 18,
                     }}>
-                    Password
+                    {_astrologerForm.password}
                 </Text>
                 <View style={{ flexDirection: 'row', }}>
                     <TextInput
                         placeholderTextColor={'#333333'}
-                        placeholder={'Password'}
+                        placeholder={_astrologerForm.password}
                         maxLength={20}
                         secureTextEntry={VisiblePass ? false : true}
+                        value={password}
+                        onChangeText={(text) => setPassword(text)}
                         style={{
                             fontSize: 16,
                             fontFamily: 'AvenirLTStd-Medium',
@@ -139,7 +190,7 @@ const SignIn = ({ navigation }) => {
                             textAlign: 'right',
                             marginRight: 18,
                         }}>
-                        Forget Password?
+                        {_astrologerForm.forgot}
                     </Text>
                 </Pressable>
             </ScrollView>
@@ -161,9 +212,9 @@ const SignIn = ({ navigation }) => {
                     fontFamily: 'AvenirLTStd-Medium',
                 }}
                 onPress={() => {
-                    navigation.replace('DrawerNavigator')
+                    login()
                 }}>
-                Sign In
+                {_astrologerForm.signin}
             </Button>
 
             <Pressable onPress={() => { navigation.navigate('SignUp') }}
@@ -175,7 +226,7 @@ const SignIn = ({ navigation }) => {
                         fontSize: 18,
                         letterSpacing: -0.2,
                     }}>
-                    Don’t have an account?
+                    {_astrologerForm.dont}
                 </Text>
                 <Text
                     style={{
@@ -185,7 +236,7 @@ const SignIn = ({ navigation }) => {
                         letterSpacing: -0.2,
                         marginLeft: 4,
                     }}>
-                    Sign Up
+                    {_astrologerForm.signup}
                 </Text>
             </Pressable>
         </SafeAreaView>

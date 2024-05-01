@@ -118,6 +118,8 @@ const Prashna = ({ navigation }) => {
             color: '#333333',
           }}
           placeholderTextColor={'gray'}
+          maxLength={10}
+          keyboardType='numeric'
           placeholder={'Whatsapp No.'}
         />
 

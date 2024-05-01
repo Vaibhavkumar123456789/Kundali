@@ -21,8 +21,9 @@ export const PATH_URL = {
   city1: 'city',
   drawerprofile: 'astrologer/home',
   astroreport: 'astro-report',
-  reportdetail:'astro-report-detail',
+  reportdetail: 'astro-report-detail',
   updateProfile: 'astrologer-user/edit-profile',
+  astrologeruserlogin: 'astrologer-user/login',
 
 };
 

@@ -203,7 +203,10 @@ const Home = ({ navigation }) => {
                 </View>
                 <View style={{ flexDirection: 'row', }}>
 
-                    <Pressable onPress={() => { navigation.navigate('Wallet') }} style={{
+                    <Pressable onPress={() => {
+                        navigation.navigate('Wallet')
+                        // navigation.navigate('Kundli')
+                    }} style={{
                         flexDirection: 'row', borderColor: '#333333', borderWidth: 1,
                         paddingHorizontal: 5, paddingVertical: 5, borderRadius: 4,
                         alignSelf: 'center', marginRight: 12

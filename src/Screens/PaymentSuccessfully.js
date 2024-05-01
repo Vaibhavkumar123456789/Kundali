@@ -5,11 +5,12 @@ import GLobal, { data } from './GLobal';
 import { BASE_URL } from '../backend/Config';
 import * as actions from '../redux/actions';
 import axios from 'axios';
+import stringsoflanguages from '../language/Language'
 import { AsyncStorageSetUser, AsyncStorageSettoken } from '../backend/Api';
 import Loader from '../utils/Loader';
 
 const PaymentSuccessfully = ({ navigation, route }) => {
-
+  const { _astrologerForm } = stringsoflanguages
   const window = Dimensions.get('window');
   const { width, height } = Dimensions.get('window');
   const [field, setField] = useState(GLobal.user)
@@ -86,56 +87,56 @@ const PaymentSuccessfully = ({ navigation, route }) => {
       formData.append('package_id', GLobal.id)
       formData.append('amount', GLobal.amount)
 
-        toggleLoading(true);
-        axios
-          .post(
-            `${BASE_URL}astrologer/signup`,
-            formData,
-            {
-              headers: {
-                'Content-Type': 'multipart/form-data',
-                // Add any additional headers as needed
-              },
+      toggleLoading(true);
+      axios
+        .post(
+          `${BASE_URL}astrologer/signup`,
+          formData,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+              // Add any additional headers as needed
             },
-          )
-          .then(response => {
-            toggleLoading(false);
-            actions.Login(response.data?.user_detail);
-            actions.Token(response.data?.token);
-            AsyncStorageSettoken(response.data?.token);
-            AsyncStorageSetUser(response.data?.user_detail);
-            navigation.replace('DrawerNavigator')
-          })
-          .catch(error => {
-            toggleLoading(true);
-            axios
-              .post(
-                `${BASE_URL}astrologer/signup`,
-                formData,
-                {
-                  headers: {
-                    'Content-Type': 'multipart/form-data',
-                    // Add any additional headers as needed
-                  },
+          },
+        )
+        .then(response => {
+          toggleLoading(false);
+          actions.Login(response.data?.user_detail);
+          actions.Token(response.data?.token);
+          AsyncStorageSettoken(response.data?.token);
+          AsyncStorageSetUser(response.data?.user_detail);
+          navigation.replace('DrawerNavigator')
+        })
+        .catch(error => {
+          toggleLoading(true);
+          axios
+            .post(
+              `${BASE_URL}astrologer/signup`,
+              formData,
+              {
+                headers: {
+                  'Content-Type': 'multipart/form-data',
+                  // Add any additional headers as needed
                 },
-              )
-              .then(response => {
-                toggleLoading(false);
-                actions.Login(response.data?.user_detail);
-                actions.Token(response.data?.token);
-                AsyncStorageSettoken(response.data?.token);
-                AsyncStorageSetUser(response.data?.user_detail);
-                navigation.replace('DrawerNavigator')
-              })
-              .catch(error => {
-                // Handle errors
-                toggleLoading(false);
-                console.error('Error uploading files', error);
-              });
-            // Handle errors
-            toggleLoading(false);
-            console.error('Error uploading files1', error);
-          });
+              },
+            )
+            .then(response => {
+              toggleLoading(false);
+              actions.Login(response.data?.user_detail);
+              actions.Token(response.data?.token);
+              AsyncStorageSettoken(response.data?.token);
+              AsyncStorageSetUser(response.data?.user_detail);
+              navigation.replace('DrawerNavigator')
+            })
+            .catch(error => {
+              // Handle errors
+              toggleLoading(false);
+              console.error('Error uploading files', error);
+            });
+          // Handle errors
+          toggleLoading(false);
+          console.error('Error uploading files1', error);
+        });
 
     } catch (error) {
       console.log(error)
@@ -156,56 +157,56 @@ const PaymentSuccessfully = ({ navigation, route }) => {
       formData.append('password', field.password)
       formData.append('experience', null)
 
-        toggleLoading(true);
-        axios
-          .post(
-            `${BASE_URL}astrologer/signup`,
-            formData,
-            {
-              headers: {
-                'Content-Type': 'multipart/form-data',
-                // Add any additional headers as needed
-              },
+      toggleLoading(true);
+      axios
+        .post(
+          `${BASE_URL}astrologer/signup`,
+          formData,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+              // Add any additional headers as needed
             },
-          )
-          .then(response => {
-            toggleLoading(false);
-            actions.Login(response.data?.user_detail);
-            actions.Token(response.data?.token);
-            AsyncStorageSettoken(response.data?.token);
-            AsyncStorageSetUser(response.data?.user_detail);
-            navigation.replace('DrawerNavigator')
-          })
-          .catch(error => {
-            toggleLoading(true);
-            axios
-              .post(
-                `${BASE_URL}astrologer/signup`,
-                formData,
-                {
-                  headers: {
-                    'Content-Type': 'multipart/form-data',
-                    // Add any additional headers as needed
-                  },
+          },
+        )
+        .then(response => {
+          toggleLoading(false);
+          actions.Login(response.data?.user_detail);
+          actions.Token(response.data?.token);
+          AsyncStorageSettoken(response.data?.token);
+          AsyncStorageSetUser(response.data?.user_detail);
+          navigation.replace('DrawerNavigator')
+        })
+        .catch(error => {
+          toggleLoading(true);
+          axios
+            .post(
+              `${BASE_URL}astrologer/signup`,
+              formData,
+              {
+                headers: {
+                  'Content-Type': 'multipart/form-data',
+                  // Add any additional headers as needed
                 },
-              )
-              .then(response => {
-                toggleLoading(false);
-                actions.Login(response.data?.user_detail);
-                actions.Token(response.data?.token);
-                AsyncStorageSettoken(response.data?.token);
-                AsyncStorageSetUser(response.data?.user_detail);
-                navigation.replace('DrawerNavigator')
-              })
-              .catch(error => {
-                // Handle errors
-                toggleLoading(false);
-                console.error('Error uploading files', error);
-              });
-            // Handle errors
-            toggleLoading(false);
-            console.error('Error uploading files1', error);
-          });
+              },
+            )
+            .then(response => {
+              toggleLoading(false);
+              actions.Login(response.data?.user_detail);
+              actions.Token(response.data?.token);
+              AsyncStorageSettoken(response.data?.token);
+              AsyncStorageSetUser(response.data?.user_detail);
+              navigation.replace('DrawerNavigator')
+            })
+            .catch(error => {
+              // Handle errors
+              toggleLoading(false);
+              console.error('Error uploading files', error);
+            });
+          // Handle errors
+          toggleLoading(false);
+          console.error('Error uploading files1', error);
+        });
 
 
     } catch (error) {
@@ -237,7 +238,7 @@ const PaymentSuccessfully = ({ navigation, route }) => {
         marginTop: 13,
         textAlign: 'center',
       }}>
-        Ref Id: 12345
+        {_astrologerForm.refid} 12345
       </Text>
 
       <Text style={{
@@ -249,7 +250,7 @@ const PaymentSuccessfully = ({ navigation, route }) => {
         marginTop: 5,
         textAlign: 'center',
       }}>
-        Payment Successful !
+        {_astrologerForm.paymentsuccess}
       </Text>
 
       <Text style={{
@@ -261,8 +262,7 @@ const PaymentSuccessfully = ({ navigation, route }) => {
         marginTop: 8,
         textAlign: 'center',
       }}>
-        We are delighted to inform you that
-        we received your payments
+        {_astrologerForm.textaddress}
       </Text>
 
       <Button
@@ -288,7 +288,7 @@ const PaymentSuccessfully = ({ navigation, route }) => {
           field.type == 1 ? nn() :
             Freepackage()
         }}>
-        Go to Homepage
+        {_astrologerForm.gotohomepage}
       </Button>
 
 

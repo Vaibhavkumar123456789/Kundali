@@ -92,7 +92,7 @@ const SignUp = ({ navigation }) => {
             <StatusBar barStyle="dark-content" backgroundColor="white" />
             {state.loading && <Loader />}
             <ScrollView style={{ marginBottom: 40 }}>
-                <Pressable onPress={() => navigation.replace('DrawerNavigator')}>
+                <Pressable onPress={() => navigation.replace('')}>
                     <Text
                         style={{
                             fontFamily: 'AvenirLTStd-Medium',

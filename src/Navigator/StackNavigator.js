@@ -47,6 +47,7 @@ import MyOrders from '../Screens/MyOrders';
 import NetalReportDetail from '../Screens/NetalReportDetail';
 import NaamJane from '../Screens/NaamJane';
 import NaamJaneReport from '../Screens/NaamJaneReport';
+import Kundli from '../Screens/Kundli';
 
 
 const Stack = createStackNavigator();
@@ -292,6 +293,20 @@ const StackNavigator = () => {
                     name="NetalReportDetail"
                     component={NetalReportDetail}
                     options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                    name="Kundli"
+                    component={Kundli}
+                    options={{
+                        title: 'Kundli',
+                        headerStyle: {
+                            backgroundColor: '#FEBD57',
+                        },
+                        headerTintColor: 'black',
+                        headerTitleStyle: {
+                            fontFamily: 'AvenirLTStd-Medium',
+                        },
+                    }}
                 />
 
 

@@ -50,6 +50,7 @@ const Splash = ({ navigation }) => {
             GLobal.language = lang;
         }
     };
+
     async function requestUserPermission() {
         const authStatus = await messaging().requestPermission();
         const enabled =
@@ -83,7 +84,6 @@ const Splash = ({ navigation }) => {
                     width: "100%",
                     height: "100%",
                     resizeMode: 'cover',
-
                 }}
                 source={require('../assets/splash1.png')} />
         </SafeAreaView>

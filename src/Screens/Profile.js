@@ -1,5 +1,3 @@
-
-
 import React, { useState, useEffect } from 'react';
 import {
     Image,
@@ -309,9 +307,6 @@ const Profile = ({ navigation }) => {
             />
             {state1.loading && <Loader />}
             <ScrollView>
-                {/* <Image source={{ uri: `${userData?.path}/${userData?.data?.profile_picture}` }}
-                    style={{ width: 110, height: 100, resizeMode: 'contain', alignSelf: 'center', marginTop: 20 }}
-                /> */}
 
                 <View>
                     {state.image ? (
@@ -471,6 +466,7 @@ const Profile = ({ navigation }) => {
                     {_customlang.submit}
                 </Button>
 
+
             </ScrollView>
 
             <Modal
@@ -527,15 +523,13 @@ const styles = StyleSheet.create({
         padding: 5,
     },
     text: {
-        fontFamily: 'Poppins-Regular',
+        fontFamily: 'AvenirLTStd-Medium',
         fontSize: 18,
-        fontWeight: '500',
         color: '#1E2432',
     },
     modaltext: {
-        fontFamily: 'Montserrat-SemiBold',
+        fontFamily: 'AvenirLTStd-Medium',
         fontSize: 16,
-        fontWeight: '600',
         color: '#363636',
     },
 })

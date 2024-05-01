@@ -1,9 +1,11 @@
 import { View, Text, Image, StyleSheet, Dimensions, StatusBar, SafeAreaView, ImageBackground, Pressable, } from 'react-native'
 import React, { useEffect } from 'react'
+import stringsoflanguages from '../language/Language'
 
 const SelectType = ({ navigation }) => {
     const window = Dimensions.get('window');
     const { width, height } = Dimensions.get('window');
+    const { _astrologerForm } = stringsoflanguages
     return (
         <SafeAreaView style={{ flex: 1 }}>
             <StatusBar barStyle="dark-content" backgroundColor="white" />
@@ -17,7 +19,7 @@ const SelectType = ({ navigation }) => {
                     fontFamily: 'AvenirLTStd-Heavy',
                     textAlign: 'center',
                 }}>
-                    Select User Type
+                    {_astrologerForm.selectusertype}
                 </Text>
                 <View style={{ flexDirection: 'row', marginLeft: 18, marginTop: 20 }}>
                     <Pressable onPress={() => { navigation.navigate('AstrologerRegister') }}>

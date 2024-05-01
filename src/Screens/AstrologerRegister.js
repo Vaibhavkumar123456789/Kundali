@@ -25,6 +25,7 @@ import { RadioButton } from 'react-native-paper';
 import { ButtonStyle } from '../Custom/CustomView';
 import Button from 'react-native-button';
 import Header from '../Custom/Header';
+import stringsoflanguages from '../language/Language'
 import Loader from '../utils/Loader';
 import { Dropdown } from 'react-native-element-dropdown';
 import DocumentPicker, { types } from 'react-native-document-picker';
@@ -44,16 +45,14 @@ import { BASE_URL } from '../backend/Config';
 import { validateEmail } from '../utils/utils';
 import GLobal from './GLobal';
 
-
-
 const AstrologerRegister = ({ navigation }) => {
-
+    const { _kundali, _astrologerForm, _customlang } = stringsoflanguages
     const [VisiblePass, setVisiblePass] = useState(false)
     const makePassVisible = () => {
         setVisiblePass(prevState => !prevState);
     };
     const [checked, setChecked] = React.useState(false);
-    const gender = ["Male", "Female"]
+    const gender = [_kundali.male, _kundali.female]
     const [type, setType] = useState(false)
     const [date, setDate] = useState('')
     const [pdate, setPDate] = useState('')
@@ -502,7 +501,7 @@ const AstrologerRegister = ({ navigation }) => {
             <Header
                 menuOption={() => navigation.goBack()}
                 leftIcon={require('../assets/backtoback.png')}
-                title='Astrologer Register'
+                title={_astrologerForm.astrologerregister}
             />
             {state.loading && <Loader />}
             <View style={{ marginHorizontal: 5, marginTop: 15 }}>
@@ -528,7 +527,7 @@ const AstrologerRegister = ({ navigation }) => {
                                 marginTop: 5,
                                 marginHorizontal: 18,
                             }}>
-                            Name
+                            {_kundali.name}
                         </Text>
                         <TextInput
                             style={{
@@ -544,7 +543,7 @@ const AstrologerRegister = ({ navigation }) => {
                                 color: '#333333',
                             }}
                             placeholderTextColor={'#333333'}
-                            placeholder={'Name'}
+                            placeholder={_kundali.name}
                             value={name}
                             onChangeText={(text) => setName(text)}
                         />
@@ -558,7 +557,7 @@ const AstrologerRegister = ({ navigation }) => {
                                 marginTop: 19,
                                 marginHorizontal: 18,
                             }}>
-                            Email
+                            {_kundali.email}
                         </Text>
                         <TextInput
                             style={{
@@ -574,7 +573,7 @@ const AstrologerRegister = ({ navigation }) => {
                                 color: '#333333',
                             }}
                             placeholderTextColor={'#333333'}
-                            placeholder={'Email'}
+                            placeholder={_kundali.email}
                             value={email}
                             onChangeText={(text) => setEmail(text)}
                             autoCapitalize='none'
@@ -589,7 +588,7 @@ const AstrologerRegister = ({ navigation }) => {
                                 marginTop: 19,
                                 marginHorizontal: 18,
                             }}>
-                            Mobile No.
+                            {_kundali.mobile}
                         </Text>
                         <TextInput
                             style={{
@@ -606,7 +605,7 @@ const AstrologerRegister = ({ navigation }) => {
                             }}
                             placeholderTextColor={'#333333'}
                             keyboardType='numeric'
-                            placeholder={'Mobile No.'}
+                            placeholder={_kundali.mobile}
                             maxLength={10}
                             value={mobile}
                             onChangeText={(text) => setMobile(text)}
@@ -621,12 +620,12 @@ const AstrologerRegister = ({ navigation }) => {
                                 marginTop: 19,
                                 marginHorizontal: 18,
                             }}>
-                            Password
+                            {_astrologerForm.password}
                         </Text>
                         <View style={{ flexDirection: 'row', }}>
                             <TextInput
                                 placeholderTextColor={'#333333'}
-                                placeholder={'Password'}
+                                placeholder={_astrologerForm.password}
                                 maxLength={20}
                                 secureTextEntry={VisiblePass ? false : true}
                                 value={password}
@@ -674,7 +673,7 @@ const AstrologerRegister = ({ navigation }) => {
                                 marginTop: 19,
                                 marginHorizontal: 18,
                             }}>
-                            Gender
+                            {_kundali.gender}
                         </Text>
                         <FlatList
                             data={gender}
@@ -713,7 +712,7 @@ const AstrologerRegister = ({ navigation }) => {
                                 marginTop: 12,
                                 marginHorizontal: 18,
                             }}>
-                            Date of Birth
+                            {_kundali.dateofbirth}
                         </Text>
 
                         <TouchableOpacity activeOpacity={0.9} style={{
@@ -736,7 +735,7 @@ const AstrologerRegister = ({ navigation }) => {
                                 editable={false}
                                 placeholderTextColor={'#333333'}
                                 value={date != '' ? moment(date).format('DD-MM-YYYY') : ''}
-                                placeholder='Date of Birth   '
+                                placeholder={_kundali.dateofbirth}
                             />
                             <Image
                                 source={require('../assets/calendar.png')}
@@ -766,7 +765,7 @@ const AstrologerRegister = ({ navigation }) => {
                                 marginTop: 5,
                                 marginHorizontal: 18,
                             }}>
-                            Consultant
+                            {_astrologerForm.consulatant}
                         </Text>
                         <Dropdown
                             style={{
@@ -786,7 +785,7 @@ const AstrologerRegister = ({ navigation }) => {
                             maxHeight={150}
                             labelField="label"
                             valueField="value"
-                            placeholder="Consultant"
+                            placeholder={_astrologerForm.consulatant}
                             value={should1}
                             onChange={(item) => setShould1(item.value)}
                         />
@@ -800,7 +799,7 @@ const AstrologerRegister = ({ navigation }) => {
                                 marginTop: 19,
                                 marginHorizontal: 18,
                             }}>
-                            Skill (Expertise)
+                            {_astrologerForm.skill}
                         </Text>
                         <Dropdown
                             style={{
@@ -820,7 +819,7 @@ const AstrologerRegister = ({ navigation }) => {
                             maxHeight={150}
                             labelField="label"
                             valueField="value"
-                            placeholder="Skill (Expertise)"
+                            placeholder={_astrologerForm.skill}
                             value={should2}
                             onChange={(item) => setShould2(item.value)}
                         />
@@ -834,7 +833,7 @@ const AstrologerRegister = ({ navigation }) => {
                                 marginTop: 19,
                                 marginHorizontal: 18,
                             }}>
-                            Main Specialization
+                            {_astrologerForm.main}
                         </Text>
                         <Dropdown
                             style={{
@@ -854,7 +853,7 @@ const AstrologerRegister = ({ navigation }) => {
                             maxHeight={150}
                             labelField="label"
                             valueField="value"
-                            placeholder="Main Specialization"
+                            placeholder={_astrologerForm.main}
                             value={should3}
                             onChange={(item) => setShould3(item.value)}
                         />
@@ -868,7 +867,7 @@ const AstrologerRegister = ({ navigation }) => {
                                 marginTop: 19,
                                 marginHorizontal: 18,
                             }}>
-                            Language
+                            {_astrologerForm.language}
                         </Text>
                         <Dropdown
                             style={{
@@ -888,7 +887,7 @@ const AstrologerRegister = ({ navigation }) => {
                             maxHeight={150}
                             labelField="label"
                             valueField="value"
-                            placeholder="Language"
+                            placeholder={_astrologerForm.language}
                             value={should4}
                             onChange={(item) => setShould4(item.value)}
                         />
@@ -902,7 +901,7 @@ const AstrologerRegister = ({ navigation }) => {
                                 marginTop: 19,
                                 marginHorizontal: 18,
                             }}>
-                            Experience
+                            {_astrologerForm.experience}
                         </Text>
                         <TextInput
                             style={{
@@ -918,7 +917,7 @@ const AstrologerRegister = ({ navigation }) => {
                                 color: '#333333',
                             }}
                             placeholderTextColor={'#333333'}
-                            placeholder={'Experience'}
+                            placeholder={_astrologerForm.experience}
                             value={experience}
                             onChangeText={(text) => setExperience(text)}
                         />
@@ -932,7 +931,7 @@ const AstrologerRegister = ({ navigation }) => {
                                 marginTop: 19,
                                 marginHorizontal: 18,
                             }}>
-                            How many hours can contribute daily?
+                            {_astrologerForm.longtext}
                         </Text>
                         <TextInput
                             style={{
@@ -948,7 +947,7 @@ const AstrologerRegister = ({ navigation }) => {
                                 color: '#333333',
                             }}
                             placeholderTextColor={'#333333'}
-                            placeholder={'Daily hours'}
+                            placeholder={_astrologerForm.dailyhour}
                             value={hour}
                             onChangeText={(text) => setHour(text)}
                         />
@@ -967,7 +966,7 @@ const AstrologerRegister = ({ navigation }) => {
                                 marginTop: 5,
                                 marginHorizontal: 18,
                             }}>
-                            Bank Name
+                            {_astrologerForm.bankname}
                         </Text>
                         <TextInput
                             style={{
@@ -983,7 +982,7 @@ const AstrologerRegister = ({ navigation }) => {
                                 color: '#333333',
                             }}
                             placeholderTextColor={'#333333'}
-                            placeholder={'Bank Name'}
+                            placeholder={_astrologerForm.bankname}
                             value={bankname}
                             onChangeText={(text) => setBankName(text)}
                         />
@@ -997,7 +996,7 @@ const AstrologerRegister = ({ navigation }) => {
                                 marginTop: 19,
                                 marginHorizontal: 18,
                             }}>
-                            Bank Account Number
+                            {_astrologerForm.bankaccountnumber}
                         </Text>
                         <TextInput
                             style={{
@@ -1014,7 +1013,7 @@ const AstrologerRegister = ({ navigation }) => {
                             }}
                             placeholderTextColor={'#333333'}
                             keyboardType='numeric'
-                            placeholder={'Bank Account Number'}
+                            placeholder={_astrologerForm.bankaccountnumber}
                             value={accountnumber}
                             onChangeText={(text) => setAccountNumber(text)}
                         />
@@ -1028,7 +1027,7 @@ const AstrologerRegister = ({ navigation }) => {
                                 marginTop: 19,
                                 marginHorizontal: 18,
                             }}>
-                            IFSC Code
+                            {_astrologerForm.Ifsc}
                         </Text>
                         <TextInput
                             style={{
@@ -1045,7 +1044,7 @@ const AstrologerRegister = ({ navigation }) => {
                             }}
                             autoCapitalize='characters'
                             placeholderTextColor={'#333333'}
-                            placeholder={'IFSC Code'}
+                            placeholder={_astrologerForm.Ifsc}
                             value={ifsc}
                             onChangeText={(text) => setIFSC(text)}
                         />
@@ -1065,7 +1064,7 @@ const AstrologerRegister = ({ navigation }) => {
                                 marginTop: 5,
                                 marginHorizontal: 18,
                             }}>
-                            Address
+                            {_astrologerForm.address}
                         </Text>
                         <TextInput
                             style={{
@@ -1081,7 +1080,7 @@ const AstrologerRegister = ({ navigation }) => {
                                 color: '#333333',
                             }}
                             placeholderTextColor={'#333333'}
-                            placeholder={'Address'}
+                            placeholder={_astrologerForm.address}
                             value={address}
                             onChangeText={(text) => setAddress(text)}
                         />
@@ -1095,7 +1094,7 @@ const AstrologerRegister = ({ navigation }) => {
                                 marginTop: 19,
                                 marginHorizontal: 18,
                             }}>
-                            Country
+                            {_astrologerForm.country}
                         </Text>
                         <Dropdown
                             style={{
@@ -1116,7 +1115,7 @@ const AstrologerRegister = ({ navigation }) => {
                             maxHeight={150}
                             labelField="label"
                             valueField="value"
-                            placeholder="Country"
+                            placeholder={_astrologerForm.country}
                             value={should5}
                             onChange={(item) => { setShould5(item.value), statelist(item.value) }}
                         />
@@ -1130,7 +1129,7 @@ const AstrologerRegister = ({ navigation }) => {
                                 marginTop: 19,
                                 marginHorizontal: 18,
                             }}>
-                            State
+                            {_astrologerForm.statename}
                         </Text>
                         <Dropdown
                             style={{
@@ -1150,7 +1149,7 @@ const AstrologerRegister = ({ navigation }) => {
                             maxHeight={150}
                             labelField="label"
                             valueField="value"
-                            placeholder="State"
+                            placeholder={_astrologerForm.statename}
                             value={should6}
                             onChange={(item) => { setShould6(item.value), citylist(item.value) }}
                         />
@@ -1164,7 +1163,7 @@ const AstrologerRegister = ({ navigation }) => {
                                 marginTop: 19,
                                 marginHorizontal: 18,
                             }}>
-                            City
+                            {_astrologerForm.city}
                         </Text>
                         <Dropdown
                             style={{
@@ -1184,7 +1183,7 @@ const AstrologerRegister = ({ navigation }) => {
                             maxHeight={150}
                             labelField="label"
                             valueField="value"
-                            placeholder="City"
+                            placeholder={_astrologerForm.city}
                             value={should7}
                             onChange={(item) => setShould7(item.value)}
                         />
@@ -1198,7 +1197,7 @@ const AstrologerRegister = ({ navigation }) => {
                                 marginTop: 19,
                                 marginHorizontal: 18,
                             }}>
-                            Pincode
+                            {_astrologerForm.pincode}
                         </Text>
                         <TextInput
                             style={{
@@ -1216,7 +1215,7 @@ const AstrologerRegister = ({ navigation }) => {
                             placeholderTextColor={'#333333'}
                             keyboardType='numeric'
                             maxLength={6}
-                            placeholder={'Pincode'}
+                            placeholder={_astrologerForm.pincode}
                             value={pincode}
                             onChangeText={(text) => setPincode(text)}
                         />
@@ -1236,7 +1235,7 @@ const AstrologerRegister = ({ navigation }) => {
                                 marginTop: 5,
                                 marginHorizontal: 18,
                             }}>
-                            PAN Card No.
+                            {_astrologerForm.pancardno}
                         </Text>
                         <TextInput
                             style={{
@@ -1253,7 +1252,7 @@ const AstrologerRegister = ({ navigation }) => {
                             }}
                             placeholderTextColor={'#333333'}
                             maxLength={10}
-                            placeholder={'PAN Card No.'}
+                            placeholder={_astrologerForm.pancardno}
                             autoCapitalize='characters'
                             value={pancard}
                             onChangeText={(text) => setPanCard(text)}
@@ -1269,7 +1268,7 @@ const AstrologerRegister = ({ navigation }) => {
                                 marginTop: 19,
                                 marginHorizontal: 18,
                             }}>
-                            Aadhar Card No.
+                            {_astrologerForm.aadharcardno}
                         </Text>
                         <TextInput
                             style={{
@@ -1287,7 +1286,7 @@ const AstrologerRegister = ({ navigation }) => {
                             placeholderTextColor={'#333333'}
                             keyboardType='numeric'
                             maxLength={12}
-                            placeholder={'Aadhar Card No.'}
+                            placeholder={_astrologerForm.aadharcardno}
                             value={aadharcard}
                             onChangeText={(text) => setAadhar(text)}
                         />
@@ -1301,7 +1300,7 @@ const AstrologerRegister = ({ navigation }) => {
                                 marginTop: 19,
                                 marginHorizontal: 18,
                             }}>
-                            Upload Aadhar Card
+                            {_astrologerForm.uploadaadhar}
                         </Text>
                         <View style={{ flexDirection: 'row', marginTop: 10 }}>
                             <Pressable onPress={() => { getPassport("1") }} >
@@ -1368,7 +1367,7 @@ const AstrologerRegister = ({ navigation }) => {
                                 marginTop: 19,
                                 marginHorizontal: 18,
                             }}>
-                            Upload PAN Card
+                            {_astrologerForm.uploadpan}
                         </Text>
                         <Pressable onPress={() => { getPassport("3") }} >
                             <ImageBackground
@@ -1411,7 +1410,7 @@ const AstrologerRegister = ({ navigation }) => {
                                 marginTop: 5,
                                 marginHorizontal: 18,
                             }}>
-                            Academic Qualification
+                            {_astrologerForm.acadmicqualification}
                         </Text>
                         <TextInput
                             style={{
@@ -1427,7 +1426,7 @@ const AstrologerRegister = ({ navigation }) => {
                                 color: '#333333',
                             }}
                             placeholderTextColor={'#333333'}
-                            placeholder={'Academic Qualification'}
+                            placeholder={_astrologerForm.acadmicqualification}
                             value={academicqual}
                             onChangeText={(text) => setAcademicQual(text)}
                         />
@@ -1441,7 +1440,7 @@ const AstrologerRegister = ({ navigation }) => {
                                 marginTop: 19,
                                 marginHorizontal: 18,
                             }}>
-                            Astrological Qalifications
+                            {_astrologerForm.astrological}
                         </Text>
                         <TextInput
                             style={{
@@ -1457,7 +1456,7 @@ const AstrologerRegister = ({ navigation }) => {
                                 color: '#333333',
                             }}
                             placeholderTextColor={'#333333'}
-                            placeholder={'Astrological Qalifications'}
+                            placeholder={_astrologerForm.astrological}
                             value={astroqualification}
                             onChangeText={(text) => setAstroQualification(text)}
                         />
@@ -1471,7 +1470,7 @@ const AstrologerRegister = ({ navigation }) => {
                                 marginTop: 19,
                                 marginHorizontal: 18,
                             }}>
-                            Upload Academic Certificate
+                            {_astrologerForm.uploadacademic}
                         </Text>
                         <Pressable onPress={() => { getPassport("4") }}>
                             <ImageBackground
@@ -1509,7 +1508,7 @@ const AstrologerRegister = ({ navigation }) => {
                                 marginTop: 19,
                                 marginHorizontal: 18,
                             }}>
-                            Upload Astrological Certificate
+                            {_astrologerForm.uploadastrological}
                         </Text>
                         <Pressable onPress={() => { getPassport("5") }}>
                             <ImageBackground
@@ -1547,7 +1546,7 @@ const AstrologerRegister = ({ navigation }) => {
                                 marginTop: 19,
                                 marginHorizontal: 18,
                             }}>
-                            Upload Profile Picture
+                            {_astrologerForm.uploadprofile}
                         </Text>
                         <Pressable onPress={() => { getPassport("6") }}>
                             <ImageBackground
@@ -1584,7 +1583,7 @@ const AstrologerRegister = ({ navigation }) => {
                                 marginTop: 19,
                                 marginHorizontal: 18,
                             }}>
-                            Biography
+                            {_astrologerForm.biography}
                         </Text>
                         <TextInput
                             style={{
@@ -1602,7 +1601,7 @@ const AstrologerRegister = ({ navigation }) => {
                             textAlignVertical='top'
                             multiline
                             placeholderTextColor={'#333333'}
-                            placeholder={'Write something…'}
+                            placeholder={_astrologerForm.writesomething}
                             value={biography}
                             onChangeText={(text) => setBiography(text)}
                         />
@@ -1679,7 +1678,7 @@ const AstrologerRegister = ({ navigation }) => {
                             }
 
                         }}>
-                        Next
+                        {_customlang.button}
                     </Button>
                 )}
 
@@ -1726,7 +1725,7 @@ const AstrologerRegister = ({ navigation }) => {
                             }
 
                         }}>
-                        Next
+                        {_customlang.button}
                     </Button>
                 )}
 
@@ -1838,7 +1837,7 @@ const AstrologerRegister = ({ navigation }) => {
                                 navigation.replace('Package')
                             }
                         }}>
-                        Next
+                        {_customlang.button}
                     </Button>
                 )}
 
@@ -1878,7 +1877,7 @@ const AstrologerRegister = ({ navigation }) => {
                                 setCurrentPosition(currentPosition + 1)
                             }
                         }}>
-                        Next
+                        {_customlang.button}
                     </Button>
                 )
             }
@@ -1922,7 +1921,7 @@ const AstrologerRegister = ({ navigation }) => {
                                 setCurrentPosition(currentPosition + 1)
                             }
                         }}>
-                        Next
+                        {_customlang.button}
                     </Button>
                 )
             }
@@ -1975,7 +1974,7 @@ const AstrologerRegister = ({ navigation }) => {
                             }
 
                         }}>
-                        Next
+                        {_customlang.button}
                     </Button>
                 )
             }
