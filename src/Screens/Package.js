@@ -279,7 +279,7 @@ const Package = ({ navigation }) => {
                                 } else if (item.is_free == 0) {
                                     GLobal.id = item.id
                                     GLobal.amount = item.amount
-                                    navigation.navigate('Payment')                           //membership
+                                    navigation.replace('Payment')                           //membership
                                 }
                             }}>
                                 <View

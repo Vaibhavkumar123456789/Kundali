@@ -19,8 +19,8 @@ const SignIn = ({ navigation }) => {
         loading: false,
     });
     const toggleLoading = bol => setState({ ...state, loading: bol });
-    const [mobile, setMobile] = useState('9878987808')
-    const [password, setPassword] = useState('123456')
+    const [mobile, setMobile] = useState('')
+    const [password, setPassword] = useState('')
 
     const login = () => {
         if (mobile === '' || mobile.length !== 10) {
@@ -180,7 +180,7 @@ const SignIn = ({ navigation }) => {
                         )}
                     </TouchableOpacity>
                 </View>
-                <Pressable onPress={() => { navigation.navigate('ForgotPassword') }}>
+                <Pressable onPress={() => { navigation.replace('ForgotPassword') }}>
                     <Text
                         style={{
                             fontFamily: 'AvenirLTStd-Medium',
@@ -217,7 +217,7 @@ const SignIn = ({ navigation }) => {
                 {_astrologerForm.signin}
             </Button>
 
-            <Pressable onPress={() => { navigation.navigate('SignUp') }}
+            <Pressable onPress={() => { navigation.replace('SignUp') }}
                 style={{ flexDirection: 'row', justifyContent: 'center', marginHorizontal: 18, bottom: 15, }}>
                 <Text
                     style={{

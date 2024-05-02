@@ -101,7 +101,7 @@ const Otp = ({ navigation }) => {
                     fontFamily: 'AvenirLTStd-Medium',
                 }}
                 onPress={() => {
-                    navigation.navigate('Package')
+                    navigation.replace('Package')
                 }}>
                 Submit
             </Button>

@@ -326,13 +326,12 @@ const SignUp = ({ navigation }) => {
                     fontFamily: 'AvenirLTStd-Medium',
                 }}
                 onPress={() => {
-
                     buttonClickListenerstarted()
                 }}>
                 Sign Up
             </Button>
 
-            <Pressable onPress={() => { navigation.navigate('SignIn') }}
+            <Pressable onPress={() => { navigation.replace('SignIn') }}
                 style={{ flexDirection: 'row', justifyContent: 'center', marginHorizontal: 18, bottom: 15, }}>
                 <Text
                     style={{

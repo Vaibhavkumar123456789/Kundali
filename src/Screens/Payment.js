@@ -207,7 +207,7 @@ const Payment = ({ navigation, route }) => {
                     fontFamily: 'AvenirLTStd-Medium',
                 }}
                 onPress={() => {
-                    navigation.navigate('PaymentSuccessfully')
+                    navigation.replace('PaymentSuccessfully')
                 }}>
                 Proceed to Pay
             </Button>
