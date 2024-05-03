@@ -2,12 +2,11 @@ import { View, Text, Image, StyleSheet, Dimensions, TextInput, StatusBar, SafeAr
 import React, { useEffect, useState } from 'react'
 import Button from 'react-native-button';
 import stringsoflanguages from '../language/Language'
-import OTPInputView from '@twotalltotems/react-native-otp-input'
-import GLobal, { data } from './GLobal';
-const Otp = ({ navigation }) => {
+
+const ResetPassword = ({ navigation }) => {
     const window = Dimensions.get('window');
     const { width, height } = Dimensions.get('window');
-    const { _otp, _customlang } = stringsoflanguages
+    const { _astrologerForm, _kundali, _customlang, _otp } = stringsoflanguages
 
 
     return (
@@ -23,7 +22,7 @@ const Otp = ({ navigation }) => {
                         marginTop: 60,
                         marginHorizontal: 18,
                     }}>
-                    {_otp.phoneverify}
+                    {_otp.setnewpassword}
                 </Text>
                 <Text
                     style={{
@@ -33,58 +32,66 @@ const Otp = ({ navigation }) => {
                         marginTop: 10,
                         marginHorizontal: 18,
                     }}>
-                    {_otp.enterotp}
+                    {_otp.newtext}
                 </Text>
-
-                <OTPInputView
-                    style={{
-                        height: 150,
-                        marginVertical: 20,
-                        marginHorizontal: 18,
-                    }}
-                    pinCount={4}
-                    autoFocusOnLoad
-                    codeInputFieldStyle={styles.underlineStyleBase}
-                    codeInputHighlightStyle={styles.underlineStyleHighLighted}
-                />
 
                 <Text
                     style={{
-                        fontFamily: 'AvenirLTStd-Heavy',
-                        color: '#242A37',
-                        fontSize: 14,
-                        marginTop: -35,
-                        textAlign: 'center',
+                        fontFamily: 'AvenirLTStd-Medium',
+                        color: '#ADADAD',
+                        fontSize: 18,
+                        letterSpacing: -0.2,
+                        marginTop: 30,
                         marginHorizontal: 18,
                     }}>
-                    {_otp.didnt}
+                    {_astrologerForm.password}
                 </Text>
-                <View style={{ flexDirection: 'row', justifyContent: 'center', marginHorizontal: 18, marginTop: 7 }}>
-                    <Text
-                        style={{
-                            fontFamily: 'AvenirLTStd-Heavy',
-                            color: '#242A37',
-                            fontSize: 14,
-                            textAlign: 'center',
-                        }}>
-                        {_otp.resend}
-                    </Text>
-                    <Pressable>
-                        <Text
-                            style={{
-                                fontFamily: 'AvenirLTStd-Heavy',
-                                color: '#FFCC80',
-                                fontSize: 14,
-                                textAlign: 'center',
-                                marginLeft: 3,
-                            }}>
-                            {_otp.resend}
-                        </Text>
-                    </Pressable>
-                </View>
-
+                <TextInput
+                    style={{
+                        fontSize: 16,
+                        fontFamily: 'AvenirLTStd-Medium',
+                        borderRadius: 10,
+                        borderColor: '#00000020',
+                        borderWidth: 1.5,
+                        marginTop: 10,
+                        marginHorizontal: 18,
+                        paddingHorizontal: 15,
+                        paddingVertical: 11,
+                        color: '#333333',
+                    }}
+                    placeholderTextColor={'#333333'}
+                    placeholder={_astrologerForm.password}
+                />
+                <Text
+                    style={{
+                        fontFamily: 'AvenirLTStd-Medium',
+                        color: '#ADADAD',
+                        fontSize: 18,
+                        letterSpacing: -0.2,
+                        marginTop: 19,
+                        marginHorizontal: 18,
+                    }}>
+                    {_otp.newpassword}
+                </Text>
+                <TextInput
+                    style={{
+                        fontSize: 16,
+                        fontFamily: 'AvenirLTStd-Medium',
+                        borderRadius: 10,
+                        borderColor: '#00000020',
+                        borderWidth: 1.5,
+                        marginTop: 10,
+                        marginHorizontal: 18,
+                        paddingHorizontal: 15,
+                        paddingVertical: 11,
+                        color: '#333333',
+                    }}
+                    placeholderTextColor={'#333333'}
+                    placeholder={_otp.newpassword}
+                />
 
             </ScrollView>
+
             <Button
                 containerStyle={{
                     width: '90%',
@@ -103,12 +110,7 @@ const Otp = ({ navigation }) => {
                     fontFamily: 'AvenirLTStd-Medium',
                 }}
                 onPress={() => {
-                    if ([1, 2].includes(GLobal.user.type == 2)) {
-                        navigation.replace('Package')
-                    }
-                    else {
-                        navigation.replace('ResetPassword')
-                    }
+                    navigation.replace('SignIn')
                 }}>
                 {_customlang.submit}
             </Button>
@@ -117,20 +119,12 @@ const Otp = ({ navigation }) => {
     )
 }
 
-export default Otp
+export default ResetPassword
 
 const styles = StyleSheet.create({
-    underlineStyleBase: {
-        width: 60,
-        height: 60,
-        borderWidth: 1.5,
-        borderRadius: 10,
-        fontSize: 24,
-        color: '#1E1F20',
+    checkboxtext: {
+        color: '#FFCC80',
         fontFamily: 'AvenirLTStd-Heavy',
-    },
-
-    underlineStyleHighLighted: {
-        borderColor: "#00000020",
+        fontSize: 14,
     },
 })

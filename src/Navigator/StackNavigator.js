@@ -48,6 +48,7 @@ import NetalReportDetail from '../Screens/NetalReportDetail';
 import NaamJane from '../Screens/NaamJane';
 import NaamJaneReport from '../Screens/NaamJaneReport';
 import Kundli from '../Screens/Kundli';
+import ResetPassword from '../Screens/ResetPassword';
 
 
 const Stack = createStackNavigator();
@@ -307,6 +308,11 @@ const StackNavigator = () => {
                             fontFamily: 'AvenirLTStd-Medium',
                         },
                     }}
+                />
+                <Stack.Screen
+                    name="ResetPassword"
+                    component={ResetPassword}
+                    options={{ headerShown: false }}
                 />
 
 

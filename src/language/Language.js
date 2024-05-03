@@ -199,8 +199,23 @@ let stringsoflanguages = new LocalizedStrings({
             signin: 'Sign In',
             dont: 'Don’t have an account?',
             signup: 'Sign Up',
-
-
+            signuptitle1: ' Let’s Sign You Up',
+            welcometou: 'Welcome to You !',
+            iagree: 'I agree to Astrology',
+            termsandservice: 'Terms and services',
+            privacy: 'Privacy Policy',
+            already: 'Already have an account?',
+            forgotp: 'Forgot Password',
+            forgottext: 'We need your registration phone number to send you password reset code!',
+        },
+        _otp: {
+            phoneverify: 'Phone Verification',
+            enterotp: 'Enter your OTP code here',
+            didnt: 'Didn`t you received any code?',
+            resend: 'Resend a new code.',
+            setnewpassword: 'Set New Password',
+            newtext: 'Strong Passwords Include Numbers, Letters, And Punctuation Marks.',
+            newpassword: 'New Password',
         },
 
 

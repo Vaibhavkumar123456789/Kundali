@@ -24,6 +24,7 @@ export const PATH_URL = {
   reportdetail: 'astro-report-detail',
   updateProfile: 'astrologer-user/edit-profile',
   astrologeruserlogin: 'astrologer-user/login',
+  skip: 'guest-user',
 
 };
 

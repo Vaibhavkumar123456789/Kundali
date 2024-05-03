@@ -1,14 +1,13 @@
 import { View, Text, Image, StyleSheet, Dimensions, TextInput, StatusBar, SafeAreaView, ImageBackground, Pressable, ScrollView, TouchableOpacity, } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import Button from 'react-native-button';
+import stringsoflanguages from '../language/Language'
 
 const ForgotPassword = ({ navigation }) => {
     const window = Dimensions.get('window');
     const { width, height } = Dimensions.get('window');
-    const [VisiblePass, setVisiblePass] = useState(false)
-    const makePassVisible = () => {
-        setVisiblePass(prevState => !prevState);
-    };
+    const { _astrologerForm, _kundali, _customlang } = stringsoflanguages
+
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
@@ -23,7 +22,7 @@ const ForgotPassword = ({ navigation }) => {
                         marginTop: 60,
                         marginHorizontal: 18,
                     }}>
-                    Forgot Password
+                    {_astrologerForm.forgotp}
                 </Text>
                 <Text
                     style={{
@@ -33,8 +32,7 @@ const ForgotPassword = ({ navigation }) => {
                         marginTop: 10,
                         marginHorizontal: 18,
                     }}>
-                    We need your registration phone number
-                    to send you password reset code!
+                    {_astrologerForm.forgottext}
                 </Text>
 
                 <Text
@@ -46,7 +44,7 @@ const ForgotPassword = ({ navigation }) => {
                         marginTop: 50,
                         marginHorizontal: 18,
                     }}>
-                    Mobile No.
+                    {_kundali.mobile}
                 </Text>
                 <TextInput
                     style={{
@@ -64,10 +62,11 @@ const ForgotPassword = ({ navigation }) => {
                     placeholderTextColor={'#333333'}
                     keyboardType='numeric'
                     maxLength={10}
-                    placeholder={'Mobile No.'}
+                    placeholder={_kundali.mobile}
                 />
 
             </ScrollView>
+
             <Button
                 containerStyle={{
                     width: '90%',
@@ -86,8 +85,9 @@ const ForgotPassword = ({ navigation }) => {
                     fontFamily: 'AvenirLTStd-Medium',
                 }}
                 onPress={() => {
+                    navigation.replace('Otp')
                 }}>
-                Submit
+                {_customlang.submit}
             </Button>
 
         </SafeAreaView>

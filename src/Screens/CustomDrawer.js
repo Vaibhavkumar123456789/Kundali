@@ -9,7 +9,6 @@ import { GetProfile } from '../backend/Api'
 const CustomDrawer = ({ navigation }) => {
     const { _drawer } = stringsoflanguages
     const isFocused = useIsFocused();
-    const [type, setType] = useState()
     const [pathurl, setPathurl] = useState('')
     const data = [
         {
@@ -58,7 +57,6 @@ const CustomDrawer = ({ navigation }) => {
             .then(data => {
                 // alert(JSON.stringify(data, null, 2))
                 if (data.status) {
-                    setType(data?.data)
                     setPathurl(data)
                 } else {
                     alert(data.msg);
@@ -72,7 +70,7 @@ const CustomDrawer = ({ navigation }) => {
 
 
     const onPressHandler = input => {
-
+        navigation.closeDrawer();
         switch (input) {
             case _drawer.home:
                 navigation.closeDrawer();
@@ -118,7 +116,7 @@ const CustomDrawer = ({ navigation }) => {
 
             <ScrollView style={{ height: '100%' }}>
                 <View style={{ flexDirection: 'row' }}>
-                    {(type &&
+                    {(pathurl &&
                         <Image
                             style={{
                                 width: 75,
@@ -128,11 +126,11 @@ const CustomDrawer = ({ navigation }) => {
                                 marginLeft: 20,
                                 borderRadius: 50,
                             }}
-                            source={type?.profile_picture !== '' ? { uri: `${pathurl?.path}/${type?.profile_picture}` } : require('../assets/defaultimage.png')}
+                            source={pathurl?.data?.profile_picture?.length > 0 ? { uri: `${pathurl?.path}/${pathurl?.data?.profile_picture}` } : require('../assets/defaultimage.png')}
                         />
                     )}
                     <View style={{ marginLeft: 15, width: '50%' }}>
-                        {(type &&
+                        {(pathurl &&
                             <Text numberOfLines={1}
                                 style={{
                                     marginTop: 30,
@@ -140,7 +138,7 @@ const CustomDrawer = ({ navigation }) => {
                                     fontFamily: 'AvenirLTStd-Medium',
                                     color: '#1E1F20',
                                 }}>
-                                {type?.name}
+                                {pathurl?.data?.name}
                             </Text>
                         )}
                         <TouchableOpacity activeOpacity={0.9}

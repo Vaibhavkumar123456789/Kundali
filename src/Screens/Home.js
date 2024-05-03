@@ -6,6 +6,7 @@ import { TabActions } from '@react-navigation/native';
 import { Astroreport, Homebanner } from '../backend/Api';
 import { useIsFocused } from '@react-navigation/native';
 import Loader from '../utils/Loader';
+import store from '../redux/store';
 const Home = ({ navigation }) => {
     const window = Dimensions.get('window');
     const { width, height } = Dimensions.get('window');
@@ -19,11 +20,10 @@ const Home = ({ navigation }) => {
         loading: false,
     });
     const toggleLoading = bol => setState({ ...state, loading: bol });
-
     useEffect(() => {
         banner()
         reportapi()
-    }, [isFocused])
+    }, [isFocused == true])
 
     const banner = () => {
         toggleLoading(true);
@@ -40,7 +40,7 @@ const Home = ({ navigation }) => {
             })
             .catch(error => {
                 toggleLoading(false);
-                console.log('error', error);
+                console.log('bannererror', error);
             });
     }
 
@@ -59,7 +59,7 @@ const Home = ({ navigation }) => {
             })
             .catch(error => {
                 toggleLoading(false);
-                console.log('error', error);
+                console.log('reporterror', error);
             });
     }
 

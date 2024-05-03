@@ -4,7 +4,7 @@ import Button from 'react-native-button';
 import stringsoflanguages from '../language/Language'
 import Loader from '../utils/Loader';
 import * as actions from '../redux/actions';
-import { AstrologerUserApi, AsyncStorageSetUser, AsyncStorageSettoken } from '../backend/Api';
+import { AstrologerUserApi, AsyncStorageSetUser, AsyncStorageSettoken, SkipHome } from '../backend/Api';
 import Toast from 'react-native-simple-toast';
 
 const SignIn = ({ navigation }) => {
@@ -38,6 +38,7 @@ const SignIn = ({ navigation }) => {
             AstrologerUserApi(e)
                 .then(data => {
                     toggleLoading(false);
+
                     if (data) {
                         actions.Login(data?.user_detail);
                         actions.Token(data?.token);
@@ -55,13 +56,37 @@ const SignIn = ({ navigation }) => {
         }
     }
 
+    const userSkip = () => {
+        toggleLoading(true);
+        let e = {
+            user_type: 1,
+        };
+        SkipHome(e)
+            .then(data => {
+                toggleLoading(false);
+                // alert(JSON.stringify(data, null, 2))
+                if (data.status) {
+                    actions.Login(data?.user_detail);
+                    actions.Token(data?.token);
+                    AsyncStorageSettoken(data?.token);
+                    AsyncStorageSetUser(data?.user_detail);
+                    navigation.replace('DrawerNavigator')
+                } else {
+                    alert(data.msg);
+                }
+            })
+            .catch(error => {
+                toggleLoading(false);
+                console.log('error', error);
+            });
+    }
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
             <StatusBar barStyle="dark-content" backgroundColor="white" />
             {state.loading && <Loader />}
             <ScrollView>
-                <Pressable>
+                <Pressable onPress={() => { userSkip() }}>
                     <Text
                         style={{
                             fontFamily: 'AvenirLTStd-Medium',

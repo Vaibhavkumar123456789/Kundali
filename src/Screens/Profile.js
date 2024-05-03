@@ -28,6 +28,8 @@ import DocumentPicker, { type } from 'react-native-document-picker';
 import { validateEmail } from '../utils/utils';
 import Loader from '../utils/Loader';
 import { BASE_URL } from '../backend/Config';
+import { useDispatch, useSelector, useStore } from 'react-redux';
+import SkipScreen from './component/SkipScreen';
 
 const Profile = ({ navigation }) => {
     const window = Dimensions.get('window');
@@ -39,6 +41,7 @@ const Profile = ({ navigation }) => {
     const [mobile, setMobile] = useState("")
     const [modalVisible, setModalVisible] = useState(false);
     const [empty, setEmpty] = useState();
+    const { skip_id } = useSelector(store => store.user);
     const [state1, setState1] = useState({
         loading: false,
     });
@@ -307,166 +310,169 @@ const Profile = ({ navigation }) => {
             />
             {state1.loading && <Loader />}
             <ScrollView>
-
-                <View>
-                    {state.image ? (
-                        ifAvaileble(state.image)
-                    ) : (
-                        <View
-                            style={{
-                                width: 110,
-                                height: 110,
-                                alignSelf: 'center',
-                            }}>
-                            <TouchableOpacity
-                                onPress={() => {
-                                    setEmpty(0);
-                                    setModalVisible(true);
-                                }
-                                }>
-                                <ImageBackground
-                                    imageStyle={{ borderRadius: 70 }}
+                {skip_id == 1 ?
+                    <SkipScreen />
+                    :
+                    <>
+                        <View>
+                            {state.image ? (
+                                ifAvaileble(state.image)
+                            ) : (
+                                <View
                                     style={{
-                                        width: 110, height: 110, alignSelf: 'center', marginTop: 20
-                                    }}
-                                    source={
-                                        userData?.data?.profile_picture.length > 0
-                                            ? { uri: `${userData?.path}/${userData?.data?.profile_picture}` }
-                                            : require('../assets/add.png')
-                                    }>
-                                    <Image
-                                        style={{
-                                            width: 22,
-                                            height: 22,
-                                            resizeMode: 'contain',
-                                            marginLeft: 'auto',
-                                        }}
-                                        source={require('../assets/edit.png')}
-                                    />
-                                </ImageBackground>
-                            </TouchableOpacity>
+                                        width: 110,
+                                        height: 110,
+                                        alignSelf: 'center',
+                                    }}>
+                                    <TouchableOpacity
+                                        onPress={() => {
+                                            setEmpty(0);
+                                            setModalVisible(true);
+                                        }
+                                        }>
+                                        <ImageBackground
+                                            imageStyle={{ borderRadius: 70 }}
+                                            style={{
+                                                width: 110, height: 110, alignSelf: 'center', marginTop: 20
+                                            }}
+                                            source={
+                                                userData?.data?.profile_picture?.length > 0
+                                                    ? { uri: `${userData?.path}/${userData?.data?.profile_picture}` }
+                                                    : require('../assets/defaultimage.png')
+                                            }>
+                                            <Image
+                                                style={{
+                                                    width: 22,
+                                                    height: 22,
+                                                    resizeMode: 'contain',
+                                                    marginLeft: 'auto',
+                                                }}
+                                                source={require('../assets/edit.png')}
+                                            />
+                                        </ImageBackground>
+                                    </TouchableOpacity>
+                                </View>
+                            )}
                         </View>
-                    )}
-                </View>
 
-                <Text
-                    style={{
-                        fontFamily: 'AvenirLTStd-Medium',
-                        color: '#ADADAD',
-                        fontSize: 18,
-                        letterSpacing: -0.2,
-                        marginTop: 19,
-                        marginHorizontal: 18,
-                    }}>
-                    {_kundali.name}
-                </Text>
-                <TextInput
-                    style={{
-                        fontSize: 16,
-                        fontFamily: 'AvenirLTStd-Medium',
-                        borderRadius: 10,
-                        borderColor: '#00000020',
-                        borderWidth: 1.5,
-                        marginTop: 10,
-                        marginHorizontal: 18,
-                        paddingHorizontal: 15,
-                        paddingVertical: 11,
-                        color: '#333333',
-                    }}
-                    placeholderTextColor={'#333333'}
-                    placeholder={_kundali.name}
-                    value={name}
-                    onChangeText={(text) => setName(text)}
-                />
+                        <Text
+                            style={{
+                                fontFamily: 'AvenirLTStd-Medium',
+                                color: '#ADADAD',
+                                fontSize: 18,
+                                letterSpacing: -0.2,
+                                marginTop: 19,
+                                marginHorizontal: 18,
+                            }}>
+                            {_kundali.name}
+                        </Text>
+                        <TextInput
+                            style={{
+                                fontSize: 16,
+                                fontFamily: 'AvenirLTStd-Medium',
+                                borderRadius: 10,
+                                borderColor: '#00000020',
+                                borderWidth: 1.5,
+                                marginTop: 10,
+                                marginHorizontal: 18,
+                                paddingHorizontal: 15,
+                                paddingVertical: 11,
+                                color: '#333333',
+                            }}
+                            placeholderTextColor={'#333333'}
+                            placeholder={_kundali.name}
+                            value={name}
+                            onChangeText={(text) => setName(text)}
+                        />
 
-                <Text
-                    style={{
-                        fontFamily: 'AvenirLTStd-Medium',
-                        color: '#ADADAD',
-                        fontSize: 18,
-                        letterSpacing: -0.2,
-                        marginTop: 19,
-                        marginHorizontal: 18,
-                    }}>
-                    {_kundali.email}
-                </Text>
-                <TextInput
-                    style={{
-                        fontSize: 16,
-                        fontFamily: 'AvenirLTStd-Medium',
-                        borderRadius: 10,
-                        borderColor: '#00000020',
-                        borderWidth: 1.5,
-                        marginTop: 10,
-                        marginHorizontal: 18,
-                        paddingHorizontal: 15,
-                        paddingVertical: 11,
-                        color: '#333333',
-                    }}
-                    placeholderTextColor={'#333333'}
-                    placeholder={_kundali.email}
-                    value={email}
-                    onChangeText={(text) => setEmail(text)}
-                />
+                        <Text
+                            style={{
+                                fontFamily: 'AvenirLTStd-Medium',
+                                color: '#ADADAD',
+                                fontSize: 18,
+                                letterSpacing: -0.2,
+                                marginTop: 19,
+                                marginHorizontal: 18,
+                            }}>
+                            {_kundali.email}
+                        </Text>
+                        <TextInput
+                            style={{
+                                fontSize: 16,
+                                fontFamily: 'AvenirLTStd-Medium',
+                                borderRadius: 10,
+                                borderColor: '#00000020',
+                                borderWidth: 1.5,
+                                marginTop: 10,
+                                marginHorizontal: 18,
+                                paddingHorizontal: 15,
+                                paddingVertical: 11,
+                                color: '#333333',
+                            }}
+                            placeholderTextColor={'#333333'}
+                            placeholder={_kundali.email}
+                            value={email}
+                            onChangeText={(text) => setEmail(text)}
+                        />
 
-                <Text
-                    style={{
-                        fontFamily: 'AvenirLTStd-Medium',
-                        color: '#ADADAD',
-                        fontSize: 18,
-                        letterSpacing: -0.2,
-                        marginTop: 19,
-                        marginHorizontal: 18,
-                    }}>
-                    {_kundali.mobile}
-                </Text>
-                <TextInput
-                    style={{
-                        fontSize: 16,
-                        fontFamily: 'AvenirLTStd-Medium',
-                        borderRadius: 10,
-                        borderColor: '#00000020',
-                        borderWidth: 1.5,
-                        marginTop: 10,
-                        marginHorizontal: 18,
-                        paddingHorizontal: 15,
-                        paddingVertical: 11,
-                        color: '#333333',
-                    }}
-                    placeholderTextColor={'#333333'}
-                    keyboardType='numeric'
-                    maxLength={10}
-                    placeholder={_kundali.mobile}
-                    value={mobile}
-                    onChangeText={(text) => setMobile(text)}
-                />
+                        <Text
+                            style={{
+                                fontFamily: 'AvenirLTStd-Medium',
+                                color: '#ADADAD',
+                                fontSize: 18,
+                                letterSpacing: -0.2,
+                                marginTop: 19,
+                                marginHorizontal: 18,
+                            }}>
+                            {_kundali.mobile}
+                        </Text>
+                        <TextInput
+                            style={{
+                                fontSize: 16,
+                                fontFamily: 'AvenirLTStd-Medium',
+                                borderRadius: 10,
+                                borderColor: '#00000020',
+                                borderWidth: 1.5,
+                                marginTop: 10,
+                                marginHorizontal: 18,
+                                paddingHorizontal: 15,
+                                paddingVertical: 11,
+                                color: '#333333',
+                            }}
+                            placeholderTextColor={'#333333'}
+                            keyboardType='numeric'
+                            maxLength={10}
+                            placeholder={_kundali.mobile}
+                            value={mobile}
+                            onChangeText={(text) => setMobile(text)}
+                        />
 
-                <Button
-                    containerStyle={{
-                        width: '90%',
-                        marginTop: 20,
-                        marginBottom: 20,
-                        height: 52,
-                        borderRadius: 12,
-                        overflow: 'hidden',
-                        alignSelf: 'center',
-                        justifyContent: 'center',
-                        backgroundColor: '#FFCC80',
-                    }}
-                    style={{
-                        fontSize: 18,
-                        color: '#333333',
-                        alignSelf: 'center',
-                        fontFamily: 'AvenirLTStd-Medium',
-                    }}
-                    onPress={() => {
-                        finalSubmit()
-                    }}
-                >
-                    {_customlang.submit}
-                </Button>
-
-
+                        <Button
+                            containerStyle={{
+                                width: '90%',
+                                marginTop: 20,
+                                marginBottom: 20,
+                                height: 52,
+                                borderRadius: 12,
+                                overflow: 'hidden',
+                                alignSelf: 'center',
+                                justifyContent: 'center',
+                                backgroundColor: '#FFCC80',
+                            }}
+                            style={{
+                                fontSize: 18,
+                                color: '#333333',
+                                alignSelf: 'center',
+                                fontFamily: 'AvenirLTStd-Medium',
+                            }}
+                            onPress={() => {
+                                finalSubmit()
+                            }}
+                        >
+                            {_customlang.submit}
+                        </Button>
+                    </>
+                }
             </ScrollView>
 
             <Modal
