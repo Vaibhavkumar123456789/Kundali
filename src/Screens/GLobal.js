@@ -51,6 +51,7 @@ module.exports = {
     user: {},
     id: '',
     amount: '',
+    user_id: '',
 
     startConsuldocBookType: '',
     startConsultation: '',
@@ -68,7 +69,6 @@ module.exports = {
     home: 'home',
     Signin: 'Signin',
     guid: '',
-    user_id: '',
     userDetails: {},
     walletAmount: 0,
     headerTitle: '',

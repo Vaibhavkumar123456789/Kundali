@@ -103,7 +103,7 @@ const Otp = ({ navigation }) => {
                     fontFamily: 'AvenirLTStd-Medium',
                 }}
                 onPress={() => {
-                    if ([1, 2].includes(GLobal.user.type == 2)) {
+                    if ([1, 2].includes(GLobal.user.type)) {
                         navigation.replace('Package')
                     }
                     else {

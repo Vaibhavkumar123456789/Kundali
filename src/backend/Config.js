@@ -25,6 +25,8 @@ export const PATH_URL = {
   updateProfile: 'astrologer-user/edit-profile',
   astrologeruserlogin: 'astrologer-user/login',
   skip: 'guest-user',
+  forgot: 'forget-password',
+  changepassword: 'password-change',
 
 };
 

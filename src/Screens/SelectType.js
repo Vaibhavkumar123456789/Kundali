@@ -5,7 +5,7 @@ import stringsoflanguages from '../language/Language'
 const SelectType = ({ navigation }) => {
     const window = Dimensions.get('window');
     const { width, height } = Dimensions.get('window');
-    const { _astrologerForm } = stringsoflanguages
+    const { _astrologerForm, _type } = stringsoflanguages
     return (
         <SafeAreaView style={{ flex: 1 }}>
             <StatusBar barStyle="dark-content" backgroundColor="white" />
@@ -14,7 +14,7 @@ const SelectType = ({ navigation }) => {
 
                 <Text style={{
                     marginTop: height / 3.2,
-                    fontSize: 30,
+                    fontSize: 30, 
                     color: '#333333',
                     fontFamily: 'AvenirLTStd-Heavy',
                     textAlign: 'center',
@@ -23,28 +23,53 @@ const SelectType = ({ navigation }) => {
                 </Text>
                 <View style={{ flexDirection: 'row', marginLeft: 18, marginTop: 20 }}>
                     <Pressable onPress={() => { navigation.navigate('AstrologerRegister') }}>
-                        <Image
+                        <ImageBackground
+                            resizeMode='contain'
                             style={{
                                 width: window.width / 2 - 18,
                                 height: 115,
-                                resizeMode: 'contain',
 
                             }}
-                            source={require('../assets/astrologer1.png')} />
+                            source={require('../assets/astrologer1.png')} >
+                            <Text numberOfLines={1}
+                                style={{
+                                    fontFamily: 'AvenirLTStd-Heavy',
+                                    color: '#333333',
+                                    fontSize: 20,
+                                    textAlign: 'center',
+                                    position: 'absolute',
+                                    bottom: 14,
+                                    alignSelf: 'center',
+                                }}>
+                                {_type.astrologer}
+                            </Text>
+                        </ImageBackground>
                     </Pressable>
                     <Pressable onPress={() => { navigation.navigate('SignUp') }}>
-                        <Image
+                        <ImageBackground
+                            resizeMode='contain'
                             style={{
                                 width: window.width / 2 - 18,
                                 height: 115,
-                                resizeMode: 'contain',
-
                             }}
-                            source={require('../assets/user1.png')} />
+                            source={require('../assets/user1.png')} >
+                            <Text numberOfLines={1}
+                                style={{
+                                    fontFamily: 'AvenirLTStd-Heavy',
+                                    color: '#333333',
+                                    fontSize: 20,
+                                    position: 'absolute',
+                                    bottom: 14,
+                                    alignSelf: 'center',
+                                    textAlign: 'center',
+                                }}>
+                                {_type.user}
+                            </Text>
+                        </ImageBackground>
                     </Pressable>
                 </View>
             </ImageBackground>
-        </SafeAreaView>
+        </SafeAreaView >
     )
 }
 

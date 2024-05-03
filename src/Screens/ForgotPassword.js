@@ -2,16 +2,52 @@ import { View, Text, Image, StyleSheet, Dimensions, TextInput, StatusBar, SafeAr
 import React, { useEffect, useState } from 'react'
 import Button from 'react-native-button';
 import stringsoflanguages from '../language/Language'
+import Loader from '../utils/Loader';
+import { Passwordforgot } from '../backend/Api';
+import Toast from 'react-native-simple-toast';
+import GLobal, { data } from './GLobal';
 
 const ForgotPassword = ({ navigation }) => {
     const window = Dimensions.get('window');
     const { width, height } = Dimensions.get('window');
     const { _astrologerForm, _kundali, _customlang } = stringsoflanguages
+    const [mobile, setMobile] = useState('')
+    const [state, setState] = useState({
+        loading: false,
+    });
+    const toggleLoading = bol => setState({ ...state, loading: bol });
 
-
+    const passwordapi = () => {
+        if (mobile === '' || mobile.length !== 10) {
+            Toast.show('Please enter your valid phone number');
+        }
+        else {
+            toggleLoading(true);
+            let e = {
+                mobile: mobile
+            };
+            Passwordforgot(e)
+                .then(data => {
+                    toggleLoading(false);
+                    // alert(JSON.stringify(data, null, 2))
+                    console.log(data)
+                    if (data.status) {
+                        GLobal.user_id = data.user_id
+                        navigation.replace('Otp')
+                    } else {
+                        alert(data.msg);
+                    }
+                })
+                .catch(error => {
+                    toggleLoading(false);
+                    console.log('error', error);
+                });
+        }
+    }
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
             <StatusBar barStyle="dark-content" backgroundColor="white" />
+            {state.loading && <Loader />}
             <ScrollView>
 
                 <Text
@@ -62,6 +98,8 @@ const ForgotPassword = ({ navigation }) => {
                     placeholderTextColor={'#333333'}
                     keyboardType='numeric'
                     maxLength={10}
+                    value={mobile}
+                    onChangeText={(text) => setMobile(text)}
                     placeholder={_kundali.mobile}
                 />
 
@@ -85,7 +123,7 @@ const ForgotPassword = ({ navigation }) => {
                     fontFamily: 'AvenirLTStd-Medium',
                 }}
                 onPress={() => {
-                    navigation.replace('Otp')
+                    passwordapi()
                 }}>
                 {_customlang.submit}
             </Button>

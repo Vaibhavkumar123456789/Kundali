@@ -147,6 +147,8 @@ export const City1 = json => requestGet(PATH_URL.city1, json);
 export const Packagelist = json => request(PATH_URL.package, json);
 export const AstrologerUserApi = json => request(PATH_URL.astrologeruserlogin, json);
 export const SkipHome = json => request(PATH_URL.skip, json);
+export const Passwordforgot = json => request(PATH_URL.forgot, json);
+export const PasswordReset = json => request(PATH_URL.changepassword, json);
 
 //token
 export const Homebanner = json => requesth(PATH_URL.homebanner, json);

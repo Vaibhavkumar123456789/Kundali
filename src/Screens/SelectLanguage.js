@@ -84,7 +84,7 @@ const SelectLanguage = ({ navigation }) => {
                     fontFamily: 'AvenirLTStd-Medium',
                 }}
                 onPress={() => {
-                    navigation.navigate('SelectType')
+                    navigation.replace('SelectType')
                 }}>
                 {_customlang.submit}
             </Button>

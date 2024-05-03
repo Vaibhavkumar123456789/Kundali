@@ -2,6 +2,10 @@ import LocalizedStrings from 'react-native-localization';
 
 let stringsoflanguages = new LocalizedStrings({
     en: {
+        _type: {
+            user: 'User',
+            astrologer: 'Astrologer',
+        },
         _drawer: {
             home: 'Home',
             order: 'My Orders',
@@ -216,13 +220,17 @@ let stringsoflanguages = new LocalizedStrings({
             setnewpassword: 'Set New Password',
             newtext: 'Strong Passwords Include Numbers, Letters, And Punctuation Marks.',
             newpassword: 'New Password',
+            cpassword: 'Confirm Password',
         },
 
 
     },
 
     hi: {
-
+        _type: {
+            user: 'उपयोगकर्ता',
+            astrologer: 'ज्योतिषी',
+        },
         _customlang: {
             title: 'अपनी पसंदीदा भाषा चुनें',
             button: 'अगला',
