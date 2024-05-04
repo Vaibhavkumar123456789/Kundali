@@ -30,7 +30,7 @@ const SignIn = ({ navigation }) => {
             Toast.show('Please enter Password');
         }
         else {
-            toggleLoading(true);
+             toggleLoading(true);
             let e = {
                 mobile: mobile,
                 password: password,
