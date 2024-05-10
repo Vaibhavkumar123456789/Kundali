@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import Carousel from 'react-native-banner-carousel';
 import stringsoflanguages from '../language/Language'
 import { TabActions } from '@react-navigation/native';
-import { Astroreport, Homebanner } from '../backend/Api';
+import { Astroreport, Homebanner, MessageCenterApi } from '../backend/Api';
 import { useIsFocused } from '@react-navigation/native';
 import Loader from '../utils/Loader';
 import store from '../redux/store';
@@ -15,6 +15,7 @@ const Home = ({ navigation }) => {
     const [bannerpath, setBannerPath] = useState()
     const [astro, setAstro] = useState([])
     const [report, setReport] = useState()
+    const [message, setMessage] = useState([])
     const { _home } = stringsoflanguages
     const [state, setState] = useState({
         loading: false,
@@ -23,6 +24,7 @@ const Home = ({ navigation }) => {
     useEffect(() => {
         banner()
         reportapi()
+        messageapi()
     }, [isFocused == true])
 
     const banner = () => {
@@ -62,6 +64,26 @@ const Home = ({ navigation }) => {
                 console.log('reporterror', error);
             });
     }
+
+    const messageapi = () => {
+        toggleLoading(true);
+        MessageCenterApi()
+            .then(data => {
+
+                toggleLoading(false);
+                if (data.status) {
+                    setMessage(data.data)
+                } else {
+                    alert(data.msg);
+                }
+            })
+            .catch(error => {
+                toggleLoading(false);
+                console.log('messageerror', error);
+            });
+    }
+
+
 
     const data = [
         {
@@ -112,24 +134,6 @@ const Home = ({ navigation }) => {
             default:
         }
     }
-    const data1 = [
-        {
-
-        },
-        {
-
-        },
-        {
-
-        },
-        {
-
-        },
-        {
-
-        },
-    ]
-
 
     const renderPage = (item, index) => {
         return (
@@ -323,42 +327,45 @@ const Home = ({ navigation }) => {
                     </Pressable>
                 </View>
 
-                <View
-                    style={{
-                        marginHorizontal: 18,
-                        paddingVertical: 10,
-                        backgroundColor: '#FFF7F0',
-                        elevation: 5,
-                        bottom: 5,
-                        borderRadius: 8,
-                        marginTop: 20,
-                    }}>
-                    <FlatList
-                        data={data1}
-                        renderItem={({ item, index }) => (
-                            <View style={{ flexDirection: 'row', paddingVertical: 7 }}>
-                                <View
-                                    style={{
-                                        width: 5, height: 5, borderRadius: 4, backgroundColor: '#FFCC80',
-                                        marginLeft: 10, marginTop: 5,
-                                    }}>
+
+                {message.length > 0 ?
+                    <View
+                        style={{
+                            marginHorizontal: 18,
+                            paddingVertical: 10,
+                            backgroundColor: '#FFF7F0',
+                            elevation: 5,
+                            bottom: 5,
+                            borderRadius: 8,
+                            marginTop: 20,
+                        }}>
+                        <FlatList
+                            data={message?.slice(0, 5)}
+                            renderItem={({ item, index }) => (
+                                <View style={{ flexDirection: 'row', paddingVertical: 7 }}>
+                                    <View
+                                        style={{
+                                            width: 5, height: 5, borderRadius: 4, backgroundColor: '#FFCC80',
+                                            marginLeft: 10, marginTop: 5,
+                                        }}>
+                                    </View>
+
+                                    <Text
+                                        style={{
+                                            fontSize: 12,
+                                            marginLeft: 7,
+                                            fontFamily: 'AvenirLTStd-Medium',
+                                            color: '#33333390',
+                                            width: window.width - 65,
+                                        }}>
+                                        {item.description}
+                                    </Text>
                                 </View>
+                            )}
+                        />
 
-                                <Text
-                                    style={{
-                                        fontSize: 12,
-                                        marginLeft: 7,
-                                        fontFamily: 'AvenirLTStd-Medium',
-                                        color: '#33333390',
-                                        width: window.width - 65,
-                                    }}>
-                                    Lorem Ipsum is simply dummy text of the printing and typesetting industry
-                                </Text>
-                            </View>
-                        )}
-                    />
-
-                </View>
+                    </View>
+                    : null}
 
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 15, }}>
                     <Text

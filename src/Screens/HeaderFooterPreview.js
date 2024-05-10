@@ -18,19 +18,47 @@ import {
 } from 'react-native';
 import Header from '../Custom/Header';
 import stringsoflanguages from '../language/Language'
-import Button from 'react-native-button';
+import Loader from '../utils/Loader';
+import { HeaderPreviewApi } from '../backend/Api';
+import { useIsFocused } from '@react-navigation/native';
+import { useDispatch, useSelector, useStore } from 'react-redux';
+import SkipScreen from './component/SkipScreen';
 
 const HeaderFooterPreview = ({ navigation }) => {
     const window = Dimensions.get('window');
     const { width, height } = Dimensions.get('window');
     const { _member, _invoice, _kundali, _drawer } = stringsoflanguages
+    const isFocused = useIsFocused();
+    const { skip_id } = useSelector(store => store.user);
+    const [state, setState] = useState({
+        loading: false,
+    });
+    const toggleLoading = bol => setState({ ...state, loading: bol });
+    const [profile, setProfile] = useState([])
 
-    const data = [
-        {
+    useEffect(() => {
+        headerapi()
+    }, [isFocused == true])
 
-        },
 
-    ]
+    const headerapi = () => {
+
+        toggleLoading(true)
+        HeaderPreviewApi()
+            .then(data => {
+                toggleLoading(false);
+                // alert(JSON.stringify(data, null, 2))
+                if (data.status) {
+                    setProfile(data.data)
+                } else {
+                    alert(data?.msg);
+                }
+            })
+            .catch(error => {
+                toggleLoading(false);
+                console.log('error', error);
+            });
+    }
 
 
     return (
@@ -41,133 +69,147 @@ const HeaderFooterPreview = ({ navigation }) => {
                 leftIcon={require('../assets/backtoback.png')}
                 title={_invoice.preview}
             />
-            <FlatList
-                data={data}
-                style={{ flexGrow: 0, marginTop: 10 }}
-                renderItem={({ item, index }) => (
+            {state.loading && <Loader />}
+            {skip_id == 1 ?
+                <SkipScreen />
+                :
+                <>
 
-                    <View
-                        style={{
-                            marginHorizontal: 18,
-                            paddingVertical: 10,
-                            backgroundColor: '#FFFFFF',
-                            borderRadius: 12,
-                            elevation: 5,
-                            bottom: 10,
-                            marginTop: 15,
-                        }}>
-                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', }}>
+                    {profile && profile.length > "0" ?
+                        <FlatList
+                            data={profile}
+                            style={{ flexGrow: 0, marginTop: 10 }}
+                            renderItem={({ item, index }) => (
 
-                            <Text style={{
-                                fontSize: 14,
-                                color: '#ADADAD',
-                                fontFamily: 'AvenirLTStd-Medium',
-                                marginLeft: 10,
-                            }}>
-                                {_invoice.companyname}
-                            </Text>
-                            <Text style={{
-                                fontSize: 14,
-                                color: '#333333',
-                                fontFamily: 'AvenirLTStd-Heavy',
-                                marginRight: 10,
-                                width: window.width - 180,
-                                textAlign: 'right',
-                            }}>
-                                Xyz Pvt Ltd.
-                            </Text>
-                        </View>
+                                <View
+                                    style={{
+                                        marginHorizontal: 18,
+                                        paddingVertical: 10,
+                                        backgroundColor: '#FFFFFF',
+                                        borderRadius: 12,
+                                        elevation: 5,
+                                        bottom: 10,
+                                        marginTop: 15,
+                                    }}>
+                                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', }}>
 
-                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 8 }}>
+                                        <Text style={{
+                                            fontSize: 14,
+                                            color: '#ADADAD',
+                                            fontFamily: 'AvenirLTStd-Medium',
+                                            marginLeft: 10,
+                                        }}>
+                                            {_invoice.companyname}
+                                        </Text>
+                                        <Text style={{
+                                            fontSize: 14,
+                                            color: '#333333',
+                                            fontFamily: 'AvenirLTStd-Heavy',
+                                            marginRight: 10,
+                                            width: window.width - 180,
+                                            textAlign: 'right',
+                                        }}>
+                                            {item.company_name}
+                                        </Text>
+                                    </View>
 
-                            <Text style={{
-                                fontSize: 14,
-                                color: '#ADADAD',
-                                fontFamily: 'AvenirLTStd-Medium',
-                                marginLeft: 10,
-                            }}>
-                                {_invoice.companyaddress}
-                            </Text>
-                            <Text style={{
-                                fontSize: 14,
-                                color: '#333333',
-                                fontFamily: 'AvenirLTStd-Heavy',
-                                marginRight: 10,
-                                width: window.width - 180,
-                                textAlign: 'right',
-                            }}>
-                                C-9/21 Rohini Sector-7
-                            </Text>
-                        </View>
-                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 8 }}>
+                                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 8 }}>
 
-                            <Text style={{
-                                fontSize: 14,
-                                color: '#ADADAD',
-                                fontFamily: 'AvenirLTStd-Medium',
-                                marginLeft: 10,
-                            }}>
-                                {_invoice.astrologername}
-                            </Text>
-                            <Text style={{
-                                fontSize: 14,
-                                color: '#333333',
-                                fontFamily: 'AvenirLTStd-Heavy',
-                                marginRight: 10,
-                                width: window.width - 180,
-                                textAlign: 'right',
-                            }}>
-                                Rajat Nayar
-                            </Text>
-                        </View>
-                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 8 }}>
+                                        <Text style={{
+                                            fontSize: 14,
+                                            color: '#ADADAD',
+                                            fontFamily: 'AvenirLTStd-Medium',
+                                            marginLeft: 10,
+                                        }}>
+                                            {_invoice.companyaddress}
+                                        </Text>
+                                        <Text style={{
+                                            fontSize: 14,
+                                            color: '#333333',
+                                            fontFamily: 'AvenirLTStd-Heavy',
+                                            marginRight: 10,
+                                            width: window.width - 180,
+                                            textAlign: 'right',
+                                        }}>
+                                            {item.company_address}
+                                        </Text>
+                                    </View>
+                                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 8 }}>
 
-                            <Text style={{
-                                fontSize: 14,
-                                color: '#ADADAD',
-                                fontFamily: 'AvenirLTStd-Medium',
-                                marginLeft: 10,
-                            }}>
-                                {_kundali.mobile}
-                            </Text>
-                            <Text style={{
-                                fontSize: 14,
-                                color: '#333333',
-                                fontFamily: 'AvenirLTStd-Heavy',
-                                marginRight: 10,
-                                width: window.width - 180,
-                                textAlign: 'right',
-                            }}>
-                                +91 9885678347
-                            </Text>
-                        </View>
+                                        <Text style={{
+                                            fontSize: 14,
+                                            color: '#ADADAD',
+                                            fontFamily: 'AvenirLTStd-Medium',
+                                            marginLeft: 10,
+                                        }}>
+                                            {_invoice.astrologername}
+                                        </Text>
+                                        <Text style={{
+                                            fontSize: 14,
+                                            color: '#333333',
+                                            fontFamily: 'AvenirLTStd-Heavy',
+                                            marginRight: 10,
+                                            width: window.width - 180,
+                                            textAlign: 'right',
+                                        }}>
+                                            {item.astrologer_name}
+                                        </Text>
+                                    </View>
+                                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 8 }}>
 
-                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 8 }}>
+                                        <Text style={{
+                                            fontSize: 14,
+                                            color: '#ADADAD',
+                                            fontFamily: 'AvenirLTStd-Medium',
+                                            marginLeft: 10,
+                                        }}>
+                                            {_kundali.mobile}
+                                        </Text>
+                                        <Text style={{
+                                            fontSize: 14,
+                                            color: '#333333',
+                                            fontFamily: 'AvenirLTStd-Heavy',
+                                            marginRight: 10,
+                                            width: window.width - 180,
+                                            textAlign: 'right',
+                                        }}>
+                                            {item.mobile}
+                                        </Text>
+                                    </View>
 
-                            <Text style={{
-                                fontSize: 14,
-                                color: '#ADADAD',
-                                fontFamily: 'AvenirLTStd-Medium',
-                                marginLeft: 10,
-                            }}>
-                                {_kundali.email}
-                            </Text>
-                            <Text style={{
-                                fontSize: 14,
-                                color: '#333333',
-                                fontFamily: 'AvenirLTStd-Heavy',
-                                marginRight: 10,
-                                width: window.width - 180,
-                                textAlign: 'right',
-                            }}>
-                                xyz@gmail.com
-                            </Text>
-                        </View>
+                                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 8 }}>
 
-                    </View>
-                )
-                }
-            />
+                                        <Text style={{
+                                            fontSize: 14,
+                                            color: '#ADADAD',
+                                            fontFamily: 'AvenirLTStd-Medium',
+                                            marginLeft: 10,
+                                        }}>
+                                            {_kundali.email}
+                                        </Text>
+                                        <Text style={{
+                                            fontSize: 14,
+                                            color: '#333333',
+                                            fontFamily: 'AvenirLTStd-Heavy',
+                                            marginRight: 10,
+                                            width: window.width - 180,
+                                            textAlign: 'right',
+                                        }}>
+                                            {item.email}
+                                        </Text>
+                                    </View>
+
+                                </View>
+                            )
+                            }
+                        />
+                        :
+                        <View style={{ justifyContent: 'center', alignItems: 'center', flex: 0.7 }}>
+                            <Text style={{ textAlign: 'center', color: 'black', fontSize: 15, fontFamily: 'AvenirLTStd-Medium' }}>No Header Preivew</Text>
+                        </View>}
+
+                </>
+            }
 
         </SafeAreaView >
     )

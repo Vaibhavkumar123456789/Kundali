@@ -52,6 +52,7 @@ module.exports = {
     id: '',
     amount: '',
     user_id: '',
+    statusid: '',
 
     startConsuldocBookType: '',
     startConsultation: '',

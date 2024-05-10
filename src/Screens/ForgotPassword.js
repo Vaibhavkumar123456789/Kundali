@@ -33,9 +33,10 @@ const ForgotPassword = ({ navigation }) => {
                     console.log(data)
                     if (data.status) {
                         GLobal.user_id = data.user_id
+                        GLobal.statusid = data.id
                         navigation.replace('Otp')
                     } else {
-                        alert(data.msg);
+                        alert(data?.msg);
                     }
                 })
                 .catch(error => {

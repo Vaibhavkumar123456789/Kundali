@@ -27,7 +27,8 @@ export const PATH_URL = {
   skip: 'guest-user',
   forgot: 'forget-password',
   changepassword: 'password-change',
-
+  headerpreview: 'header-preview',
+  messagecentera: 'meessage-center',
 };
 
 export const ApiSauceJson = {

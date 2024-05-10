@@ -103,11 +103,11 @@ const Otp = ({ navigation }) => {
                     fontFamily: 'AvenirLTStd-Medium',
                 }}
                 onPress={() => {
-                    if ([1, 2].includes(GLobal.user.type)) {
-                        navigation.replace('Package')
+                    if (GLobal.statusid == 1) {
+                        navigation.replace('ResetPassword')
                     }
                     else {
-                        navigation.replace('ResetPassword')
+                        navigation.replace('Package')
                     }
                 }}>
                 {_customlang.submit}

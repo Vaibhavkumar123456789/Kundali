@@ -26,7 +26,6 @@ const Splash = ({ navigation }) => {
             const user = store.getState().user;
             if (Object.keys(user).length === 0 && user.constructor === Object) {
                 navigation.replace('SelectLanguage');
-
             } else {
                 navigation.replace('DrawerNavigator');
             }

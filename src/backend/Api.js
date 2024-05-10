@@ -156,6 +156,8 @@ export const GetProfile = json => requesth(PATH_URL.drawerprofile, json);
 export const Astroreport = json => requestGet1(PATH_URL.astroreport, json);
 export const ReportDetailApi = json => requesth(PATH_URL.reportdetail, json);
 export const UpdateProfile = json => requesth(PATH_URL.updateProfile, json);
+export const HeaderPreviewApi = json => requesth(PATH_URL.headerpreview, json);
+export const MessageCenterApi = json => requestGet1(PATH_URL.messagecentera, json);
 
 
 // localstorage
