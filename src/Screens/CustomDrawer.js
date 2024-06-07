@@ -17,6 +17,10 @@ const CustomDrawer = ({ navigation }) => {
         },
         {
             icon: require('../assets/sidebar-history.png'),
+            input: "Complete Profile",
+        },
+        {
+            icon: require('../assets/sidebar-history.png'),
             input: _drawer.order,
         },
         {
@@ -74,6 +78,9 @@ const CustomDrawer = ({ navigation }) => {
         switch (input) {
             case _drawer.home:
                 navigation.closeDrawer();
+                break;
+            case "Complete Profile":
+                navigation.navigate('AstrologerRegister');
                 break;
             case _drawer.order:
                 navigation.navigate('MyOrders');

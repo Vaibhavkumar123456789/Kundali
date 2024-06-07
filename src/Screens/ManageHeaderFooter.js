@@ -29,7 +29,8 @@ import Toast from 'react-native-simple-toast';
 import Loader from '../utils/Loader';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import DocumentPicker, { type } from 'react-native-document-picker';
-import { AsyncStorageGettoken } from '../backend/Api';
+import { AsyncStorageGettoken, HeaderColor } from '../backend/Api';
+import { Dropdown } from 'react-native-element-dropdown';
 
 const ManageHeaderFooter = ({ navigation }) => {
     const window = Dimensions.get('window');
@@ -37,11 +38,13 @@ const ManageHeaderFooter = ({ navigation }) => {
     const { _member, _invoice, _kundali, _drawer } = stringsoflanguages;
     const [modalVisible, setModalVisible] = useState(false);
     const [modalVisible4, setModalVisible4] = useState(false);
+    const [should1, setShould1] = useState('')
     const [key, setKey] = useState(0)
     const [cname, setCName] = useState('')
     const [aname, setAName] = useState('')
     const [empty, setEmpty] = useState();
     const [caddress, setCAddress] = useState('')
+    const [colorList, setColorList] = useState([])
     const [email, setEmail] = useState('')
     const [website, setWebsite] = useState('')
     const { skip_id } = useSelector(store => store.user);
@@ -56,6 +59,33 @@ const ManageHeaderFooter = ({ navigation }) => {
     const [acCount, setAcCount] = useState([{
         achivement: '',
     }])
+
+    useEffect(() => {
+        Countrysearch()
+    }, [])
+    const Countrysearch = () => {
+        HeaderColor()
+            .then(data => {
+                if (data.status) {
+                    // alert(JSON.stringify(data,null,2))
+                    // return
+                    let tempCArr = []
+                    data?.data.map((i) => {
+                        tempCArr.push({
+                            label: i.name,
+                            value: i.value,
+                        })
+                        setColorList(tempCArr)
+                    })
+                } else {
+                    alert(data.msg);
+                }
+            })
+            .catch(error => {
+                toggleLoading(false);
+                console.log('error', error);
+            });
+    }
 
     const addInputFieldAc = () => {
         if (acCount.length >= 2) {
@@ -108,6 +138,8 @@ const ManageHeaderFooter = ({ navigation }) => {
             }
             else if (website == '') {
                 Toast.show('Please enter Website');
+            } else if (should1 == '') {
+                Toast.show('Please select Color');
             }
             else {
                 var array = []
@@ -125,6 +157,7 @@ const ManageHeaderFooter = ({ navigation }) => {
                 formData.append('mobile', acCount[0])
                 formData.append('alternate_mobile', acCount[1])
                 formData.append('website', website)
+                formData.append('header_color', should1)
                 formData.append('image', {
                     uri: state.image == '' ? '' : state.image.uri,
                     type: 'image/jpeg',
@@ -634,7 +667,40 @@ const ManageHeaderFooter = ({ navigation }) => {
                             value={website}
                             onChangeText={(text) => setWebsite(text)}
                         />
+                        <Text
+                            style={{
+                                fontFamily: 'AvenirLTStd-Medium',
+                                color: '#ADADAD',
+                                fontSize: 18,
+                                letterSpacing: -0.2,
+                                marginTop: 19,
+                                marginHorizontal: 18,
+                            }}>
+                            {"Select Color"}
+                        </Text>
 
+                        <Dropdown
+                            style={{
+                                height: 50,
+                                marginHorizontal: 18, marginTop: 10, borderWidth: 1.5, borderColor: '#00000020',
+                                borderRadius: 10,
+                            }}
+                            placeholderStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', paddingHorizontal: 15, }}
+                            selectedTextStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', paddingHorizontal: 15, textTransform: 'capitalize' }}
+                            iconStyle={{
+                                width: 20,
+                                height: 20,
+                                marginRight: 12,
+                            }}
+                            itemTextStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', textTransform: 'capitalize' }}
+                            data={colorList}
+                            maxHeight={150}
+                            labelField="label"
+                            valueField="value"
+                            placeholder={"Color"}
+                            value={should1}
+                            onChange={(item) => setShould1(item.value)}
+                        />
                         <Button
                             containerStyle={{
                                 width: '90%',

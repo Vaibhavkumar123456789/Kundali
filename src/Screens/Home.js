@@ -69,7 +69,7 @@ const Home = ({ navigation }) => {
         toggleLoading(true);
         MessageCenterApi()
             .then(data => {
-
+                // alert(JSON.stringify(data, null, 2))
                 toggleLoading(false);
                 if (data.status) {
                     setMessage(data.data)
@@ -328,17 +328,18 @@ const Home = ({ navigation }) => {
                 </View>
 
 
-                {message.length > 0 ?
-                    <View
-                        style={{
-                            marginHorizontal: 18,
-                            paddingVertical: 10,
-                            backgroundColor: '#FFF7F0',
-                            elevation: 5,
-                            bottom: 5,
-                            borderRadius: 8,
-                            marginTop: 20,
-                        }}>
+
+                <View
+                    style={{
+                        marginHorizontal: 18,
+                        paddingVertical: 10,
+                        backgroundColor: '#FFF7F0',
+                        elevation: 5,
+                        bottom: 5,
+                        borderRadius: 8,
+                        marginTop: 20,
+                    }}>
+                    {message && message.length > 0 ?
                         <FlatList
                             data={message?.slice(0, 5)}
                             renderItem={({ item, index }) => (
@@ -350,7 +351,7 @@ const Home = ({ navigation }) => {
                                         }}>
                                     </View>
 
-                                    <Text
+                                    <Text numberOfLines={2}
                                         style={{
                                             fontSize: 12,
                                             marginLeft: 7,
@@ -363,9 +364,11 @@ const Home = ({ navigation }) => {
                                 </View>
                             )}
                         />
+                        : <View style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
+                            <Text style={{ textAlign: 'center', color: 'black', fontSize: 14, fontFamily: 'AvenirLTStd-Medium' }}>No Message Available</Text>
+                        </View>}
+                </View>
 
-                    </View>
-                    : null}
 
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 15, }}>
                     <Text

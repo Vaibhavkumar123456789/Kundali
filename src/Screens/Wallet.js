@@ -252,7 +252,7 @@ const Wallet = ({ navigation }) => {
           fontFamily: 'AvenirLTStd-Medium',
         }}
         onPress={() => {
-          setPopupVisible(true)
+          // setPopupVisible(true)
         }}>
         Proceed
       </Button>

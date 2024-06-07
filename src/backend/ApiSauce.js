@@ -1,9 +1,9 @@
-import {create} from 'apisauce';
-import {ApiSauceJson, ApiSauceMultipart, ApiSauceJson1} from './Config';
+import { create } from 'apisauce';
+import { ApiSauceJson, ApiSauceMultipart, ApiSauceJsonExternal } from './Config';
 const ApiSauce = create(ApiSauceJson);
+export const ApiSauceExternal = create(ApiSauceJsonExternal); 
 
 export const ApiSauceMu = create(ApiSauceMultipart);
-export const ApiSauce1 = create(ApiSauceJson1);
 export const _SetAuthToken = jwt => {
   ApiSauce.setHeader('Authorization', jwt);
   ApiSauceMu.setHeader('Authorization', jwt);

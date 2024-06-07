@@ -1,6 +1,6 @@
-//const BuildConfig = require('react-native-build-config');
-export const BASE_URL = 'http://43.204.74.86/Kundali/api/';
-export const BASE_URL1 = 'http://43.204.74.86/Kundali/api/';
+
+export const BASE_URL = 'http://zedcredit.zedfinance.com/Kundali/api/';
+export const BASE_URL_EXTERNAL = 'https://api.astrovedicapi.com/api/v1/';
 
 
 export const GOOGLE_MAPS_APIKEY = 'AIzaSyA_23OZbQeEKQeLfMBTJ6xd3-hCa33tK4A';
@@ -29,6 +29,16 @@ export const PATH_URL = {
   changepassword: 'password-change',
   headerpreview: 'header-preview',
   messagecentera: 'meessage-center',
+  headerColor: "header-color",
+
+
+
+
+
+
+  //third party  api end point 
+  lalkitab: 'Lalkitab/Chart/Lagan',
+
 };
 
 export const ApiSauceJson = {
@@ -38,13 +48,14 @@ export const ApiSauceJson = {
     'Content-Type': 'application/json',
   },
 };
-export const ApiSauceJson1 = {
-  baseURL: BASE_URL1,
+export const ApiSauceJsonExternal = {
+  baseURL: BASE_URL_EXTERNAL,
   headers: {
     Accept: 'application/json',
     'Content-Type': 'application/json',
   },
 };
+
 export const ApiSauceMultipart = {
   baseURL: BASE_URL,
   headers: {

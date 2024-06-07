@@ -6,79 +6,98 @@ import { TabView, TabBar, SceneMap } from 'react-native-tab-view';
 import Header from '../Custom/Header';
 
 const OnlineJyotish = ({ navigation }) => {
-  const { _member, _home } = stringsoflanguages
+  const { _member, _home, _onlinejyotish } = stringsoflanguages
   const window = Dimensions.get('window');
   const { width, height } = Dimensions.get('window');
 
+
+
   const detail = [
     {
-      title: "Kundli",
+      title: _onlinejyotish.kundli,
       color: "#FFEBEE",
       source: require("../assets/kundli-icon.png")
     },
     {
-      title: "Match Making",
+      title: _onlinejyotish.match,
       color: "#EDE7F6",
       source: require("../assets/making-icon.png")
     },
     {
-      title: "Lal Kitab",
+      title: _onlinejyotish.lal,
       color: "#E1F5FF",
       source: require("../assets/lal-kitab-icon.png")
     },
     {
-      title: "KP",
+      title: _onlinejyotish.kp,
       color: "#E8F5E9",
       source: require("../assets/kp-icon.png")
     },
     {
-      title: "Varsh Kundli",
+      title: _onlinejyotish.varsh,
       color: "#FFFDE7",
       source: require("../assets/varsh-kundli-icon.png")
     },
     {
-      title: "Panchang",
+      title: _onlinejyotish.panchang,
       color: "#FBE9E7",
       source: require("../assets/panchang-icon.png")
     },
     {
-      title: "Paaye",
+      title: _onlinejyotish.paaye,
       color: "#E0F7FA",
       source: require("../assets/paaye-icon.png")
     },
     {
-      title: "Calculator",
+      title: _onlinejyotish.calculator,
       color: "#F1F8E9",
       source: require("../assets/calculator-icon.png")
     },
     {
-      title: "Naam Jane",
+      title: _onlinejyotish.naam,
       color: "#E8EAF6",
       source: require("../assets/naam-icon.png")
     },
     {
-      title: "Gandmool",
+      title: _onlinejyotish.gandmool,
       color: "#EFEBE9",
       source: require("../assets/gandmool-icon.png")
     },
     {
-      title: "Sadesati",
+      title: _onlinejyotish.sadesati,
       color: "#F3E5F5",
       source: require("../assets/sadesati-icon.png")
     },
     {
-      title: "Apke Ratna",
+      title: _onlinejyotish.apke,
       color: "#FFF8E1",
       source: require("../assets/apke-ratna-icon.png")
     },
     {
-      title: "Kaalsarp",
+      title: _onlinejyotish.kaalsarp,
       color: "#E3F2FD",
       source: require("../assets/kaalsarp-icon.png")
     },
 
 
   ];
+
+  const onPressHandler1 = title => {
+
+    switch (title) {
+      case _onlinejyotish.naam:
+        navigation.navigate('NaamJane')
+        break;
+      case _onlinejyotish.varsh:
+        navigation.navigate('VarshKundli')
+        break;
+        case _onlinejyotish.lal:
+        navigation.navigate('LalKitab')
+        break;
+
+      default:
+    }
+  }
 
 
   return (
@@ -98,11 +117,11 @@ const OnlineJyotish = ({ navigation }) => {
         data={detail}
         renderItem={({ item, index }) => (
           <TouchableOpacity activeOpacity={0.9}
-            onPress={() => { navigation.navigate('NaamJane') }}>
+            onPress={() => { onPressHandler1(item.title) }}>
             <View
               style={{
                 width: window.width / 3 - 27,
-                height: 75,
+                height: 88,
                 alignSelf: 'center',
                 backgroundColor: item.color,
                 elevation: 5,
@@ -122,7 +141,6 @@ const OnlineJyotish = ({ navigation }) => {
                 source={item.source}
               />
               <Text
-                numberOfLines={1}
                 style={{
                   textAlign: 'center',
                   marginTop: 5,

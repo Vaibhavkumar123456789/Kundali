@@ -12,9 +12,9 @@ const SelectType = ({ navigation }) => {
             <ImageBackground resizeMode='stretch' style={{ width: '100%', height: '100%' }}
                 source={require('../assets/background.png')}>
 
-                <Text style={{
+                  <Text style={{
                     marginTop: height / 3.2,
-                    fontSize: 30, 
+                    fontSize: 30,
                     color: '#333333',
                     fontFamily: 'AvenirLTStd-Heavy',
                     textAlign: 'center',
@@ -22,7 +22,8 @@ const SelectType = ({ navigation }) => {
                     {_astrologerForm.selectusertype}
                 </Text>
                 <View style={{ flexDirection: 'row', marginLeft: 18, marginTop: 20 }}>
-                    <Pressable onPress={() => { navigation.navigate('AstrologerRegister') }}>
+                    {/* <Pressable onPress={() => { navigation.navigate('AstrologerRegister') }}> */}
+                    <Pressable onPress={() => { navigation.navigate('AstrologerForm') }}>
                         <ImageBackground
                             resizeMode='contain'
                             style={{

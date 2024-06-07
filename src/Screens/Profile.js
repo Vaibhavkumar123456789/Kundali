@@ -310,7 +310,7 @@ const Profile = ({ navigation }) => {
             />
             {state1.loading && <Loader />}
             <ScrollView>
-                {skip_id == 1 ?
+                {skip_id == '1' ?
                     <SkipScreen />
                     :
                     <>

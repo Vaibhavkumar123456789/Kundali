@@ -21,8 +21,8 @@ import Toast from 'react-native-simple-toast';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import moment from 'moment';
 import DatePicker from 'react-native-date-picker'
+import axios from 'axios';
 import { RadioButton } from 'react-native-paper';
-import { ButtonStyle } from '../Custom/CustomView';
 import Button from 'react-native-button';
 import Header from '../Custom/Header';
 import stringsoflanguages from '../language/Language'
@@ -35,6 +35,7 @@ import {
     City1,
     Consultant,
     Country,
+    GetProfile,
     Language,
     Skill,
     Specialization,
@@ -99,6 +100,8 @@ const AstrologerRegister = ({ navigation }) => {
     const [statelist1, setStateList] = useState([])
     const [cityname, setCityName] = useState([])
     const [address, setAddress] = useState('')
+    const [centrename, setCentreName] = useState('')
+    const [field, setField] = useState(GLobal.user)
     const [pincode, setPincode] = useState('')
     const labels = [
         '',
@@ -230,7 +233,6 @@ const AstrologerRegister = ({ navigation }) => {
         Country()
             .then(data => {
                 if (data.status) {
-
                     let tempCArr = []
                     data?.data.map((i) => {
                         tempCArr.push({
@@ -261,7 +263,7 @@ const AstrologerRegister = ({ navigation }) => {
                     let tempCArr = []
                     data?.data.map((i) => {
                         tempCArr.push({
-                            label: i.state_name,
+                            label: i.name,
                             value: i.id,
                         })
                         setStateList(tempCArr)
@@ -288,7 +290,7 @@ const AstrologerRegister = ({ navigation }) => {
                     let tempCArr = []
                     data?.data.map((i) => {
                         tempCArr.push({
-                            label: i.city_name,
+                            label: i.name,
                             value: i.id,
                         })
                         setCityName(tempCArr)
@@ -333,77 +335,210 @@ const AstrologerRegister = ({ navigation }) => {
         }
     }
 
-    const setsubmit = async () => {
-        try {
-            if (pancard == '') {
-                Toast.show('Please enter your Pan Card No.');
-            }
-            else if (pancard.length !== 10) {
-                Toast.show('Please enter your valid Pan Card No.');
-            }
-            else if (aadharcard == '') {
-                Toast.show('Please enter your Aadhar Card No.');
-            }
-            else if (aadharcard.length !== 12) {
-                Toast.show('Please enter your valid Aadhar Card No.');
-            }
-            else if (passport1Full == '') {
-                Toast.show('Please upload your Aadhar card');
-            }
-            else if (passport2Full == '') {
-                Toast.show('Please upload your Aadhar card');
-            } else if (resumeFull == '') {
-                Toast.show('Please upload your Pan card');
-            }
-            else {
-                toggleLoading(true)
-                let formData = new FormData();
-                formData.append('pancard', pancard)
-                formData.append('aadhar_number', aadharcard)
-                formData.append('aadharcard_image', {
-                    uri: passport1Full[0].uri,
-                    type: passport1Full[0].type,
-                    name: passport1Full[0].name,
-                });
-
-                formData.append('aadharcard_back_image', {
-                    uri: passport2Full[0].uri,
-                    type: passport2Full[0].type,
-                    name: passport2Full[0].name,
-                })
-
-                formData.append('pancard_image', {
-                    uri: resumeFull[0].uri,
-                    type: resumeFull[0].type,
-                    name: resumeFull[0].name,
-                })
-                console.log(JSON.stringify(formData))
-
-                const token = (await AsyncStorageGettoken() || '')
-                const btoken = `Bearer ${token}`;
-
-                const res = await fetch(`${BASE_URL}astrologer/add-profile-five`, {
-                    method: 'POST',
-                    headers: {
-                        "Accept": "application/json",
-                        "Authorization": btoken,
-                    },
-                    body: formData,
-                });
-                const response1 = await res.json()
-                toggleLoading(false)
-
-                if (response1.status) {
-                    setCurrentPosition(currentPosition + 1)
+    useEffect(() => {
+        GetProfile()
+            .then(data => {
+                if (data.status) {
+                    setName(data?.data?.name)
+                    setMobile(data?.data?.mobile)
+                    setEmail(data?.data?.email)
                 } else {
-                    alert(response1.msg);
+                    alert(data.msg);
                 }
-            }
+            })
+            .catch(error => {
+                console.log('error', error);
+            });
+    }, [])
+
+    const Freepackage = async () => {
+        try {
+            let formData = new FormData();
+            formData.append('newsignup', 1)
+            formData.append('user_type', field.type)             //astrologer == 2 , user == 1
+            formData.append('name', name)
+            formData.append('email', email)
+            formData.append('mobile', mobile)
+            formData.append('status', 1)
+            formData.append('password', password)
+            formData.append('gender', checked === 0 ? "male" : checked === 1 ? "female" : null)
+            formData.append('dob', date == '' ? '' : moment(date).format('YYYY-MM-DD'))
+            formData.append('create_profile ', 1)
+            formData.append('consultation_id', should1)
+            formData.append('skill_id', should2)
+            formData.append('specialization_id', should3)
+            formData.append('langugae_id', should4)
+            formData.append('experience', experience)
+            formData.append('contribute_daily', hour)
+            formData.append('bank_account_number', accountnumber)
+            formData.append('bank_name', bankname)
+            formData.append('ifsc_code', ifsc)
+            formData.append('address', address)
+            formData.append('country', should5)
+            formData.append('state', should6)
+            formData.append('city', should7)
+            formData.append('pincode', pincode)
+            formData.append('pancard', pancard)
+            formData.append('aadhar_number', aadharcard)
+            formData.append('aadharcard_image', {
+                uri: passport1Full[0].uri,
+                type: passport1Full[0].type,
+                name: passport1Full[0].name,
+            });
+            formData.append('aadharcard_back_image', {
+                uri: passport2Full[0].uri,
+                type: passport2Full[0].type,
+                name: passport2Full[0].name,
+            })
+            formData.append('pancard_image', {
+                uri: resumeFull[0].uri,
+                type: resumeFull[0].type,
+                name: resumeFull[0].name,
+            })
+            formData.append('academic_qualification', academicqual)
+            formData.append('astrologer_qualification', astroqualification)
+            formData.append('academic_certificate', {
+                uri: acadmic[0].uri,
+                type: acadmic[0].type,
+                name: acadmic[0].name,
+            });
+
+            formData.append('astrologer_certificate', {
+                uri: astrological[0].uri,
+                type: astrological[0].type,
+                name: astrological[0].name,
+            })
+
+            formData.append('profile_picture', {
+                uri: picture[0].uri,
+                type: picture[0].type,
+                name: picture[0].name,
+            })
+            formData.append('biography', biography)
+
+            console.log('complete astrologer profile', formData)
+            toggleLoading(true);
+            axios
+                .post(
+                    `${BASE_URL}astrologer/signup`,
+                    formData,
+                    {
+                        headers: {
+                            'Content-Type': 'multipart/form-data',
+                            // Add any additional headers as needed
+                        },
+                    },
+                )
+                .then(response => {
+                    toggleLoading(false);
+                    alert(JSON.stringify(response.data, null, 2))
+                    navigation.goBack()
+                })
+                .catch(error => {
+                    toggleLoading(true);
+                    axios
+                        .post(
+                            `${BASE_URL}astrologer/signup`,
+                            formData,
+                            {
+                                headers: {
+                                    'Content-Type': 'multipart/form-data',
+                                    // Add any additional headers as needed
+                                },
+                            },
+                        )
+                        .then(response => {
+                            toggleLoading(false);
+                            navigation.goBack()
+
+                        })
+                        .catch(error => {
+                            // Handle errors
+                            toggleLoading(false);
+                            console.error('Error uploading files', error);
+                        });
+                    // Handle errors
+                    toggleLoading(false);
+                    console.error('Error uploading files1', error);
+                });
+
         } catch (error) {
             toggleLoading(false)
             console.log(error)
         }
-    };
+    }
+
+    // const setsubmit = async () => {
+    //     try {
+    //         if (pancard == '') {
+    //             Toast.show('Please enter your Pan Card No.');
+    //         }
+    //         else if (pancard.length !== 10) {
+    //             Toast.show('Please enter your valid Pan Card No.');
+    //         }
+    //         else if (aadharcard == '') {
+    //             Toast.show('Please enter your Aadhar Card No.');
+    //         }
+    //         else if (aadharcard.length !== 12) {
+    //             Toast.show('Please enter your valid Aadhar Card No.');
+    //         }
+    //         else if (passport1Full == '') {
+    //             Toast.show('Please upload your Aadhar card');
+    //         }
+    //         else if (passport2Full == '') {
+    //             Toast.show('Please upload your Aadhar card');
+    //         } else if (resumeFull == '') {
+    //             Toast.show('Please upload your Pan card');
+    //         }
+    //         else {
+    //             toggleLoading(true)
+    //             let formData = new FormData();
+    //             formData.append('pancard', pancard)
+    //             formData.append('aadhar_number', aadharcard)
+    //             formData.append('aadharcard_image', {
+    //                 uri: passport1Full[0].uri,
+    //                 type: passport1Full[0].type,
+    //                 name: passport1Full[0].name,
+    //             });
+
+    //             formData.append('aadharcard_back_image', {
+    //                 uri: passport2Full[0].uri,
+    //                 type: passport2Full[0].type,
+    //                 name: passport2Full[0].name,
+    //             })
+
+    //             formData.append('pancard_image', {
+    //                 uri: resumeFull[0].uri,
+    //                 type: resumeFull[0].type,
+    //                 name: resumeFull[0].name,
+    //             })
+    //             console.log(JSON.stringify(formData))
+
+    //             const token = (await AsyncStorageGettoken() || '')
+    //             const btoken = `Bearer ${token}`;
+
+    //             const res = await fetch(`${BASE_URL}astrologer/add-profile-five`, {
+    //                 method: 'POST',
+    //                 headers: {
+    //                     "Accept": "application/json",
+    //                     "Authorization": btoken,
+    //                 },
+    //                 body: formData,
+    //             });
+    //             const response1 = await res.json()
+    //             toggleLoading(false)
+
+    //             if (response1.status) {
+    //                 setCurrentPosition(currentPosition + 1)
+    //             } else {
+    //                 alert(response1.msg);
+    //             }
+    //         }
+    //     } catch (error) {
+    //         toggleLoading(false)
+    //         console.log(error)
+    //     }
+    // };
 
     const removeItem2 = () => {
         setPassport1Full('');
@@ -415,75 +550,75 @@ const AstrologerRegister = ({ navigation }) => {
         setResumeFull('');
     };
 
-    const finalSubmit = async () => {
-        try {
-            if (academicqual == '') {
-                Toast.show('Please enter your Acadmic Qualification');
-            }
-            else if (astroqualification == '') {
-                Toast.show('Please enter your Astrological Qualifications');
-            }
-            else if (acadmic == '') {
-                Toast.show('Please upload your Acadmic Certificate');
-            }
-            else if (astrological == '') {
-                Toast.show('Please upload your Astrological Certificate');
-            } else if (picture == '') {
-                Toast.show('Please upload your Profile Picture');
-            }
-            else if (biography == '') {
-                Toast.show('Please enter Biography');
-            }
-            else {
-                toggleLoading(true)
-                let formData = new FormData();
-                formData.append('academic_qualification', academicqual)
-                formData.append('astrologer_qualification', astroqualification)
-                formData.append('academic_certificate', {
-                    uri: acadmic[0].uri,
-                    type: acadmic[0].type,
-                    name: acadmic[0].name,
-                });
+    // const finalSubmit = async () => {
+    //     try {
+    //         if (academicqual == '') {
+    //             Toast.show('Please enter your Acadmic Qualification');
+    //         }
+    //         else if (astroqualification == '') {
+    //             Toast.show('Please enter your Astrological Qualifications');
+    //         }
+    //         else if (acadmic == '') {
+    //             Toast.show('Please upload your Acadmic Certificate');
+    //         }
+    //         else if (astrological == '') {
+    //             Toast.show('Please upload your Astrological Certificate');
+    //         } else if (picture == '') {
+    //             Toast.show('Please upload your Profile Picture');
+    //         }
+    //         else if (biography == '') {
+    //             Toast.show('Please enter Biography');
+    //         }
+    //         else {
+    //             toggleLoading(true)
+    //             let formData = new FormData();
+    //             formData.append('academic_qualification', academicqual)
+    //             formData.append('astrologer_qualification', astroqualification)
+    //             formData.append('academic_certificate', {
+    //                 uri: acadmic[0].uri,
+    //                 type: acadmic[0].type,
+    //                 name: acadmic[0].name,
+    //             });
 
-                formData.append('astrologer_certificate', {
-                    uri: astrological[0].uri,
-                    type: astrological[0].type,
-                    name: astrological[0].name,
-                })
+    //             formData.append('astrologer_certificate', {
+    //                 uri: astrological[0].uri,
+    //                 type: astrological[0].type,
+    //                 name: astrological[0].name,
+    //             })
 
-                formData.append('profile_picture', {
-                    uri: picture[0].uri,
-                    type: picture[0].type,
-                    name: picture[0].name,
-                })
-                formData.append('biography', biography)
+    //             formData.append('profile_picture', {
+    //                 uri: picture[0].uri,
+    //                 type: picture[0].type,
+    //                 name: picture[0].name,
+    //             })
+    //             formData.append('biography', biography)
 
-                console.log(JSON.stringify(formData))
-                const token = (await AsyncStorageGettoken() || '')
-                const btoken = `Bearer ${token}`;
+    //             console.log(JSON.stringify(formData))
+    //             const token = (await AsyncStorageGettoken() || '')
+    //             const btoken = `Bearer ${token}`;
 
-                const res = await fetch(`${BASE_URL}astrologer/add-profile-six`, {
-                    method: 'POST',
-                    headers: {
-                        "Accept": "application/json",
-                        "Authorization": btoken,
-                    },
-                    body: formData,
-                });
-                const response1 = await res.json()
-                console.log('Step6', response1)
-                toggleLoading(false)
-                if (response1.status) {
-                    navigation.replace('Package')
-                } else {
-                    alert(response1.msg);
-                }
-            }
-        } catch (error) {
-            toggleLoading(false)
-            console.log(error)
-        }
-    };
+    //             const res = await fetch(`${BASE_URL}astrologer/add-profile-six`, {
+    //                 method: 'POST',
+    //                 headers: {
+    //                     "Accept": "application/json",
+    //                     "Authorization": btoken,
+    //                 },
+    //                 body: formData,
+    //             });
+    //             const response1 = await res.json()
+    //             console.log('Step6', response1)
+    //             toggleLoading(false)
+    //             if (response1.status) {
+    //                 navigation.replace('Package')
+    //             } else {
+    //                 alert(response1.msg);
+    //             }
+    //         }
+    //     } catch (error) {
+    //         toggleLoading(false)
+    //         console.log(error)
+    //     }
+    // };
 
     const removeItem5 = () => {
         setAcadmic('');
@@ -544,6 +679,7 @@ const AstrologerRegister = ({ navigation }) => {
                             }}
                             placeholderTextColor={'#333333'}
                             placeholder={_kundali.name}
+                            editable={false}
                             value={name}
                             onChangeText={(text) => setName(text)}
                         />
@@ -574,6 +710,7 @@ const AstrologerRegister = ({ navigation }) => {
                             }}
                             placeholderTextColor={'#333333'}
                             placeholder={_kundali.email}
+                            editable={false}
                             value={email}
                             onChangeText={(text) => setEmail(text)}
                             autoCapitalize='none'
@@ -606,12 +743,13 @@ const AstrologerRegister = ({ navigation }) => {
                             placeholderTextColor={'#333333'}
                             keyboardType='numeric'
                             placeholder={_kundali.mobile}
+                            editable={false}
                             maxLength={10}
                             value={mobile}
                             onChangeText={(text) => setMobile(text)}
                         />
 
-                        <Text
+                        {/* <Text
                             style={{
                                 fontFamily: 'AvenirLTStd-Medium',
                                 color: '#ADADAD',
@@ -621,8 +759,8 @@ const AstrologerRegister = ({ navigation }) => {
                                 marginHorizontal: 18,
                             }}>
                             {_astrologerForm.password}
-                        </Text>
-                        <View style={{ flexDirection: 'row', }}>
+                        </Text> */}
+                        {/* <View style={{ flexDirection: 'row', }}>
                             <TextInput
                                 placeholderTextColor={'#333333'}
                                 placeholder={_astrologerForm.password}
@@ -662,7 +800,36 @@ const AstrologerRegister = ({ navigation }) => {
                                     />
                                 )}
                             </TouchableOpacity>
-                        </View>
+                        </View> */}
+                        <Text
+                            style={{
+                                fontFamily: 'AvenirLTStd-Medium',
+                                color: '#ADADAD',
+                                fontSize: 18,
+                                letterSpacing: -0.2,
+                                marginTop: 19,
+                                marginHorizontal: 18,
+                            }}>
+                            {_astrologerForm.institutename}
+                        </Text>
+                        <TextInput
+                            style={{
+                                fontSize: 16,
+                                fontFamily: 'AvenirLTStd-Medium',
+                                borderRadius: 10,
+                                borderColor: '#00000020',
+                                borderWidth: 1.5,
+                                marginTop: 10,
+                                marginHorizontal: 18,
+                                paddingHorizontal: 15,
+                                paddingVertical: 11,
+                                color: '#333333',
+                            }}
+                            placeholderTextColor={'#333333'}
+                            placeholder={_astrologerForm.institutename}
+                            value={centrename}
+                            onChangeText={(text) => setCentreName(text)}
+                        />
 
                         <Text
                             style={{
@@ -918,6 +1085,7 @@ const AstrologerRegister = ({ navigation }) => {
                             }}
                             placeholderTextColor={'#333333'}
                             placeholder={_astrologerForm.experience}
+                            keyboardType='numeric'
                             value={experience}
                             onChangeText={(text) => setExperience(text)}
                         />
@@ -1112,7 +1280,10 @@ const AstrologerRegister = ({ navigation }) => {
                             itemTextStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', textTransform: 'capitalize' }}
                             data={clist
                             }
-                            maxHeight={150}
+                            maxHeight={200}
+                            search
+                            searchPlaceholder={_astrologerForm.country}
+                            inputSearchStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', }}
                             labelField="label"
                             valueField="value"
                             placeholder={_astrologerForm.country}
@@ -1645,8 +1816,8 @@ const AstrologerRegister = ({ navigation }) => {
                             }
                             else if (mobile === '' || mobile.length !== 10) {
                                 Toast.show('Please enter your valid phone number');
-                            } else if (password == '') {
-                                Toast.show('Please enter Password');
+                            } else if (centrename == '') {
+                                Toast.show('Please enter Centre Name');
                             }
                             else if (checked === false) {
                                 Toast.show('Please Select Gender');
@@ -1655,26 +1826,8 @@ const AstrologerRegister = ({ navigation }) => {
                                 Toast.show('Please Select Date');
                             }
                             else {
+                                setCurrentPosition(currentPosition + 1)
 
-                                let e = {
-                                    "mobile": mobile
-                                };
-                                console.log(JSON.stringify(e));
-
-                                AstrologerCheckMobile(e)
-                                    .then(data => {
-
-                                        if (data.signupstatus == 1) {                  // new user
-                                            setCurrentPosition(currentPosition + 1)
-                                        } else {
-                                            Toast.show(data?.msg)                      // already register
-                                            return
-                                        }
-                                    })
-                                    .catch(error => {
-                                        toggleLoading(false);
-                                        console.log('error', error);
-                                    });
                             }
 
                         }}>
@@ -1770,71 +1923,7 @@ const AstrologerRegister = ({ navigation }) => {
                                 Toast.show('Please enter Biography');
                             }
                             else {
-                                let astrologer = {
-                                    newsignup: 1,
-                                    name,
-                                    type: 2,
-                                    email,
-                                    mobile,
-                                    status: 1,
-                                    password,
-                                    gender: checked === 0 ? "male" : checked === 1 ? "female" : null,
-                                    dob: date == '' ? '' : moment(date).format('YYYY-MM-DD'),
-                                    create_profile: 1,
-                                    should1,
-                                    should2,
-                                    should3,
-                                    should4,
-                                    experience,
-                                    hour,
-                                    accountnumber,
-                                    bankname,
-                                    ifsc,
-                                    address,
-                                    should5,
-                                    should6,
-                                    should7,
-                                    pincode,
-                                    pancard,
-                                    aadharcard,
-                                    'aadharcard_image': {
-                                        uri: passport1Full[0].uri,
-                                        type: passport1Full[0].type,
-                                        name: passport1Full[0].name,
-                                    },
-                                    'aadharcard_back_image': {
-                                        uri: passport2Full[0].uri,
-                                        type: passport2Full[0].type,
-                                        name: passport2Full[0].name,
-                                    },
-                                    'pancard_image': {
-                                        uri: resumeFull[0].uri,
-                                        type: resumeFull[0].type,
-                                        name: resumeFull[0].name,
-                                    },
-
-                                    academicqual,
-                                    astroqualification,
-                                    'academic_certificate': {
-                                        uri: acadmic[0].uri,
-                                        type: acadmic[0].type,
-                                        name: acadmic[0].name,
-                                    },
-                                    'astrologer_certificate': {
-                                        uri: astrological[0].uri,
-                                        type: astrological[0].type,
-                                        name: astrological[0].name,
-                                    },
-                                    'profile_picture': {
-                                        uri: picture[0].uri,
-                                        type: picture[0].type,
-                                        name: picture[0].name,
-                                    },
-                                    biography
-                                };
-                                console.log('step 6', astrologer)
-                                GLobal.user = astrologer
-                                navigation.replace('Package')
+                                Freepackage()
                             }
                         }}>
                         {_customlang.button}

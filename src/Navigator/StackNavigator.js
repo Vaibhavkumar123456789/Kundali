@@ -49,6 +49,12 @@ import NaamJane from '../Screens/NaamJane';
 import NaamJaneReport from '../Screens/NaamJaneReport';
 import Kundli from '../Screens/Kundli';
 import ResetPassword from '../Screens/ResetPassword';
+import VarshKundli from '../Screens/VarshKundli';
+import VarshKundliDetail from '../Screens/VarshKundliDetail';
+import LalKitab from '../Screens/LalKitab';
+import LalKitabDetail from '../Screens/LalKitabDetail';
+import AstrologerForm from '../Screens/AstrologerForm';
+import HeaderFooterPreviewDetails from '../Screens/HeaderFooterPreviewDetails';
 
 
 const Stack = createStackNavigator();
@@ -312,6 +318,36 @@ const StackNavigator = () => {
                 <Stack.Screen
                     name="ResetPassword"
                     component={ResetPassword}
+                    options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                    name="VarshKundli"
+                    component={VarshKundli}
+                    options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                    name="VarshKundliDetail"
+                    component={VarshKundliDetail}
+                    options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                    name="LalKitab"
+                    component={LalKitab}
+                    options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                    name="LalKitabDetail"
+                    component={LalKitabDetail}
+                    options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                    name="AstrologerForm"
+                    component={AstrologerForm}
+                    options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                    name="HeaderFooterPreviewDetails"
+                    component={HeaderFooterPreviewDetails}
                     options={{ headerShown: false }}
                 />
 

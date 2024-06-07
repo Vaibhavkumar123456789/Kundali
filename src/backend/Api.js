@@ -1,8 +1,8 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { PATH_URL } from './Config';
 import ApiSauce from './ApiSauce';
-import { ApiSauce1 } from './ApiSauce';
-
+// import { ApiSauce1 } from './ApiSauce';
+import { ApiSauceExternal } from './ApiSauce';
 import ApiSauceMu from './ApiSauce';
 import store from '../redux/store';
 
@@ -11,34 +11,31 @@ import { Dimensions } from 'react-native';
 const request = (path, json) => {
   return new Promise((resolve, reject) => {
     ApiSauce.post(path, json).then(response => {
-      if (response.status == 401) {
-        alert('You are login to another Device');
-
-        return;
-      }
       //alert(JSON.stringify(json))
 
       if (response.ok) {
         resolve(response.data);
       } else {
-        console.log(response.err);
-        reject(response.err);
+        console.log(response.data?.error);
+        // reject(response.err);
+        alert(JSON.stringify(response.data?.error));
+        reject(response.data?.error);
       }
     });
   });
 };
-const request1 = (path, json) => {
-  return new Promise((resolve, reject) => {
-    ApiSauce1.post(path, json).then(response => {
-      if (response.ok) {
-        resolve(response.data);
-      } else {
-        console.log(response.err);
-        reject(response.err);
-      }
-    });
-  });
-};
+// const request1 = (path, json) => {
+//   return new Promise((resolve, reject) => {
+//     ApiSauce1.post(path, json).then(response => {
+//       if (response.ok) {
+//         resolve(response.data);
+//       } else {
+//         console.log(response.err);
+//         reject(response.err);
+//       }
+//     });
+//   });
+// };
 const requestMultipart = (path, formdata) => {
   return new Promise((resolve, reject) => {
     ApiSauce.setHeader('Authorization', `${store.getState().token}`);
@@ -133,6 +130,24 @@ export const requestGet1 = (path, json) => {
   });
 };
 
+const requestExternal = (path, json) => {
+  return new Promise((resolve, reject) => {
+    ApiSauceExternal.post(path, json).then(response => {
+      if (response.status == 401) {
+
+        return;
+      }
+      //alert(JSON.stringify(json))
+      if (response.ok) {
+        resolve(response.data);
+      } else {
+        console.log(response.err);
+        reject(response.err);
+      }
+    });
+  });
+};
+
 
 export const UserSignUp = json => request(PATH_URL.signUp, json);
 export const Astrologersignup = json => request(PATH_URL.astrologersignup, json);
@@ -158,6 +173,11 @@ export const ReportDetailApi = json => requesth(PATH_URL.reportdetail, json);
 export const UpdateProfile = json => requesth(PATH_URL.updateProfile, json);
 export const HeaderPreviewApi = json => requesth(PATH_URL.headerpreview, json);
 export const MessageCenterApi = json => requestGet1(PATH_URL.messagecentera, json);
+export const HeaderColor = json => requestGet1(PATH_URL.headerColor, json);
+
+
+// third party api
+export const LalkitabForm = json => requestExternal(PATH_URL.lalkitab, json);
 
 
 // localstorage

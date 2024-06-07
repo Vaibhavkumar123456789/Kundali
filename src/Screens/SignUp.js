@@ -69,12 +69,13 @@ const SignUp = ({ navigation }) => {
         AstrologerCheckMobile(e)
             .then(data => {
                 toggleLoading(false);
+                
                 if (data.signupstatus == 1) {                  // new user
                     GLobal.user = {
                         name,
                         email,
-                        mobile
-                        , password,
+                        mobile,
+                        password,
                         type: 1,
                     }
                     navigation.replace('Otp')

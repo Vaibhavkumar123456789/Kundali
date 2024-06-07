@@ -30,7 +30,7 @@ const SignIn = ({ navigation }) => {
             Toast.show('Please enter Password');
         }
         else {
-             toggleLoading(true);
+            toggleLoading(true);
             let e = {
                 mobile: mobile,
                 password: password,
@@ -38,7 +38,6 @@ const SignIn = ({ navigation }) => {
             AstrologerUserApi(e)
                 .then(data => {
                     toggleLoading(false);
-
                     if (data) {
                         actions.Login(data?.user_detail);
                         actions.Token(data?.token);
@@ -46,7 +45,7 @@ const SignIn = ({ navigation }) => {
                         AsyncStorageSetUser(data?.user_detail);
                         navigation.replace('DrawerNavigator')
                     } else {
-                        alert(data.error);
+                        Toast.show(data.error);
                     }
                 })
                 .catch(error => {
@@ -64,7 +63,7 @@ const SignIn = ({ navigation }) => {
         SkipHome(e)
             .then(data => {
                 toggleLoading(false);
-                // alert(JSON.stringify(data, null, 2))
+
                 if (data.status) {
                     actions.Login(data?.user_detail);
                     actions.Token(data?.token);

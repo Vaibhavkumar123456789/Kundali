@@ -343,3 +343,71 @@ const NaamJane = ({ navigation }) => {
 export default NaamJane
 
 const styles = StyleSheet.create({})
+
+
+// import React from 'react';
+// import { View, Text, StyleSheet, ScrollView } from 'react-native';
+
+// const NaamJane = () => {
+//   return (
+//     <ScrollView horizontal >
+//       <View style={styles.container}>
+//         <View style={[styles.row, styles.headerRow]}>
+//           <Text style={[styles.cell, styles.headerCell]}>Column 1</Text>
+//           <Text style={[styles.cell, styles.headerCell]}>Column 2</Text>
+//           <Text style={[styles.cell, styles.headerCell]}>Column 3</Text>
+//           <Text style={[styles.cell, styles.headerCell]}>Column 3</Text>
+//           <Text style={[styles.cell, styles.headerCell]}>Column 3</Text>
+//           <Text style={[styles.cell, styles.headerCell]}>Column 3</Text>
+
+//           <Text style={[styles.cell, styles.headerCell]}>Column 3</Text>
+
+//           <Text style={[styles.cell, styles.headerCell]}>Column 3</Text>
+//           <Text style={[styles.cell, styles.headerCell]}>Column 3</Text>
+
+
+//         </View>
+//         <View style={styles.row}>
+//           <Text style={styles.cell}>Data 1</Text>
+//           <Text style={styles.cell}>Data 2</Text>
+//           <Text style={styles.cell}>Data 3</Text>
+//         </View>
+//         <View style={styles.row}>
+//           <Text style={styles.cell}>Data 4</Text>
+//           <Text style={styles.cell}>Data 5</Text>
+//           <Text style={styles.cell}>Data 6</Text>
+//         </View>
+//         {/* Add more rows as needed */}
+//       </View>
+//     </ScrollView>
+//   );
+// };
+
+// const styles = StyleSheet.create({
+//   container: {
+//     borderWidth: 1,
+//     borderColor: 'black',
+//     margin: 10,
+//   },
+//   row: {
+//     flexDirection: 'row',
+//     borderBottomWidth: 1,
+//     borderColor: 'gray',
+//   },
+//   headerRow: {
+//     backgroundColor: '#f2f2f2',
+//     borderTopWidth: 1,
+//   },
+//   cell: {
+//     flex: 1,
+//     padding: 10,
+//     textAlign: 'center',
+//     borderRightWidth: 1, // Add border to the right of each cell
+//     borderColor: 'gray', // Border color
+//   },
+//   headerCell: {
+//     fontWeight: 'bold',
+//   },
+// });
+
+// export default NaamJane;

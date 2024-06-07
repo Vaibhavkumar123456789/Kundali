@@ -53,7 +53,7 @@ module.exports = {
     amount: '',
     user_id: '',
     statusid: '',
-
+    astrologerform: {},
     startConsuldocBookType: '',
     startConsultation: '',
     startConsulBid: '',
