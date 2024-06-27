@@ -19,16 +19,68 @@ import {
 import Header from '../Custom/Header';
 import stringsoflanguages from '../language/Language'
 import Button from 'react-native-button';
-import { Dropdown } from 'react-native-element-dropdown';
 import { RadioButton } from 'react-native-paper';
+import { addresslist, deletedaddress } from '../backend/Api';
+import { useIsFocused } from '@react-navigation/native';
+import Loader from '../utils/Loader';
 
 const SelectAddress = ({ navigation }) => {
     const window = Dimensions.get('window');
     const { width, height } = Dimensions.get('window');
+    const isFocused = useIsFocused();
     const { _member, _invoice, _kundali, _setting, _customlang } = stringsoflanguages
     const [should1, setShould1] = useState('')
     const [checked, setChecked] = React.useState(false);
     const gender = [{}, {}]
+    const [address, setAddressList] = useState([])
+    const [state, setState] = useState({
+        loading: false,
+    });
+    const toggleLoading = bol => setState({ ...state, loading: bol });
+
+    useEffect(() => {
+        list()
+    }, [isFocused == true])
+
+    const list = () => {
+        toggleLoading(true);
+
+        addresslist()
+            .then(data => {
+                // alert(JSON.stringify(data, null, 2))
+                toggleLoading(false);
+                if (data.status) {
+                    setAddressList(data.addresses)
+
+                } else {
+                    alert(data?.msg);
+                }
+            })
+            .catch(error => {
+                toggleLoading(false);
+                console.log('error', error);
+            });
+    }
+
+    const deleteselectaddress = (id) => {
+        let e = {
+            "address_id": id
+        };
+        deletedaddress(e)
+            .then(data => {
+                // alert(JSON.stringify(data, null, 2))
+
+                if (data.status) {
+                    list()
+
+                } else {
+                    alert(data?.msg);
+                }
+            })
+            .catch(error => {
+                console.log('error', error);
+            });
+    }
 
 
     return (
@@ -39,9 +91,10 @@ const SelectAddress = ({ navigation }) => {
                 leftIcon={require('../assets/backtoback.png')}
                 title={_setting.selectaddress}
             />
+            {state.loading && <Loader />}
             <ScrollView>
                 <FlatList
-                    data={gender}
+                    data={address}
                     renderItem={({ item, index }) => (
                         <Pressable onPress={() => {
                             setChecked(index)
@@ -64,7 +117,7 @@ const SelectAddress = ({ navigation }) => {
                                         marginTop: 7,
                                         width: window.width - 110,
                                     }}>
-                                        Jagjeet Singh
+                                        {item?.name}
                                     </Text>
                                     <RadioButton
                                         value={checked}
@@ -86,7 +139,7 @@ const SelectAddress = ({ navigation }) => {
                                         marginTop: 5,
                                         marginHorizontal: 10,
                                     }}>
-                                    195, South Avenue Apartment, Sector-04 Dwarka, New Delhi-110075
+                                    {item?.address},{item?.city_name},{item?.state_name},{item?.country_name}-{item.pincode}
                                 </Text>
 
                                 <Text
@@ -97,50 +150,92 @@ const SelectAddress = ({ navigation }) => {
                                         marginTop: 5,
                                         marginHorizontal: 10,
                                     }}>
-                                    {_kundali.mobile} 9717274597
+                                    {_kundali.mobile}-{item?.mobile}
                                 </Text>
 
-                                <Pressable>
-                                    <Text
-                                        style={{
-                                            fontFamily: 'AvenirLTStd-Heavy',
-                                            color: '#FFCC80',
-                                            fontSize: 13,
-                                            marginTop: 8,
-                                            marginHorizontal: 10,
-                                        }}>
-                                        {_setting.change}
-                                    </Text>
-                                </Pressable>
+                                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                                    <Pressable style={{
+                                        width: '45%',
+                                        borderRadius: 4,
+                                        backgroundColor: '#FFCC8090',
+                                        paddingVertical: 10,
+                                        marginTop: 10,
+                                        marginLeft: 10,
+                                    }} onPress={() => { navigation.navigate('EditAddress', item) }} >
+
+                                        <Text
+                                            style={{
+                                                fontSize: 14,
+                                                color: 'black',
+                                                fontFamily: 'AvenirLTStd-Medium',
+                                                textAlign: 'center',
+                                            }}>
+                                            Edit
+                                        </Text>
+                                    </Pressable>
+                                    <Pressable style={{
+                                        width: '45%',
+                                        borderRadius: 4,
+                                        marginRight: 10,
+                                        backgroundColor: '#FFCC8090',
+                                        paddingVertical: 10,
+                                        marginTop: 10,
+                                    }} onPress={() => {
+                                        Alert.alert(
+                                            'Are you sure want to Delete Address ?',
+                                            item?.name,
+                                            [
+                                                {
+                                                    text: 'Cancel',
+                                                    onPress: () => console.log('Cancel Pressed'),
+                                                },
+
+                                                { text: 'Delete', onPress: () => deleteselectaddress(item.id) },
+                                            ],
+                                            { cancelable: false },
+                                        )
+                                    }}>
+                                        <Text
+                                            style={{
+                                                fontSize: 14,
+                                                color: 'black',
+                                                fontFamily: 'AvenirLTStd-Medium',
+                                                textAlign: 'center',
+                                            }}>
+                                            DELETE
+                                        </Text>
+                                    </Pressable>
+                                </View>
                             </View>
 
                         </Pressable>
                     )}
                 />
 
-                <Pressable onPress={() => { navigation.navigate('AddAddress') }} style={{
-                    backgroundColor: '#FFCC8030',
-                    borderRadius: 12,
-                    paddingHorizontal: 30,
-                    paddingVertical: 12,
-                    marginTop: 30,
-                    borderWidth: 1,
-                    borderColor: '#FFCC80',
-                    borderStyle: 'dashed',
-                    alignSelf: 'center',
-                }}>
-                    <Text
-                        style={{
-                            fontFamily: 'AvenirLTStd-Heavy',
-                            color: '#333333',
-                            fontSize: 14,
-                        }}>
-                        + {_setting.addnewaddress}
-                    </Text>
-                </Pressable>
-            </ScrollView>
 
-            <Button
+            </ScrollView>
+            <Pressable onPress={() => { navigation.navigate('AddAddress') }} style={{
+                backgroundColor: '#FFCC8030',
+                borderRadius: 12,
+                width: '90%',
+                paddingVertical: 12,
+                marginBottom: 20,
+                borderWidth: 1,
+                borderColor: '#FFCC80',
+                borderStyle: 'dashed',
+                alignSelf: 'center',
+            }}>
+                <Text
+                    style={{
+                        fontFamily: 'AvenirLTStd-Heavy',
+                        color: '#333333',
+                        fontSize: 14,
+                        textAlign: 'center',
+                    }}>
+                    + {_setting.addnewaddress}
+                </Text>
+            </Pressable>
+            {/* <Button
                 containerStyle={{
                     width: '90%',
                     marginBottom: 20,
@@ -161,7 +256,7 @@ const SelectAddress = ({ navigation }) => {
                     navigation.replace('Payment')
                 }}>
                 {_customlang.submit}
-            </Button>
+            </Button> */}
 
 
         </SafeAreaView >

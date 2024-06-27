@@ -9,13 +9,14 @@ import {
     TouchableOpacity,
     Pressable,
     TextInput,
-    Dimensions, 
+    Dimensions,
     Alert,
     FlatList,
-    SafeAreaView, 
+    SafeAreaView,
     ScrollView,
     StatusBar
 } from 'react-native';
+var randomstring = require("randomstring");
 import Header from '../Custom/Header';
 import Toast from 'react-native-simple-toast';
 import stringsoflanguages from '../language/Language'
@@ -27,6 +28,7 @@ var validator = require('email-validator');
 import { BASE_URL } from '../backend/Config';
 import { validateEmail } from '../utils/utils';
 import GLobal from './GLobal';
+
 
 const AstrologerForm = ({ navigation }) => {
     const window = Dimensions.get('window');
@@ -40,13 +42,17 @@ const AstrologerForm = ({ navigation }) => {
     const [should6, setShould6] = useState('')
     const [name, setName] = useState('')
     const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
     const [number, setNumber] = useState('')
     const [centrename, setCentreName] = useState('')
+    const [VisiblePass, setVisiblePass] = useState(false)
+    const makePassVisible = () => {
+        setVisiblePass(prevState => !prevState);
+    };
     const [state, setState] = useState({
         loading: false,
     });
     const toggleLoading = bol => setState({ ...state, loading: bol });
-
 
     useEffect(() => {
         Countrysearch()
@@ -129,22 +135,18 @@ const AstrologerForm = ({ navigation }) => {
     const verifyuser = () => {
         let astrologer = {
             name,
-            type: 2,
             email,
             number,
-            status: 1,
             centrename,
+            password,
             should1,
             should6,
             should7,
-            create_profile: 1,
-
         };
         console.log('astrologerform', astrologer)
         GLobal.user = astrologer
-        navigation.replace('Package')
-
     }
+
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
             <StatusBar barStyle="dark-content" backgroundColor="#FFCC80" />
@@ -246,6 +248,59 @@ const AstrologerForm = ({ navigation }) => {
                     value={number}
                     onChangeText={(text) => setNumber(text)}
                 />
+
+                <Text
+                    style={{
+                        fontFamily: 'AvenirLTStd-Medium',
+                        color: '#ADADAD',
+                        fontSize: 18,
+                        letterSpacing: -0.2,
+                        marginTop: 19,
+                        marginHorizontal: 18,
+                    }}>
+                    {_astrologerForm.password}
+                </Text>
+                <View style={{ flexDirection: 'row', }}>
+                    <TextInput
+                        placeholderTextColor={'#333333'}
+                        placeholder={_astrologerForm.password}
+                        maxLength={20}
+                        secureTextEntry={VisiblePass ? false : true}
+                        value={password}
+                        onChangeText={(text) => setPassword(text)}
+                        style={{
+                            fontSize: 16,
+                            fontFamily: 'AvenirLTStd-Medium',
+                            borderRadius: 10,
+                            borderColor: '#00000020',
+                            borderWidth: 1.5,
+                            marginTop: 10,
+                            marginHorizontal: 18,
+                            paddingHorizontal: 15,
+                            paddingVertical: 11,
+                            color: '#333333',
+                            width: "90%",
+                        }}
+                    />
+                    <TouchableOpacity
+                        activeOpacity={0.8}
+                        style={{ marginLeft: -60, padding: 5, paddingTop: 28 }}
+                        onPress={() => {
+                            makePassVisible();
+                        }}>
+                        {VisiblePass ? (
+                            <Image
+                                style={{ width: 18, height: 18, resizeMode: 'contain', alignSelf: 'center', }}
+                                source={require('../assets/eye.png')}
+                            />
+                        ) : (
+                            <Image
+                                style={{ width: 18, height: 18, resizeMode: 'contain', alignSelf: 'center', }}
+                                source={require('../assets/hide.png')}
+                            />
+                        )}
+                    </TouchableOpacity>
+                </View>
                 <Text
                     style={{
                         fontFamily: 'AvenirLTStd-Medium',
@@ -431,20 +486,35 @@ const AstrologerForm = ({ navigation }) => {
                             Toast.show('Please Select City');
                         }
                         else {
+                            toggleLoading(true);
+                            var x = randomstring.generate({
+                                length: 4,
+                                charset: 'numeric',
+                                letters: false,
+                                special: false,
+
+                            });
+
                             let e = {
-                                "mobile": number
+                                "mobile": number,
+                                "email": email,
+                                "otp": x,
+                                "country_code": "+91"
                             };
                             console.log(JSON.stringify(e));
 
                             AstrologerCheckMobile(e)
                                 .then(data => {
-
-                                    if (data.signupstatus == 1) {                  // new user
+                                    // alert(JSON.stringify(data, null, 2))
+                                    toggleLoading(false);
+                                    if (data.status == true) {
                                         verifyuser()
+                                        navigation.navigate("Otp", e)
                                     } else {
-                                        Toast.show(data?.msg)                      // already register
+                                        Toast.show(data?.msg);
                                         return
                                     }
+
                                 })
                                 .catch(error => {
                                     toggleLoading(false);

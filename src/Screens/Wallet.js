@@ -4,38 +4,43 @@ import CustomHeader from '../Custom/CustomHeader';
 import stringsoflanguages from '../language/Language'
 import { TabView, TabBar, SceneMap } from 'react-native-tab-view';
 import Button from 'react-native-button';
+import { useIsFocused } from '@react-navigation/native';
 import { RadioButton } from 'react-native-paper';
+import { walletplan } from '../backend/Api';
 
 const Wallet = ({ navigation }) => {
   const { _member, _home, _drawer } = stringsoflanguages
   const window = Dimensions.get('window');
+  const isFocused = useIsFocused();
   const { width, height } = Dimensions.get('window');
   const [select, setSelect] = useState()
   const [custom, setCustom] = useState(false)
-
   const [checked1, setChecked1] = useState(0);
   const [popupVisible, setPopupVisible] = useState(false);
+  const [plandetail, setPlanDetail] = useState([])
 
-  const detail1 = [
-    {
-      number: '100',
-    },
-    {
-      number: '200',
-    },
-    {
-      number: '500',
-    },
-    {
-      number: '1000',
-    },
-    {
-      number: '1500',
-    },
-    {
-      number: '2000',
-    },
-  ];
+  // alert(JSON.stringify(custom,null,2))
+
+  useEffect(() => {
+    planadd()
+  }, [isFocused == true])
+
+  const planadd = () => {
+
+    walletplan()
+      .then(data => {
+        // alert(JSON.stringify(data, null, 2))
+        if (data.status) {
+          setPlanDetail(data?.data)
+
+        } else {
+          alert(data?.msg);
+        }
+      })
+      .catch(error => {
+        console.log('bannererror', error);
+      });
+  }
 
   const list1 = [
     {
@@ -44,7 +49,6 @@ const Wallet = ({ navigation }) => {
     {
 
     },
-
 
   ]
 
@@ -98,7 +102,7 @@ const Wallet = ({ navigation }) => {
 
         <FlatList
           numColumns={3}
-          data={detail1}
+          data={plandetail}
           renderItem={({ item, index }) => (
             <TouchableOpacity
               activeOpacity={0.8}
@@ -124,114 +128,106 @@ const Wallet = ({ navigation }) => {
                     color: '#6F6F7B',
                     color: index == select ? '#1E1F20' : '#6F6F7B',
                   }}>
-                  ₹{item.number}
+                  ₹{parseFloat(item.recharge).toFixed(0)}
                 </Text>
               </View>
             </TouchableOpacity>
           )}
         />
+        {custom && (
+          <View style={{
+            paddingVertical: 15,
+            backgroundColor: '#FFFFFF',
+            marginTop: 20,
+            borderRadius: 6,
+            elevation: 5,
+            width: '90%',
+            alignSelf: 'center',
+            bottom: 7,
+          }}>
+            <Text style={{
+              marginHorizontal: 10,
+              color: '#333333',
+              fontFamily: 'AvenirLTStd-Heavy',
+              fontSize: 14,
+              textTransform: 'uppercase'
+            }}>
+              PAYMENT DETAILS
+            </Text>
+            <View style={{
+              flexDirection: 'row', justifyContent: 'space-between', marginTop: 15,
+            }}>
+              <Text style={{
+                marginLeft: 10,
+                color: '#333333',
+                fontSize: 14,
+                fontFamily: 'AvenirLTStd-Roman',
+              }}>
+                Amount
+              </Text>
+              {(custom &&
+                <Text style={{
+                  marginRight: 10,
+                  color: '#333333',
+                  fontSize: 14,
+                  fontFamily: 'AvenirLTStd-Heavy',
+                  textAlign: 'right',
+                }}>
+                  ₹{parseFloat(custom?.recharge).toFixed(2)}
+                </Text>
+              )}
+            </View>
+            <View style={{
+              flexDirection: 'row', justifyContent: 'space-between', marginTop: 15,
+            }}>
+              <Text style={{
+                marginLeft: 10,
+                color: '#333333',
+                fontSize: 14,
+                fontFamily: 'AvenirLTStd-Roman',
+              }}>
+                18% Gst Charges
+              </Text>
+              {(custom &&
+                <Text style={{
+                  marginRight: 10,
+                  color: '#333333',
+                  fontSize: 14,
+                  textAlign: 'right',
+                  fontFamily: 'AvenirLTStd-Heavy',
+                }}>
+                  ₹{parseFloat(custom?.recharge * (18 / 100)).toFixed(2)}
 
-        <View style={{
-          paddingVertical: 15,
-          backgroundColor: '#FFFFFF',
-          marginTop: 20,
-          borderRadius: 6,
-          elevation: 5,
-          width: '90%',
-          alignSelf: 'center',
-          bottom: 7,
-        }}>
-          <Text style={{
-            marginHorizontal: 10,
-            color: '#333333',
-            fontFamily: 'AvenirLTStd-Heavy',
-            fontSize: 14,
-            textTransform: 'uppercase'
-          }}>
-            PAYMENT DETAILS
-          </Text>
-          <View style={{
-            flexDirection: 'row', justifyContent: 'space-between', marginTop: 15,
-          }}>
-            <Text style={{
-              marginLeft: 10,
-              color: '#333333',
-              fontSize: 14,
-              fontFamily: 'AvenirLTStd-Roman',
-            }}>
-              Amount
-            </Text>
-            <Text style={{
-              marginRight: 10,
-              color: '#333333',
-              fontSize: 14,
-              fontFamily: 'AvenirLTStd-Heavy',
-            }}>
-              ₹10000.00
-            </Text>
-          </View>
-          <View style={{
-            flexDirection: 'row', justifyContent: 'space-between', marginTop: 15,
-          }}>
-            <Text style={{
-              marginLeft: 10,
-              color: '#333333',
-              fontSize: 14,
-              fontFamily: 'AvenirLTStd-Roman',
-            }}>
-              18% Gst Charges
-            </Text>
-            <Text style={{
-              marginRight: 10,
-              color: '#333333',
-              fontSize: 14,
-              fontFamily: 'AvenirLTStd-Heavy',
-            }}>
-              ₹10000.00
-            </Text>
-          </View>
+                </Text>
+              )}
+            </View>
 
-          <View style={{
-            flexDirection: 'row', justifyContent: 'space-between', marginTop: 10,
-          }}>
-            <Text style={{
-              marginLeft: 10,
-              color: '#333333',
-              fontSize: 14,
-              fontFamily: 'AvenirLTStd-Roman',
-            }}>
-              Talktime Value
-            </Text>
-            <Text style={{
-              marginRight: 10,
-              color: '#333333',
-              fontSize: 14,
-              fontFamily: 'AvenirLTStd-Heavy',
-            }}>
-              ₹10000.00
-            </Text>
+
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 15, backgroundColor: '#FFC62925', bottom: -15, borderBottomLeftRadius: 6, borderBottomRightRadius: 6 }}>
+              <Text style={{
+                marginLeft: 10,
+                color: '#333333',
+                fontSize: 12,
+                letterSpacing: 0.2,
+                fontFamily: 'AvenirLTStd-Heavy',
+              }}>
+                TOTAL AMOUNT
+              </Text>
+              {(custom &&
+                <Text style={{
+                  marginRight: 10,
+                  color: '#333333',
+                  fontSize: 14,
+                  letterSpacing: 0.2,
+                  textAlign: 'right',
+                  fontFamily: 'AvenirLTStd-Heavy',
+                }}>
+                  ₹{parseFloat(custom?.recharge + (custom?.recharge * (18 / 100))).toFixed(2)}
+                </Text>
+              )}
+            </View>
           </View>
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 15, backgroundColor: '#FFC62925', bottom: -15, borderBottomLeftRadius: 6, borderBottomRightRadius: 6 }}>
-            <Text style={{
-              marginLeft: 10,
-              color: '#333333',
-              fontSize: 12,
-              letterSpacing: 0.2,
-              fontFamily: 'AvenirLTStd-Heavy',
-            }}>
-              TOTAL AMOUNT
-            </Text>
-            <Text style={{
-              marginRight: 10,
-              color: '#333333',
-              fontSize: 14,
-              letterSpacing: 0.2,
-              fontFamily: 'AvenirLTStd-Heavy',
-            }}>
-              ₹10000.00
-            </Text>
-          </View>
-        </View>
+        )}
       </ScrollView>
       <Button
         containerStyle={{

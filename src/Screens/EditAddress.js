@@ -23,10 +23,11 @@ import Button from 'react-native-button';
 import GetLocation from 'react-native-get-location'
 import { Dropdown } from 'react-native-element-dropdown';
 import MapView, { Marker } from 'react-native-maps';
-import { City1, Country, State1, addnewaddress } from '../backend/Api';
+import { City1, Country, State1, updateaddress } from '../backend/Api';
 import Loader from '../utils/Loader';
 
-const AddAddress = ({ navigation }) => {
+const EditAddress = ({ navigation, route }) => {
+    // alert(JSON.stringify(route.params, null, 2))
     const window = Dimensions.get('window');
     const { width, height } = Dimensions.get('window');
     const { _member, _invoice, _kundali, _setting, _customlang, _astrologerForm } = stringsoflanguages
@@ -38,19 +39,26 @@ const AddAddress = ({ navigation }) => {
     const [clist, setCList] = useState([])
     const [statelist1, setStateList] = useState([])
     const [cityname, setCityName] = useState([])
-    const [name, setName] = useState('')
-    const [cityname1, setCityName1] = useState('')
-    const [mobile, setMobile] = useState('')
-    const [address, setAddress] = useState('')
-    const [pincode, setPincode] = useState('')
+    const [name, setName] = useState(route.params?.name)
+    const [mobile, setMobile] = useState(route.params?.mobile)
+    const [address, setAddress] = useState(route.params?.address)
+    const [pincode, setPincode] = useState(route.params?.pincode)
     const [should5, setShould5] = useState('')
     const [should6, setShould6] = useState('')
     const [should7, setShould7] = useState('')
     const [list, setList] = useState(null);
+    const [Lat, setLat] = useState(parseFloat(route.params?.latitude));
+    const [Lon, setLon] = useState(
+        parseFloat(route.params?.longitude),
+    );
 
     useEffect(() => {
         Countrysearch()
-        requestLocationPermission()
+
+        animateToMarker({
+            latitude: Lat,
+            longitude: Lon,
+        });
     }, [])
 
 
@@ -78,8 +86,9 @@ const AddAddress = ({ navigation }) => {
                         // alert(JSON.stringify(location, null, 2));
                         setList(location);
                         animateToMarker(location);
+                        setLat(location?.latitude);
+                        setLon(location?.longitude);
 
-                        console.log(location);
                         toggleLoading(false);
                     })
                     .catch(error => {
@@ -110,6 +119,8 @@ const AddAddress = ({ navigation }) => {
             latitude: parseFloat(item?.value?.latitude),
             longitude: parseFloat(item?.value?.longitude)
         });
+        setLat(parseFloat(item?.value?.latitude));
+        setLon(parseFloat(item?.value?.longitude));
 
     };
 
@@ -208,44 +219,35 @@ const AddAddress = ({ navigation }) => {
     const listaddress = () => {
         if (name == '') {
             Toast.show('Please enter Name');
-        } else if (mobile === '' || mobile.length !== 10) {
+        }
+        else if (mobile === '' || mobile.length !== 10) {
             Toast.show('Please enter your valid phone number');
-        } else if (should5 == '') {
-            Toast.show('Please Select Country');
-        }
-        else if (should6 == '') {
-            Toast.show('Please Select State');
-        }
-        else if (should7 == '') {
-            Toast.show('Please Select City');
         } else if (address == '') {
             Toast.show('Please enter Address');
         } else if (pincode == '') {
             Toast.show('Please enter Pincode');
         }
-        else if (should1 == '') {
-            Toast.show('Please select type');
-        } else {
+
+        else {
             let e = {
                 "name": name,
                 "mobile": mobile,
                 "address": address,
-                "country_id": should5,
-                "state_id": should6,
-                "city_name": should7?.value?.id,
-                "latitude": list.latitude,
-                "longitude": list.longitude,
+                "country_id": should5 == '' ? route.params?.country_id : should5,
+                "state_id": should6 == '' ? route.params?.state_id : should6,
+                "city_name": should7 == '' ? route.params?.city_id : should7?.value?.id,
+                "latitude": list != null ? list.latitude : route.params?.latitude,
+                "longitude": list != null ? list.longitude : route.params?.longitude,
                 "pincode": pincode,
                 "default": "1",
-                "city_id": should7?.value?.id,
-                "type": should1,
+                "city_id": should7 == '' ? route.params?.city_id : should7?.value?.id,
+                "type": should1 == '' ? route.params?.type : should1,
+                "address_id": route.params?.id,
             };
-            console.log(e)
             // alert(JSON.stringify(e, null, 2))
             // return
-
             toggleLoading(true);
-            addnewaddress(e)
+            updateaddress(e)
                 .then(data => {
                     // alert(JSON.stringify(data, null, 2))
                     toggleLoading(false);
@@ -269,42 +271,25 @@ const AddAddress = ({ navigation }) => {
             <Header
                 menuOption={() => navigation.goBack()}
                 leftIcon={require('../assets/backtoback.png')}
-                title={_setting.addaddress}
+                title='Edit Address'
             />
             {state.loading && <Loader />}
             <ScrollView>
-                {/* <MapView
-                    style={{ width: '100%', height: 227 }}
-                    initialRegion={{
-                        latitude: 28.6922,
-                        longitude: 77.1507,
-                        latitudeDelta: 0.0922,
-                        longitudeDelta: 0.0421,
-                    }}
-                >
-                    {markers.map(marker => (
-                        <Marker
-                            key={marker.coordinate.latitude + marker.coordinate.longitude}
-                            coordinate={marker.coordinate}
-                        // title={marker.title}
-                        // description={marker.description}
-                        />
-                    ))}
-                </MapView> */}
+
                 <MapView
                     ref={mapRef}
                     style={{ width: '100%', height: 227 }}
                     initialRegion={{
-                        latitude: 28.6922,
-                        longitude: 77.1507,
+                        latitude: Lat,
+                        longitude: Lon,
                         latitudeDelta: 0.0922,
                         longitudeDelta: 0.0421,
                     }}>
                     <Marker
                         ref={markerRef}
                         coordinate={{
-                            latitude: list?.latitude || 28.6922,
-                            longitude: list?.longitude || 77.1507,
+                            latitude: Lat || 28.6922,
+                            longitude: Lon || 77.1507,
                         }}
                         title="Destination"
                     />
@@ -406,7 +391,7 @@ const AddAddress = ({ navigation }) => {
                     inputSearchStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', }}
                     labelField="label"
                     valueField="value"
-                    placeholder={_astrologerForm.country}
+                    placeholder={should5 == '' ? route.params?.country_name : _astrologerForm.country}
                     value={should5}
                     onChange={(item) => { setShould5(item.value), statelist(item.value) }}
                 />
@@ -443,7 +428,7 @@ const AddAddress = ({ navigation }) => {
                     data={statelist1}
                     labelField="label"
                     valueField="value"
-                    placeholder={_astrologerForm.statename}
+                    placeholder={should6 == '' ? route.params?.state_name : _astrologerForm.statename}
                     value={should6}
                     onChange={(item) => { setShould6(item.value), citylist(item.value) }}
                 />
@@ -480,7 +465,7 @@ const AddAddress = ({ navigation }) => {
                     data={cityname}
                     labelField="label"
                     valueField="value"
-                    placeholder={_astrologerForm.city}
+                    placeholder={should7 == '' ? route.params?.city_name : _astrologerForm.city}
                     value={should7}
                     onChange={(item) => {
                         // alert(JSON.stringify(item, null, 2))
@@ -495,7 +480,6 @@ const AddAddress = ({ navigation }) => {
                         // });
                     }}
                 />
-
                 <Text
                     style={{
                         fontFamily: 'AvenirLTStd-Medium',
@@ -591,7 +575,7 @@ const AddAddress = ({ navigation }) => {
                     maxHeight={150}
                     labelField="label"
                     valueField="value"
-                    placeholder={'Type'}
+                    placeholder={should1 == '' ? route.params?.type : 'Type'}
                     value={should1}
                     onChange={(item) => setShould1(item.value)}
                 />
@@ -626,7 +610,7 @@ const AddAddress = ({ navigation }) => {
     )
 }
 
-export default AddAddress
+export default EditAddress
 
 const styles = StyleSheet.create({})
 

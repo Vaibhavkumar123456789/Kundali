@@ -12,7 +12,7 @@ const SelectType = ({ navigation }) => {
             <ImageBackground resizeMode='stretch' style={{ width: '100%', height: '100%' }}
                 source={require('../assets/background.png')}>
 
-                  <Text style={{
+                <Text style={{
                     marginTop: height / 3.2,
                     fontSize: 30,
                     color: '#333333',
@@ -23,7 +23,7 @@ const SelectType = ({ navigation }) => {
                 </Text>
                 <View style={{ flexDirection: 'row', marginLeft: 18, marginTop: 20 }}>
                     {/* <Pressable onPress={() => { navigation.navigate('AstrologerRegister') }}> */}
-                    <Pressable onPress={() => { navigation.navigate('AstrologerForm') }}>
+                    <Pressable onPress={() => { navigation.navigate('AstrologerLogin') }}>
                         <ImageBackground
                             resizeMode='contain'
                             style={{
@@ -77,3 +77,45 @@ const SelectType = ({ navigation }) => {
 export default SelectType
 
 const styles = StyleSheet.create({})
+
+// import React, { useState, useEffect } from 'react';
+// import { View, Text, Button, StyleSheet } from 'react-native';
+
+// const SelectType = () => {
+//     const [randomNumber, setRandomNumber] = useState(null);
+//     useEffect(() => {
+//         generateRandomNumber()
+//     }, [])
+
+//     const generateRandomNumber = () => {
+//         const min = 1000;
+//         const max = 9999;
+//         const rand = Math.floor(min + Math.random() * (max - min + 1));
+//         setRandomNumber(rand);
+//     };
+
+//     return (
+//         <View style={styles.container}>
+//             <Text style={styles.number}>
+//                 {randomNumber !== null ? randomNumber : 'Press the button to generate a number'}
+//             </Text>
+//             {/* <Button title="Generate Random Number" onPress={generateRandomNumber} /> */}
+//         </View>
+//     );
+// };
+
+// const styles = StyleSheet.create({
+//     container: {
+//         flex: 1,
+//         justifyContent: 'center',
+//         alignItems: 'center',
+//         backgroundColor: '#F5FCFF',
+//     },
+//     number: {
+//         fontSize: 30,
+//         marginBottom: 20,
+//     },
+// });
+
+// export default SelectType;
+

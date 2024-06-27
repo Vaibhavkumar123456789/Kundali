@@ -53,13 +53,14 @@ const Profile = ({ navigation }) => {
     useEffect(() => {
         GetProfile()
             .then(data => {
+                // alert(JSON.stringify(data, null, 2))
                 if (data.status) {
                     setUserData(data)
-                    setName(data?.data?.name)
-                    setMobile(data?.data?.mobile)
-                    setEmail(data?.data?.email)
+                    setName(data?.user_profile?.name)
+                    setMobile(data?.user_profile?.mobile)
+                    setEmail(data?.user_profile?.email)
                 } else {
-                    alert(data.msg);
+                    alert(data?.msg);
                 }
             })
             .catch(error => {
@@ -102,8 +103,8 @@ const Profile = ({ navigation }) => {
                 path: 'images',
 
             },
-            quality: 1,
-            maxWidth: 300,
+            quality: .2,
+            maxWidth: 400,
             maxHeight: 550,
         };
         await launch(options, response => {
@@ -232,19 +233,22 @@ const Profile = ({ navigation }) => {
                 formData.append('mobile', mobile)
                 formData.append('name', name)
                 formData.append('email', email)
-                formData.append('profile_picture', {
-                    uri: state.image == '' ? `${userData?.path}/${userData?.data?.profile_picture}` : state.image.uri,
+                formData.append('image', {
+                    uri: state.image == '' ? `${userData?.path}/${userData?.user_profile?.image}` : state.image.uri,
                     type: 'image/jpeg',
                     name: 'image.png',
                 })
+                // alert(JSON.stringify(formData,null,2))
+                // return
 
                 const token = (await AsyncStorageGettoken() || '')
                 const btoken = `Bearer ${token}`;
 
                 setTimeout(() => {
+
                     axios
                         .post(
-                            `${BASE_URL}astrologer-user/edit-profile`,
+                            `${BASE_URL}astrologer/update-profile`,
                             formData,
                             {
                                 headers: {
@@ -256,6 +260,7 @@ const Profile = ({ navigation }) => {
                         )
                         .then(response => {
                             toggleLoading(false);
+                            // alert(JSON.stringify(response.data, null, 2))
                             Toast.show('Profile Updated')
                             navigation.goBack()
 
@@ -265,7 +270,7 @@ const Profile = ({ navigation }) => {
                             toggleLoading(true);
                             axios
                                 .post(
-                                    `${BASE_URL}astrologer-user/edit-profile`,
+                                    `${BASE_URL}astrologer/update-profile`,
                                     formData,
                                     {
                                         headers: {
@@ -277,6 +282,7 @@ const Profile = ({ navigation }) => {
                                 )
                                 .then(response => {
                                     toggleLoading(false);
+                                    // alert(JSON.stringify(response.data, null, 2))
                                     Toast.show('Profile Updated')
                                     navigation.goBack()
 
@@ -291,7 +297,7 @@ const Profile = ({ navigation }) => {
                             toggleLoading(false);
                             console.error('Error uploading files1', error);
                         });
-                }, 3000);
+                }, 2000);
             }
         } catch (error) {
             toggleLoading(false)
@@ -336,8 +342,8 @@ const Profile = ({ navigation }) => {
                                                 width: 110, height: 110, alignSelf: 'center', marginTop: 20
                                             }}
                                             source={
-                                                userData?.data?.profile_picture?.length > 0
-                                                    ? { uri: `${userData?.path}/${userData?.data?.profile_picture}` }
+                                                userData?.user_profile?.image?.length > 0
+                                                    ? { uri: `${userData?.path}/${userData?.user_profile?.image}` }
                                                     : require('../assets/defaultimage.png')
                                             }>
                                             <Image

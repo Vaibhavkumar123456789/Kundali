@@ -29,76 +29,56 @@ import { useIsFocused } from '@react-navigation/native';
 import stringsoflanguages from '../language/Language'
 import { Dropdown } from 'react-native-element-dropdown';
 import { validateEmail } from '../utils/utils';
-import RenderHtml, { defaultSystemFonts } from 'react-native-render-html';
-const systemFonts = [
-    ...defaultSystemFonts,
-    'AvenirLTStd-Medium',
-    'AvenirLTStd-Heavy',
-];
-import { astrologeraddmembership, consultancylist, membershipplans } from '../backend/Api';
-const MembershipForm = ({ navigation }) => {
+import { consultancylist, updatememberlist } from '../backend/Api';
+const UpdateMember = ({ navigation, route }) => {
+    // alert(JSON.stringify(route.params, null, 2))
     const { _kundali, _customlang } = stringsoflanguages
     const window = Dimensions.get('window');
     const isFocused = useIsFocused();
     const { width, height } = Dimensions.get('window');
-    const [checked, setChecked] = React.useState(false);
-    const [checked1, setChecked1] = React.useState(false);
+    const [checked, setChecked] = React.useState(route.params?.maindetailuser?.gender === "Male" ? 0 : route.params?.maindetailuser?.gender === "Female" ? 1 : null);
+    const [checked1, setChecked1] = React.useState(route.params?.maindetailuser?.marital_status === "Married" ? 0 : route.params?.maindetailuser?.marital_status === "Unmarried" ? 1 : "Divorce");
     const gender = [_kundali.male, _kundali.female]
     const married = [_kundali.married, _kundali.unmarried, _kundali.divorce]
     const service = [_kundali.business, _kundali.service]
-    const [checked2, setChecked2] = React.useState(false);
+    const [checked2, setChecked2] = React.useState(route.params?.maindetailuser?.occupation === "Business" ? 0 : route.params?.maindetailuser?.occupation === "Service" ? 1 : null);
     const goverment = [_kundali.private, _kundali.government]
-    const [checked3, setChecked3] = React.useState(false);
-    const [checked4, setChecked4] = React.useState(false);
+    const [checked3, setChecked3] = React.useState(route.params?.maindetailuser?.service_type === "Private" ? 0 : route.params?.maindetailuser?.service_type === "Government" ? 1 : null);
     const [type, setType] = useState(false)
-    const [date, setDate] = useState('')
+    const [date, setDate] = useState(route.params?.maindetailuser?.dob || '');
     const [pdate, setPDate] = useState('')
     const [open, setOpen] = useState(false)
     const [currentPosition, setCurrentPosition] = React.useState(0);
-    const [should1, setShould1] = useState('')
-    const [should2, setShould2] = useState('')
-    const [should3, setShould3] = useState('')
-    const [planlist, setPlanList] = useState([])
+
     const [consultlist, setConsultancyList] = useState([])
-    const [select, setSelect] = useState()
     const [type1, setType1] = useState(false)
-    const [date1, setDate1] = useState('')
+    const [date1, setDate1] = useState(route.params?.maindetailuser?.tob ? moment(route.params.maindetailuser.tob, 'hh:mm a').toDate() : new Date())
     const [pdate1, setPDate1] = useState('')
     const [open1, setOpen1] = useState(false)
-    const [indexvalue, setIndexvalue] = useState(-1);
-    const [selected, setSelected] = useState([])
-    const [name, setName] = useState('')
-    const [hindiname, setHindiName] = useState('')
-    const [number, setNumber] = useState('')
-    const [email, setEmail] = useState('')
-    const [address, setAddress] = useState('')
-    const [placebitrh, setPlaceBirth] = useState('')
-    const [caste, setCaste] = useState('')
-    const [gotra, setGotra] = useState('')
-    const [fathername, setFatherName] = useState('')
-    const [mothername, setMotherName] = useState('')
-    const [grandfathername, setGrandFatherName] = useState('')
-    const [noofchildren, setNoChildren] = useState('')
-    const [filedbusiness, setFiledBusiness] = useState('')
+    const [selected, setSelected] = useState(route.params?.maindetailuser?.consultancy_for?.split('|') || [])
+    const [name, setName] = useState(route.params?.maindetailuser?.name)
+    const [hindiname, setHindiName] = useState(route.params?.maindetailuser?.name_hindi)
+    const [number, setNumber] = useState(route.params?.maindetailuser?.mobile)
+    const [email, setEmail] = useState(route.params?.maindetailuser?.email)
+    const [address, setAddress] = useState(route.params?.maindetailuser?.address)
+    const [placebitrh, setPlaceBirth] = useState(route.params?.maindetailuser?.pob)
+    const [caste, setCaste] = useState(route.params?.maindetailuser?.caste)
+    const [gotra, setGotra] = useState(route.params?.maindetailuser?.gotra)
+    const [fathername, setFatherName] = useState(route.params?.maindetailuser?.father_name)
+    const [mothername, setMotherName] = useState(route.params?.maindetailuser?.mother_name)
+    const [grandfathername, setGrandFatherName] = useState(route.params?.maindetailuser?.grandfather_name)
+    const [noofchildren, setNoChildren] = useState(route.params?.maindetailuser?.no_of_childern)
+    const [filedbusiness, setFiledBusiness] = useState(route.params?.maindetailuser?.filled_of_business)
     const [key2, setKey2] = useState(0)
-    const [other, setOther] = useState('')
+    const [other, setOther] = useState(route.params?.maindetailuser?.others)
     const [state, setState] = useState({
         loading: false,
     });
     const toggleLoading = bol => setState({ ...state, loading: bol });
 
     useEffect(() => {
-        plan()
         listconsultancy()
     }, [isFocused == true])
-
-    const limitHtmlContent = (htmlContent, maxLength) => {
-        const textContent = htmlContent.replace(/<[^>]+>/g, ''); // Remove HTML tags
-        if (textContent.length > maxLength) {
-            return textContent.substring(0, maxLength) + '...';
-        }
-        return textContent;
-    };
 
 
     const proficiencies = [
@@ -120,7 +100,6 @@ const MembershipForm = ({ navigation }) => {
         setLanguages([...languages, {
             age: '',
             gender: '',
-
         }])
     }
 
@@ -135,6 +114,28 @@ const MembershipForm = ({ navigation }) => {
         setLanguages(languages)
     }
 
+    useEffect(() => {
+        let Acarray = [];
+        const childDetail = route.params?.maindetailuser?.child_detail;
+
+        if (childDetail) {
+            try {
+                const parsedDetails = JSON.parse(childDetail);
+                for (let lang of parsedDetails) {
+                    let dict = {
+                        age: lang.age,
+                        gender: lang.gender,
+                    };
+                    Acarray.push(dict);
+                }
+            } catch (error) {
+                console.error("Failed to parse child_detail JSON string:", error);
+            }
+        }
+
+        setLanguages(Acarray);
+    }, [route.params?.maindetailuser?.child_detail]);
+
     const handleChangeForLang = (index, evnt) => {
 
         const list = [...languages];
@@ -148,25 +149,6 @@ const MembershipForm = ({ navigation }) => {
         setLanguages(list);
     }
 
-    const plan = () => {
-        toggleLoading(true);
-
-        membershipplans()
-            .then(data => {
-                // alert(JSON.stringify(data, null, 2))
-                toggleLoading(false);
-                if (data.status) {
-                    setPlanList(data?.data)
-
-                } else {
-                    alert(data?.msg);
-                }
-            })
-            .catch(error => {
-                toggleLoading(false);
-                console.log('error', error);
-            });
-    }
 
     const listconsultancy = () => {
         toggleLoading(true);
@@ -192,34 +174,15 @@ const MembershipForm = ({ navigation }) => {
                 console.log('error', error);
             });
     }
-    const addmembership = (item) => {
+
+
+    const addmembership = () => {
         let jj = selected.map(i => {
             return i.value;
         });
 
-        let amount = item["price"]
-        let discount = item["discount_price"]
-        let taxable_amount = discount > 0 ? discount : amount;
-
-        // alert(JSON.stringify(taxable_amount, null, 2))
-        // return
-        tax_amount = 0
-        if (item.mastertax == null || item.is_free == 1) {
-            tax_percentage = 0
-            total_amount = taxable_amount
-        } else {
-            tax_percentage = item["mastertax"]["tax_percentage"]
-            tax_amount = taxable_amount * tax_percentage / 100
-            total_amount = taxable_amount + tax_amount
-        }
-
-        // alert(JSON.stringify({
-        //     "tax_amt": tax_amount,
-        //     "net_amount": taxable_amount,
-        //     "total_mrp": total_amount
-        // }), null, 2)
-        // return
         let e = {
+            "id": route.params?.id,
             "name": name,
             "name_hindi": hindiname,
             "gender": checked === 0 ? "Male" : checked === 1 ? "Female" : null,
@@ -240,23 +203,17 @@ const MembershipForm = ({ navigation }) => {
             "occupation": checked2 === 0 ? "Business" : checked === 1 ? "Service" : null,
             "filled_of_business": filedbusiness,
             "service_type": checked3 === 0 ? "Private" : checked === 1 ? "Government" : null,
-            "consultancy_for": jj.join('|'),
+            "consultancy_for": jj[0] == undefined || null ? selected : jj.join('|'),
             "others": other,
-            "package_id": item?.id,
-            "tax_amt": tax_amount,
-            "net_amount": taxable_amount,
-            "total_mrp": total_amount,
-            "payment_mode": "online"
         };
-        // alert(JSON.stringify(e, null, 2))
-        // return
+
         toggleLoading(true);
-        astrologeraddmembership(e)
+        updatememberlist(e)
             .then(data => {
                 // alert(JSON.stringify(data, null, 2))
-                console.log(data)
                 toggleLoading(false);
                 if (data.status) {
+                    Toast.show('Updated Member Profile')
                     navigation.goBack()
                 } else {
                     alert(data?.msg);
@@ -271,7 +228,6 @@ const MembershipForm = ({ navigation }) => {
 
 
     const labels = [
-        '',
         '',
         '',
         '',
@@ -552,7 +508,7 @@ const MembershipForm = ({ navigation }) => {
                                     width: '90%',
                                 }}
                                 editable={false}
-                                value={date != '' ? moment(date).format('DD-MM-YYYY') : ''}
+                                value={date ? moment(date).format('DD-MM-YYYY') : ''}
                                 placeholder={_kundali.dateofbirth}
                                 placeholderTextColor={'#333333'}
                             />
@@ -589,7 +545,7 @@ const MembershipForm = ({ navigation }) => {
                                     width: '90%',
                                 }}
                                 editable={false}
-                                value={date1 != '' ? moment(date1).format('hh:mm a') : ''}
+                                value={date1 ? moment(date1).format('hh:mm a') : ''}
                                 placeholder={_kundali.timeofbirth}
                                 placeholderTextColor={'#333333'}
                             />
@@ -1135,93 +1091,7 @@ const MembershipForm = ({ navigation }) => {
                     </View>
                 )}
 
-                {currentPosition == 4 && (
-                    <View>
-                        <FlatList
-                            data={planlist}
-                            renderItem={({ item, index }) => (
-                                <Pressable style={{
-                                    marginHorizontal: 18,
-                                    paddingVertical: 12,
-                                    backgroundColor: '#FFFFFF',
-                                    borderRadius: 12,
-                                    borderColor: index == select ? '#FFCC80' : '#D0D0D0',
-                                    borderWidth: 2,
-                                    elevation: 5,
-                                    bottom: 10,
-                                    marginTop: 15,
-                                }} onPress={() => {
-                                    if (item.is_free == 1) {           // free
-                                        addmembership(item)
-                                    } else {
 
-                                    }
-                                    setSelect(index)
-
-                                }}>
-
-                                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', }}>
-
-                                        <Text style={{
-                                            fontSize: 18,
-                                            color: '#333333',
-                                            fontFamily: 'AvenirLTStd-Heavy',
-                                            marginLeft: 10,
-                                        }}>
-                                            {item?.name}
-                                        </Text>
-                                        <Text style={{
-                                            fontSize: 18,
-                                            color: '#333333',
-                                            fontFamily: 'AvenirLTStd-Heavy',
-                                            marginRight: 10,
-                                        }}>
-                                            ₹{item?.price}/{item?.type}
-                                        </Text>
-                                    </View>
-
-                                    <View style={{ marginHorizontal: 10, marginTop: 5 }}>
-
-                                        <RenderHtml
-                                            containerStyle={{
-                                                marginTop: 20,
-                                                marginBottom: 10,
-                                            }}
-                                            source={{ html: index === indexvalue ? item?.description : limitHtmlContent(item?.description, 125) }}
-                                            systemFonts={systemFonts}
-                                            tagsStyles={{
-                                                p: {
-                                                    fontSize: 13,
-                                                    fontFamily: 'AvenirLTStd-Medium',
-                                                    lineHeight: 17,
-
-                                                    color: '#33333380',
-                                                },
-                                            }}
-                                        />
-
-                                    </View>
-                                    <Text onPress={() => {
-                                        setIndexvalue(index === indexvalue ? -1 : index)
-                                    }
-
-                                    } style={{
-                                        fontSize: 12,
-                                        color: '#333333',
-                                        fontFamily: 'AvenirLTStd-Heavy',
-                                        marginHorizontal: 10,
-                                        marginTop: 5,
-                                        textDecorationLine: 'underline',
-                                    }}>
-                                        {index === indexvalue ? 'View Less' : 'View More'}
-                                    </Text>
-                                </Pressable>
-
-                            )}
-                        />
-
-                    </View>
-                )}
 
                 {currentPosition == 0 && (
                     <Button
@@ -1251,9 +1121,7 @@ const MembershipForm = ({ navigation }) => {
                             else if (hindiname == '') {
                                 Toast.show('Please enter Name(Hindi)');
                             }
-                            else if (checked === false) {
-                                Toast.show('Please Select Gender');
-                            }
+
                             else if (number === '' || number.length !== 10) {
                                 Toast.show('Please enter your valid phone number');
                             }
@@ -1329,14 +1197,7 @@ const MembershipForm = ({ navigation }) => {
                             }}
 
                             onPress={() => {
-
-                                if (date === '') {
-                                    Toast.show('Please Select Date of birth');
-                                }
-                                else if (date1 === '') {
-                                    Toast.show('Please Select Time of birth');
-                                }
-                                else if (placebitrh === '') {
+                                if (placebitrh === '') {
                                     Toast.show('Please enter place of birth');
                                 }
                                 else if (caste === '') {
@@ -1415,9 +1276,7 @@ const MembershipForm = ({ navigation }) => {
                                 else if (grandfathername === '') {
                                     Toast.show('Please enter Grand father name');
                                 }
-                                else if (checked1 === false) {
-                                    Toast.show('Please select  Marital status');
-                                } else if (noofchildren === '') {
+                                else if (noofchildren === '') {
                                     Toast.show('Please enter no of children');
                                 }
                                 else if (languages == '') {
@@ -1438,119 +1297,10 @@ const MembershipForm = ({ navigation }) => {
                 )}
 
                 {currentPosition == 3 && (
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                        <Button
-                            containerStyle={{
-                                width: '42%',
-                                // position: 'absolute',
-                                marginBottom: 20,
-                                borderColor: '#333333',
-                                borderWidth: 1,
-                                marginLeft: 18,
-                                marginTop: 20,
-                                height: 52,
-                                borderRadius: 12,
-                                overflow: 'hidden',
-                                alignSelf: 'center',
-                                justifyContent: 'center',
-                                backgroundColor: 'white',
-                            }}
-                            style={{
-                                fontSize: 18,
-                                color: '#333333',
-                                alignSelf: 'center',
-                                fontFamily: 'AvenirLTStd-Medium',
-                            }}
 
-                            onPress={() => {
-                                setCurrentPosition(currentPosition - 1)
-                            }}>
-                            {_kundali.previous}
-                        </Button>
-                        <Button
-                            containerStyle={{
-                                width: '42%',
-                                // position: 'absolute',
-                                marginRight: 18,
-                                marginBottom: 20,
-                                marginTop: 20,
-                                height: 52,
-                                borderRadius: 12,
-                                overflow: 'hidden',
-                                alignSelf: 'center',
-                                justifyContent: 'center',
-                                backgroundColor: '#FFCC80',
-                            }}
-                            style={{
-                                fontSize: 18,
-                                color: '#333333',
-                                alignSelf: 'center',
-                                fontFamily: 'AvenirLTStd-Medium',
-                            }}
-
-                            onPress={() => {
-                                if (checked2 === false) {
-                                    Toast.show('Please select occupation');
-                                }
-                                else if (filedbusiness === '') {
-                                    Toast.show('Please enter filed of business');
-                                }
-                                else if (checked3 === false) {
-                                    Toast.show('Please select Service Type');
-                                }
-                                else if (selected.length === 0) {
-                                    Toast.show('Please select Consultancy required');
-                                }
-                                else if (other === '') {
-                                    Toast.show('Please enter other details');
-                                } else {
-                                    setCurrentPosition(currentPosition + 1)
-                                }
-                            }}>
-                            {_customlang.button}
-                        </Button>
-                    </View>
-                )}
-
-            </KeyboardAwareScrollView>
-
-
-
-
-
-            {currentPosition == 4 && (
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                     <Button
                         containerStyle={{
-                            width: '42%',
-                            // position: 'absolute',
-                            marginBottom: 20,
-                            borderColor: '#333333',
-                            borderWidth: 1,
-                            marginLeft: 18,
-                            marginTop: 20,
-                            height: 52,
-                            borderRadius: 12,
-                            overflow: 'hidden',
-                            alignSelf: 'center',
-                            justifyContent: 'center',
-                            backgroundColor: 'white',
-                        }}
-                        style={{
-                            fontSize: 18,
-                            color: '#333333',
-                            alignSelf: 'center',
-                            fontFamily: 'AvenirLTStd-Medium',
-                        }}
-
-                        onPress={() => {
-                            setCurrentPosition(currentPosition - 1)
-                        }}>
-                        {_kundali.previous}
-                    </Button>
-                    <Button
-                        containerStyle={{
-                            width: '42%',
+                            width: '90%',
                             // position: 'absolute',
                             marginRight: 18,
                             marginBottom: 20,
@@ -1570,22 +1320,34 @@ const MembershipForm = ({ navigation }) => {
                         }}
 
                         onPress={() => {
-                            navigation.navigate('Payment')
-                        }}>
-                        {_kundali.paynow}
-                    </Button>
-                </View>
-            )}
 
+                            if (filedbusiness === '') {
+                                Toast.show('Please enter filed of business');
+                            }
+
+                            else if (selected.length === 0) {
+                                Toast.show('Please select Consultancy required');
+                            }
+                            else if (other === '') {
+                                Toast.show('Please enter other details');
+                            } else {
+                                addmembership()
+                            }
+                        }}>
+                        {_customlang.submit}
+                    </Button>
+                )}
+
+            </KeyboardAwareScrollView>
 
             <DatePicker
                 modal
                 open={open}
                 mode={'date'}
-                date={date == '' ? new Date() : date}
+                date={date ? new Date(date) : new Date()}
                 onConfirm={date => {
                     setOpen(false);
-                    type == false ? setDate(date) : setPDate(date);
+                    type === false ? setDate(date) : setPDate(date);
                 }}
                 onCancel={() => {
                     setOpen(false);
@@ -1596,10 +1358,10 @@ const MembershipForm = ({ navigation }) => {
                 modal
                 mode={"time"}
                 open={open1}
-                date={date1 == '' ? new Date() : date1}
+                date={date1 || new Date()}
                 onConfirm={(date) => {
                     setOpen1(false)
-                    type1 == false ? setDate1(date) : setPDate1(date);
+                    type1 === false ? setDate1(date) : setPDate1(date);
                 }}
                 onCancel={() => {
                     setOpen1(false)
@@ -1608,7 +1370,7 @@ const MembershipForm = ({ navigation }) => {
         </SafeAreaView>
     );
 };
-export default MembershipForm;
+export default UpdateMember;
 
 const styles = StyleSheet.create({
     image: {

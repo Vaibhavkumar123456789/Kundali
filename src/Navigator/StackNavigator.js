@@ -39,7 +39,6 @@ import SelectAddress from '../Screens/SelectAddress';
 import Cart from '../Screens/Cart';
 import OnlineJyotish from '../Screens/OnlineJyotish';
 import PremiumKundliDetailReport from '../Screens/PremiumKundliDetailReport';
-import ProductList from '../Screens/ProductList';
 import ReportDetails from '../Screens/ReportDetails';
 import Wallet from '../Screens/Wallet';
 import GenerateReport from '../Screens/GenerateReport';
@@ -55,6 +54,12 @@ import LalKitab from '../Screens/LalKitab';
 import LalKitabDetail from '../Screens/LalKitabDetail';
 import AstrologerForm from '../Screens/AstrologerForm';
 import HeaderFooterPreviewDetails from '../Screens/HeaderFooterPreviewDetails';
+import AstrologerLogin from '../Screens/AstrologerLogin';
+import ForgotOtp from '../Screens/ForgotOtp';
+import ViewSample from '../Screens/ViewSample';
+import UpdateMember from '../Screens/UpdateMember';
+import EditAddress from '../Screens/EditAddress';
+import ProductDetail from '../Screens/ProductDetail';
 
 
 const Stack = createStackNavigator();
@@ -261,11 +266,6 @@ const StackNavigator = () => {
                     options={{ headerShown: false }}
                 />
                 <Stack.Screen
-                    name="ProductList"
-                    component={ProductList}
-                    options={{ headerShown: false }}
-                />
-                <Stack.Screen
                     name="ReportDetails"
                     component={ReportDetails}
                     options={{ headerShown: false }}
@@ -346,8 +346,38 @@ const StackNavigator = () => {
                     options={{ headerShown: false }}
                 />
                 <Stack.Screen
+                    name="AstrologerLogin"
+                    component={AstrologerLogin}
+                    options={{ headerShown: false }}
+                />
+                <Stack.Screen
                     name="HeaderFooterPreviewDetails"
                     component={HeaderFooterPreviewDetails}
+                    options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                    name="ForgotOtp"
+                    component={ForgotOtp}
+                    options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                    name="ViewSample"
+                    component={ViewSample}
+                    options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                    name="UpdateMember"
+                    component={UpdateMember}
+                    options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                    name="EditAddress"
+                    component={EditAddress}
+                    options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                    name="ProductDetail"
+                    component={ProductDetail}
                     options={{ headerShown: false }}
                 />
 

@@ -6,6 +6,7 @@ import Loader from '../utils/Loader';
 import { Passwordforgot } from '../backend/Api';
 import Toast from 'react-native-simple-toast';
 import GLobal, { data } from './GLobal';
+var randomstring = require("randomstring");
 
 const ForgotPassword = ({ navigation }) => {
     const window = Dimensions.get('window');
@@ -23,18 +24,28 @@ const ForgotPassword = ({ navigation }) => {
         }
         else {
             toggleLoading(true);
+            var x = randomstring.generate({
+                length: 4,
+                charset: 'numeric',
+                letters: false,
+                special: false,
+
+            });
+
             let e = {
-                mobile: mobile
+                "emailmobile": mobile,
+                "otp": x,
             };
+            console.log(JSON.stringify(e));
             Passwordforgot(e)
                 .then(data => {
                     toggleLoading(false);
                     // alert(JSON.stringify(data, null, 2))
                     console.log(data)
-                    if (data.status) {
-                        GLobal.user_id = data.user_id
-                        GLobal.statusid = data.id
-                        navigation.replace('Otp')
+                    if (data.status == true) {
+
+                        GLobal.user_id = data?.user_id
+                        navigation.navigate("ForgotOtp", e)
                     } else {
                         alert(data?.msg);
                     }

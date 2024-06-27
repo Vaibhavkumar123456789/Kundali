@@ -388,6 +388,7 @@ import Loader from '../utils/Loader';
 import GLobal, { data } from './GLobal';
 import stringsoflanguages from '../language/Language'
 import { BASE_URL } from '../backend/Config';
+import DeviceInfo from 'react-native-device-info';
 
 const Package = ({ navigation }) => {
     const { _astrologerForm } = stringsoflanguages
@@ -398,7 +399,6 @@ const Package = ({ navigation }) => {
     });
     const toggleLoading = bol => setState({ ...state, loading: bol });
     const [input, setInput] = useState([])
-    const [field, setField] = useState(GLobal.user)
     const [astrodata, setaAstrodata] = useState(GLobal.user)
     const [indexvalue, setIndexvalue] = useState(-1);
 
@@ -407,12 +407,12 @@ const Package = ({ navigation }) => {
         Packagelist()
             .then(data => {
                 toggleLoading(false);
-                // alert(JSON.stringify(data,null,2))
+                // alert(JSON.stringify(data, null, 2))
 
                 if (data.status) {
-                    setInput(data.data)
+                    setInput(data?.data)
                 } else {
-                    alert(data.msg);
+                    alert(data?.msg);
                 }
             })
             .catch(error => {
@@ -421,109 +421,67 @@ const Package = ({ navigation }) => {
             });
     }, [])
 
-    const Freepackage = async () => {               //astrologer
-        try {
-            let formData = new FormData();
-            formData.append('newsignup', 1)
-            formData.append('user_type', astrodata.type)             //astrologer == 2 , user == 1
-            formData.append('name', astrodata.name)
-            formData.append('email', astrodata.email)
-            formData.append('mobile', astrodata.number)
-            formData.append('institute_centre_name', astrodata.centrename)
-            formData.append('country', astrodata.should1)
-            formData.append('state', astrodata.should6)
-            formData.append('city', astrodata.should7)
-            formData.append('status', 1)
-            formData.append('create_profile ', 1)
-            formData.append('experience', null)
+    const Freepackage = async (item) => {               //astrologer
 
-            toggleLoading(true);
-            axios
-                .post(
-                    `${BASE_URL}astrologer/signup`,
-                    formData,
-                    {
-                        headers: {
-                            'Content-Type': 'multipart/form-data',
-                            // Add any additional headers as needed
-                        },
-                    },
-                )
-                .then(response => {
-                    toggleLoading(false);
+        let amount = item["amount"]
+        discount = item["discount_amount"]
+        let taxable_amount = discount > 0 ? discount : amount;
 
-                    actions.Login(response.data?.user_detail);
-                    actions.Token(response.data?.token);
-                    AsyncStorageSettoken(response.data?.token);
-                    AsyncStorageSetUser(response.data?.user_detail);
-                    navigation.replace('DrawerNavigator')
-                })
-                .catch(error => {
-                    toggleLoading(true);
-                    axios
-                        .post(
-                            `${BASE_URL}astrologer/signup`,
-                            formData,
-                            {
-                                headers: {
-                                    'Content-Type': 'multipart/form-data',
-                                    // Add any additional headers as needed
-                                },
-                            },
-                        )
-                        .then(response => {
-                            toggleLoading(false);
-                            actions.Login(response.data?.user_detail);
-                            actions.Token(response.data?.token);
-                            AsyncStorageSettoken(response.data?.token);
-                            AsyncStorageSetUser(response.data?.user_detail);
-                            navigation.replace('DrawerNavigator')
-                        })
-                        .catch(error => {
-                            // Handle errors
-                            toggleLoading(false);
-                            console.error('Error uploading files', error);
-                        });
-                    // Handle errors
-                    toggleLoading(false);
-                    console.error('Error uploading files1', error);
-                });
-
-        } catch (error) {
-            toggleLoading(false)
-            console.log(error)
+        // alert(JSON.stringify(taxable_amount, null, 2))
+        // return
+        tax_amount = 0
+        if (item.tax == null || item.is_free == 1) {
+            tax_percentage = 0
+            total_amount = taxable_amount
+        } else {
+            tax_percentage = item["tax"]["tax_percentage"]
+            tax_amount = taxable_amount * tax_percentage / 100
+            total_amount = taxable_amount + tax_amount
         }
-    }
+        // alert(JSON.stringify({
+        //     "tax_amt": tax_amount,
+        //     "net_amount": taxable_amount,
+        //     "total_mrp": total_amount
+        // }), null, 2)
+        // return
 
-    const nn = async () => {
         try {
-
-            let formData = new FormData();
-            formData.append('newsignup', 1)
-            formData.append('user_type', field.type)           //astrologer == 2 , user == 1
-            formData.append('create_profile ', 1)
-            formData.append('name', field.name)
-            formData.append('email', field.email)
-            formData.append('mobile', field.mobile)
-            formData.append('status', 1)
-            formData.append('password', field.password)
-            formData.append('experience', null)
-
+            let e = {
+                "name": astrodata.name,
+                "mobile": astrodata.number,
+                "email": astrodata.email,
+                "country_code": "+91",
+                "device_id": '123',
+                "device_token": GLobal.firebaseToken,
+                "device_type": Platform.OS,
+                "loginTime": "123123",
+                "password": astrodata.password,
+                "country": astrodata.should1,
+                "state": astrodata.should6,
+                "city": astrodata.should7,
+                "institute_centre_name": astrodata.centrename,
+                "package_id": item.id,
+                "tax_amt": tax_amount,
+                "net_amount": taxable_amount,
+                "total_mrp": total_amount,
+                "newsignup": "1"
+            };
+            GLobal.kundliformdetail = e
             toggleLoading(true);
             axios
                 .post(
-                    `${BASE_URL}astrologer/signup`,
-                    formData,
+                    `${BASE_URL}astrologer/authUser`,
+                    e,
                     {
                         headers: {
-                            'Content-Type': 'multipart/form-data',
+                            "content-type": "application/json"
                             // Add any additional headers as needed
                         },
                     },
                 )
                 .then(response => {
                     toggleLoading(false);
-
+                    
                     actions.Login(response.data?.user_detail);
                     actions.Token(response.data?.token);
                     AsyncStorageSettoken(response.data?.token);
@@ -534,18 +492,17 @@ const Package = ({ navigation }) => {
                     toggleLoading(true);
                     axios
                         .post(
-                            `${BASE_URL}astrologer/signup`,
-                            formData,
+                            `${BASE_URL}astrologer/authUser`,
+                            e,
                             {
                                 headers: {
-                                    'Content-Type': 'multipart/form-data',
+                                    "content-type": "application/json"
                                     // Add any additional headers as needed
                                 },
                             },
                         )
                         .then(response => {
                             toggleLoading(false);
-
                             actions.Login(response.data?.user_detail);
                             actions.Token(response.data?.token);
                             AsyncStorageSettoken(response.data?.token);
@@ -561,7 +518,6 @@ const Package = ({ navigation }) => {
                     toggleLoading(false);
                     console.error('Error uploading files1', error);
                 });
-
 
         } catch (error) {
             toggleLoading(false)
@@ -579,7 +535,7 @@ const Package = ({ navigation }) => {
             />
             {state.loading && <Loader />}
 
-            {input && input.length > "0" ?
+            {input && input?.length > "0" ?
                 <FlatList
                     data={input}
                     style={{ flexGrow: 0, marginTop: 10 }}
@@ -587,14 +543,13 @@ const Package = ({ navigation }) => {
                         <View>
                             <Pressable onPress={() => {
                                 if (item.is_free == 1) {
-                                    field.type == 1 ? nn() :
-                                        Freepackage()
+                                    Freepackage(item)
                                     //free
 
                                 } else if (item.is_free == 0) {
                                     GLobal.id = item.id
                                     GLobal.amount = item.amount
-                                    navigation.replace('Payment')                           //membership
+                                    // navigation.replace('Payment')                           //membership
                                 }
                             }}>
                                 <View
@@ -618,7 +573,7 @@ const Package = ({ navigation }) => {
                                             marginLeft: 10,
                                             width: window.width - 170,
                                         }}>
-                                            {item.package_name}
+                                            {item?.package_name}
                                         </Text>
                                         {(item.is_free == 1 &&                 // free
                                             <Text style={{
@@ -627,7 +582,7 @@ const Package = ({ navigation }) => {
                                                 fontFamily: 'AvenirLTStd-Heavy',
                                                 marginRight: 10,
                                             }}>
-                                                {item.days} {item.name}
+                                                {item?.days} {item?.name}
                                             </Text>
                                         )}
                                         {(item.is_free == 0 &&                       // membership
@@ -637,7 +592,7 @@ const Package = ({ navigation }) => {
                                                 fontFamily: 'AvenirLTStd-Heavy',
                                                 marginRight: 10,
                                             }}>
-                                                ₹{item.amount}
+                                                ₹{item?.amount}
                                             </Text>
                                         )}
                                     </View>
@@ -650,7 +605,7 @@ const Package = ({ navigation }) => {
                                         fontFamily: 'AvenirLTStd-Medium',
                                         marginHorizontal: 10,
                                     }}>
-                                        {item.title}
+                                        {item?.title}
                                     </Text>
                                     <Text onPress={() => {
                                         if (index == indexvalue) {
@@ -676,7 +631,7 @@ const Package = ({ navigation }) => {
                                                 lineHeight: 17,
                                                 fontFamily: 'AvenirLTStd-Medium',
                                                 marginHorizontal: 10,
-                                            }}>{item.description}</Text>
+                                            }}>{item?.description}</Text>
                                         </View>
                                     ) : null}
                                 </View>

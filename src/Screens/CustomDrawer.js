@@ -63,7 +63,7 @@ const CustomDrawer = ({ navigation }) => {
                 if (data.status) {
                     setPathurl(data)
                 } else {
-                    alert(data.msg);
+                    alert(data?.msg);
                 }
             })
             .catch(error => {
@@ -133,7 +133,7 @@ const CustomDrawer = ({ navigation }) => {
                                 marginLeft: 20,
                                 borderRadius: 50,
                             }}
-                            source={pathurl?.data?.profile_picture?.length > 0 ? { uri: `${pathurl?.path}/${pathurl?.data?.profile_picture}` } : require('../assets/defaultimage.png')}
+                            source={pathurl?.user_profile?.image?.length > 0 ? { uri: `${pathurl?.path}/${pathurl?.user_profile?.image}` } : require('../assets/defaultimage.png')}
                         />
                     )}
                     <View style={{ marginLeft: 15, width: '50%' }}>
@@ -145,7 +145,7 @@ const CustomDrawer = ({ navigation }) => {
                                     fontFamily: 'AvenirLTStd-Medium',
                                     color: '#1E1F20',
                                 }}>
-                                {pathurl?.data?.name}
+                                {pathurl?.user_profile?.name}
                             </Text>
                         )}
                         <TouchableOpacity activeOpacity={0.9}

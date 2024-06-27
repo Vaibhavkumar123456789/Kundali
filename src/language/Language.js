@@ -241,6 +241,11 @@ let stringsoflanguages = new LocalizedStrings({
             newkundli: 'New Kundli',
             savedkundli: 'Saved Kundli',
         },
+        _product: {
+            cart: 'Add to Cart',
+            description: 'Description',
+            quality: 'Quality/Ratti',
+        }
 
 
     },

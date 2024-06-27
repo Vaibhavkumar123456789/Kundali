@@ -19,6 +19,7 @@ module.exports = {
     rating: '0',
     newin: {},
     isfroma: '0',
+    kundliformdetail: {},
 
     loginmobile: '',
     loginOTP: '',

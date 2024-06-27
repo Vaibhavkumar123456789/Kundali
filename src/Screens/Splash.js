@@ -1,4 +1,4 @@
-import { View, Text, Image, StyleSheet, StatusBar, SafeAreaView, } from 'react-native'
+import { View, Text, Image, StyleSheet, StatusBar, SafeAreaView, PermissionsAndroid } from 'react-native'
 import React, { useEffect } from 'react'
 import * as actions from '../redux/actions';
 import { AsyncStorageGetLanguage, AsyncStorageGettoken, AsyncStorageGetUser, AsyncStorageSetFcmtoken } from '../backend/Api';
@@ -32,7 +32,28 @@ const Splash = ({ navigation }) => {
         }, 3000);
         setLanguage()
         requestUserPermission()
+        requestLocationPermission()
     }, [navigation]);
+
+    async function requestLocationPermission() {
+        try {
+            const granted = await PermissionsAndroid.request(
+                PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+                {
+                    'title': 'Location Permission',
+                    'message': 'This App needs access to your location ' +
+                        'so we can know where you are.'
+                }
+            )
+            if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+                console.log("You can use locations ")
+            } else {
+                console.log("Location permission denied")
+            }
+        } catch (err) {
+            console.warn(err)
+        }
+    }
 
 
     const setLanguage = async () => {
@@ -67,6 +88,7 @@ const Splash = ({ navigation }) => {
             if (fcmToken) {
                 // dispatch(actions.SetToken(fcmToken));
                 AsyncStorageSetFcmtoken(fcmToken);
+                GLobal.firebaseToken = fcmToken
                 // alert(JSON.stringify(fcmToken, null, 2));
                 console.log('-------------fcmToken : ', fcmToken);
             }

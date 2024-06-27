@@ -11,10 +11,16 @@ const App = () => {
 
   useEffect(() => {
     const unsubscribe = NetInfo.addEventListener(state => {
-      if (!state.isConnected) {
+      console.log("Connection type", state.type);
+      console.log("Is connected?", state.isConnected);
+
+      if (state.isConnected == false) {
+        alert('No Internet Available.Please connect to internet')
       }
     });
+    unsubscribe()
     requestCameraPermission()
+
   }, [])
 
   const requestCameraPermission = async () => {

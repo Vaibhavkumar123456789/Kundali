@@ -1,20 +1,23 @@
-import { View, Text, Image, StyleSheet, Dimensions, FlatList, Modal, TextInput, StatusBar, SafeAreaView, ImageBackground, Pressable, ScrollView, TouchableOpacity, } from 'react-native'
+import { View, Text, Image, StyleSheet, Dimensions, FlatList, Modal, TextInput, StatusBar, SafeAreaView, ImageBackground, Pressable, ScrollView, TouchableOpacity, Platform, } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import Carousel from 'react-native-banner-carousel';
 import stringsoflanguages from '../language/Language'
 import { TabActions } from '@react-navigation/native';
-import { Astroreport, Homebanner, MessageCenterApi } from '../backend/Api';
+import { Astroreport, Homebanner } from '../backend/Api';
 import { useIsFocused } from '@react-navigation/native';
 import Loader from '../utils/Loader';
+
 import store from '../redux/store';
+import GLobal from './GLobal';
+import AstroReportList from './component/AstroReportList';
 const Home = ({ navigation }) => {
     const window = Dimensions.get('window');
+
     const { width, height } = Dimensions.get('window');
     const isFocused = useIsFocused();
     const [bannerimage, setBannerImage] = useState([])
-    const [bannerpath, setBannerPath] = useState()
-    const [astro, setAstro] = useState([])
-    const [report, setReport] = useState()
+    const [astro, setAstro] = useState()
+    const [report, setReport] = useState([])
     const [message, setMessage] = useState([])
     const { _home } = stringsoflanguages
     const [state, setState] = useState({
@@ -23,21 +26,27 @@ const Home = ({ navigation }) => {
     const toggleLoading = bol => setState({ ...state, loading: bol });
     useEffect(() => {
         banner()
-        reportapi()
-        messageapi()
     }, [isFocused == true])
 
     const banner = () => {
         toggleLoading(true);
-        Homebanner()
+        let e = {
+            "device_id": '123',
+            "device_token": GLobal.firebaseToken,
+            "device_type": Platform.OS,
+        };
+        Homebanner(e)
             .then(data => {
                 // alert(JSON.stringify(data, null, 2))
-                toggleLoading(false);
+                toggleLoading(false)
                 if (data.status) {
-                    setBannerImage(data?.docs)
-                    setBannerPath(data?.path)
+                    setBannerImage(data?.topbanners)
+                    setReport(data?.astro_report_detail)
+                    setMessage(data?.message_center)
+                    setAstro(data)
+
                 } else {
-                    alert(data.msg);
+                    alert(data?.msg);
                 }
             })
             .catch(error => {
@@ -45,45 +54,6 @@ const Home = ({ navigation }) => {
                 console.log('bannererror', error);
             });
     }
-
-    const reportapi = () => {
-        toggleLoading(true);
-        Astroreport()
-            .then(data => {
-                // alert(JSON.stringify(data, null, 2))
-                toggleLoading(false);
-                if (data.status) {
-                    setAstro(data.data)
-                    setReport(data.path)
-                } else {
-                    alert(data.msg);
-                }
-            })
-            .catch(error => {
-                toggleLoading(false);
-                console.log('reporterror', error);
-            });
-    }
-
-    const messageapi = () => {
-        toggleLoading(true);
-        MessageCenterApi()
-            .then(data => {
-                // alert(JSON.stringify(data, null, 2))
-                toggleLoading(false);
-                if (data.status) {
-                    setMessage(data.data)
-                } else {
-                    alert(data.msg);
-                }
-            })
-            .catch(error => {
-                toggleLoading(false);
-                console.log('messageerror', error);
-            });
-    }
-
-
 
     const data = [
         {
@@ -146,8 +116,7 @@ const Home = ({ navigation }) => {
                         alignSelf: 'center',
                         borderRadius: 8,
                     }}
-                    // source={{ uri: bannerpath + item.image }}
-                    source={{ uri: `${bannerpath}/${item.image}` }}
+                    source={{ uri: item?.banner_image }}
                 />
             </View>
         );
@@ -208,8 +177,8 @@ const Home = ({ navigation }) => {
                 <View style={{ flexDirection: 'row', }}>
 
                     <Pressable onPress={() => {
-                        navigation.navigate('Wallet')
-                        // navigation.navigate('Kundli')
+                        // navigation.navigate('Wallet')
+                        navigation.navigate('SelectAddress')
                     }} style={{
                         flexDirection: 'row', borderColor: '#333333', borderWidth: 1,
                         paddingHorizontal: 5, paddingVertical: 5, borderRadius: 4,
@@ -359,7 +328,7 @@ const Home = ({ navigation }) => {
                                             color: '#33333390',
                                             width: window.width - 65,
                                         }}>
-                                        {item.description}
+                                        {item?.description}
                                     </Text>
                                 </View>
                             )}
@@ -395,115 +364,8 @@ const Home = ({ navigation }) => {
                     </Pressable>
                 </View>
 
-                <View style={{ marginHorizontal: 10 }}>
-                    <FlatList
-                        horizontal
-                        showsHorizontalScrollIndicator={false}
-                        data={astro?.slice(0, 3)}
-                        renderItem={({ item, index }) => (
+                <AstroReportList data={report} astro={astro?.path} />
 
-                            <View
-                                style={{
-                                    width: window.width - 60,
-                                    paddingVertical: 11,
-                                    alignSelf: 'center',
-                                    backgroundColor: item.back_color,
-                                    elevation: 2,
-                                    bottom: 5,
-                                    borderRadius: 20,
-                                    marginTop: 20,
-                                    marginLeft: 8,
-                                }}>
-                                <Text
-                                    style={{
-                                        textAlign: 'center',
-                                        fontSize: 18,
-                                        fontFamily: 'AvenirLTStd-Medium',
-                                        color: '#F44336',
-                                    }}>
-                                    {item.report_name}
-                                </Text>
-                                <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 8 }}>
-                                    <View >
-
-                                        <Text
-                                            style={{
-                                                fontSize: 13,
-                                                fontFamily: 'AvenirLTStd-Medium',
-                                                lineHeight: 20,
-                                                marginLeft: 10,
-                                                color: '#33333380',
-                                                width: window.width - 200,
-                                            }}>
-                                            {item.about_report}
-                                        </Text>
-
-                                        <Text style={{
-                                            color: '#333333',
-                                            fontFamily: 'AvenirLTStd-Heavy',
-                                            fontSize: 15,
-                                            marginLeft: 10,
-                                            marginTop: 5,
-                                            width: window.width - 200,
-                                        }}>
-                                            {_home.price} ₹{item.general_discount_price}&nbsp;
-                                            <Text
-
-                                                style={{
-                                                    color: '#333333',
-                                                    fontFamily: 'AvenirLTStd-Medium',
-                                                    fontSize: 11,
-                                                    textDecorationLine: 'line-through',
-                                                }}>
-                                                {item.general_price}&nbsp;
-                                            </Text>
-
-                                        </Text>
-
-                                    </View>
-                                    <Image
-                                        style={{
-                                            width: 114,
-                                            height: 128,
-                                            resizeMode: 'contain',
-                                            alignSelf: 'center',
-                                            marginRight: 8,
-                                        }}
-                                        // source={require('../assets/book.png')}
-                                        source={{ uri: `${report}/${item.image}` }}
-                                    />
-                                </View>
-                                <View style={{ flexDirection: 'row', marginTop: 5 }}>
-                                    <Pressable style={{
-                                        backgroundColor: '#333333',
-                                        paddingHorizontal: 10, borderRadius: 20, paddingVertical: 7, marginHorizontal: 10
-                                    }}>
-                                        <Text
-                                            style={{
-                                                fontSize: 12,
-                                                fontFamily: 'AvenirLTStd-Medium',
-                                                color: '#FFFFFF',
-                                            }}>
-                                            {_home.viewsample}
-                                        </Text>
-                                    </Pressable>
-                                    <Pressable onPress={() => { navigation.navigate('PremiumKundliDetailReport', item) }}>
-                                        <Image
-                                            style={{
-                                                width: 30,
-                                                height: 30,
-                                                resizeMode: 'contain',
-                                                alignSelf: 'center',
-                                            }}
-                                            source={require('../assets/circle-arrow.png')}
-                                        />
-                                    </Pressable>
-                                </View>
-
-                            </View>
-                        )}
-                    />
-                </View>
 
                 <FlatList
                     numColumns={3}

@@ -16,10 +16,10 @@ const request = (path, json) => {
       if (response.ok) {
         resolve(response.data);
       } else {
-        console.log(response.data?.error);
-        // reject(response.err);
-        alert(JSON.stringify(response.data?.error));
-        reject(response.data?.error);
+        console.log(response.data?.msg);
+
+        alert(JSON.stringify(response.data?.msg));
+        reject(response.data?.msg);
       }
     });
   });
@@ -167,13 +167,30 @@ export const PasswordReset = json => request(PATH_URL.changepassword, json);
 
 //token
 export const Homebanner = json => requesth(PATH_URL.homebanner, json);
-export const GetProfile = json => requesth(PATH_URL.drawerprofile, json);
+export const GetProfile = json => requestGet1(PATH_URL.drawerprofile, json);
 export const Astroreport = json => requestGet1(PATH_URL.astroreport, json);
 export const ReportDetailApi = json => requesth(PATH_URL.reportdetail, json);
 export const UpdateProfile = json => requesth(PATH_URL.updateProfile, json);
 export const HeaderPreviewApi = json => requesth(PATH_URL.headerpreview, json);
 export const MessageCenterApi = json => requestGet1(PATH_URL.messagecentera, json);
 export const HeaderColor = json => requestGet1(PATH_URL.headerColor, json);
+export const Kundlireporthistory = json => requesth(PATH_URL.reporthistory, json);
+export const membershipplans = json => requesth(PATH_URL.membershipplan, json);
+export const consultancylist = json => requesth(PATH_URL.consultancy, json);
+export const astrologeraddmembership = json => requesth(PATH_URL.addmembership, json);
+export const astrologermemberlist = json => requesth(PATH_URL.memberlist, json);
+export const kundlireportgenerate = json => requesth(PATH_URL.kundlireport, json);
+export const deletememberlist = json => requesth(PATH_URL.removemember, json);
+export const updatememberlist = json => requesth(PATH_URL.updatemember, json);
+export const walletplan = json => requestGet1(PATH_URL.plan, json);
+export const addresslist = json => requestGet1(PATH_URL.address, json);
+export const addnewaddress = json => requesth(PATH_URL.addaddress, json);
+export const deletedaddress = json => requesth(PATH_URL.deleteaddress, json);
+export const updateaddress = json => requesth(PATH_URL.update, json);
+export const productdatalist = json => requestGet1(PATH_URL.productlist, json);
+export const productlist = json => requesth(PATH_URL.list, json);
+export const addtocardapi = json => requesth(PATH_URL.addtocart, json);
+export const getcartapi = json => requesth(PATH_URL.getcart, json);
 
 
 // third party api

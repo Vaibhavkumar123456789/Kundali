@@ -199,7 +199,7 @@ const AstrologerRegister = ({ navigation }) => {
                         setSpecilization(tempCArr)
                     })
                 } else {
-                    alert(data.msg);
+                    alert(data.msg)
                 }
             })
             .catch(error => {
@@ -207,6 +207,7 @@ const AstrologerRegister = ({ navigation }) => {
                 console.log('error', error);
             });
     }
+
     const languagelist = () => {
         Language()
             .then(data => {

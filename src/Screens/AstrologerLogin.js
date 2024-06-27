@@ -1,4 +1,4 @@
-import { View, Text, Image, StyleSheet, Dimensions, TextInput, StatusBar, SafeAreaView, ImageBackground, Pressable, ScrollView, TouchableOpacity, } from 'react-native'
+import { View, Text, Image, StyleSheet, Dimensions, TextInput, StatusBar, SafeAreaView, ImageBackground, Pressable, ScrollView, TouchableOpacity, Platform, } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import Button from 'react-native-button';
 import stringsoflanguages from '../language/Language'
@@ -6,8 +6,10 @@ import Loader from '../utils/Loader';
 import * as actions from '../redux/actions';
 import { AstrologerUserApi, AsyncStorageSetUser, AsyncStorageSettoken, SkipHome } from '../backend/Api';
 import Toast from 'react-native-simple-toast';
+import DeviceInfo from 'react-native-device-info';
+import GLobal from './GLobal';
 
-const SignIn = ({ navigation }) => {
+const AstrologerLogin = ({ navigation }) => {
     const { _astrologerForm, _kundali } = stringsoflanguages
     const window = Dimensions.get('window');
     const { width, height } = Dimensions.get('window');
@@ -22,7 +24,7 @@ const SignIn = ({ navigation }) => {
     const [mobile, setMobile] = useState('')
     const [password, setPassword] = useState('')
 
-    const login = () => {
+    const astologerlogin = () => {
         if (mobile === '' || mobile.length !== 10) {
             Toast.show('Please enter your valid phone number');
         }
@@ -32,13 +34,18 @@ const SignIn = ({ navigation }) => {
         else {
             toggleLoading(true);
             let e = {
+                "device_id": '123',
+                "device_token": GLobal.firebaseToken,
+                "device_type": Platform.OS,
+                "loginTime": "123123",
                 mobile: mobile,
                 password: password,
             };
+            console.log(JSON.stringify(e));
             AstrologerUserApi(e)
                 .then(data => {
                     // alert(JSON.stringify(data, null, 2))
-                    
+                    console.log('token..........', data?.token)
                     toggleLoading(false);
                     if (data) {
                         actions.Login(data?.user_detail);
@@ -47,7 +54,7 @@ const SignIn = ({ navigation }) => {
                         AsyncStorageSetUser(data?.user_detail);
                         navigation.replace('DrawerNavigator')
                     } else {
-                        Toast.show(data?.error);
+                        Toast.show(data?.msg);
                     }
                 })
                 .catch(error => {
@@ -57,56 +64,20 @@ const SignIn = ({ navigation }) => {
         }
     }
 
-    const userSkip = () => {
-        toggleLoading(true);
-        let e = {
-            user_type: 1,
-        };
-        SkipHome(e)
-            .then(data => {
-                toggleLoading(false);
 
-                if (data.status) {
-                    actions.Login(data?.user_detail);
-                    actions.Token(data?.token);
-                    AsyncStorageSettoken(data?.token);
-                    AsyncStorageSetUser(data?.user_detail);
-                    navigation.replace('DrawerNavigator')
-                } else {
-                    alert(data.msg);
-                }
-            })
-            .catch(error => {
-                toggleLoading(false);
-                console.log('error', error);
-            });
-    }
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
             <StatusBar barStyle="dark-content" backgroundColor="white" />
             {state.loading && <Loader />}
             <ScrollView>
-                <Pressable onPress={() => { userSkip() }}>
-                    <Text
-                        style={{
-                            fontFamily: 'AvenirLTStd-Medium',
-                            color: '#333333',
-                            fontSize: 16,
-                            marginTop: 15,
-                            marginRight: 18,
-                            alignSelf: 'flex-end',
-                        }}>
-                        {_astrologerForm.skip}
-                    </Text>
-                </Pressable>
 
                 <Text
                     style={{
                         fontFamily: 'AvenirLTStd-Heavy',
                         color: '#333333',
                         fontSize: 24,
-                        marginTop: 14,
+                        marginTop: 30,
                         marginHorizontal: 18,
                     }}>
                     {_astrologerForm.signuptitle}
@@ -238,12 +209,12 @@ const SignIn = ({ navigation }) => {
                     fontFamily: 'AvenirLTStd-Medium',
                 }}
                 onPress={() => {
-                    login()
+                    astologerlogin()
                 }}>
                 {_astrologerForm.signin}
             </Button>
 
-            <Pressable onPress={() => { navigation.replace('SignUp') }}
+            <Pressable onPress={() => { navigation.replace('AstrologerForm') }}
                 style={{ flexDirection: 'row', justifyContent: 'center', marginHorizontal: 18, bottom: 15, }}>
                 <Text
                     style={{
@@ -269,7 +240,7 @@ const SignIn = ({ navigation }) => {
     )
 }
 
-export default SignIn
+export default AstrologerLogin
 
 const styles = StyleSheet.create({
     checkboxtext: {

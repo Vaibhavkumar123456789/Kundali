@@ -7,7 +7,8 @@ import { PasswordReset } from '../backend/Api';
 import Toast from 'react-native-simple-toast';
 import GLobal, { data } from './GLobal';
 
-const ResetPassword = ({ navigation }) => {
+const ResetPassword = ({ navigation, route }) => {
+    // alert(JSON.stringify(route.params, null, 2))
     const window = Dimensions.get('window');
     const { width, height } = Dimensions.get('window');
     const { _astrologerForm, _kundali, _customlang, _otp } = stringsoflanguages
@@ -31,6 +32,7 @@ const ResetPassword = ({ navigation }) => {
         else {
             toggleLoading(true);
             let e = {
+                "emailmobile": route.params?.emailmobile,
                 user_id: GLobal.user_id,
                 password: password
             };
@@ -41,10 +43,10 @@ const ResetPassword = ({ navigation }) => {
                     // alert(JSON.stringify(data, null, 2))
                     console.log('....... Reset Password response', data)
                     if (data.status) {
-                        Toast.show(data.msg)
+                        Toast.show(data?.msg)
                         navigation.replace('SignIn')
                     } else {
-                        alert(data.msg);
+                        Toast.show(data?.msg);
                     }
                 })
                 .catch(error => {

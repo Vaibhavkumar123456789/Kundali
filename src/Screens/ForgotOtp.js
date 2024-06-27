@@ -6,9 +6,9 @@ import stringsoflanguages from '../language/Language'
 import OTPInputView from '@twotalltotems/react-native-otp-input'
 import GLobal, { data } from './GLobal';
 import Toast from 'react-native-simple-toast';
-import { AstrologerCheckMobile } from '../backend/Api';
+import { AstrologerCheckMobile, Passwordforgot } from '../backend/Api';
 import Loader from '../utils/Loader';
-const Otp = ({ navigation, route }) => {
+const ForgotOtp = ({ navigation, route }) => {
     const window = Dimensions.get('window');
     const { width, height } = Dimensions.get('window');
     const { _otp, _customlang } = stringsoflanguages
@@ -31,15 +31,13 @@ const Otp = ({ navigation, route }) => {
 
         });
         const json = {
+            "emailmobile": route.params.emailmobile,
             "otp": x,
-            "country_code": "+91",
-            mobile: route.params.mobile,
-            email: route.params.email,
         };
 
         console.log(JSON.stringify(json));
         toggleLoader(true);
-        AstrologerCheckMobile(json)
+        Passwordforgot(json)
             .then(data => {
                 console.log(data);
                 toggleLoader(false);
@@ -68,7 +66,7 @@ const Otp = ({ navigation, route }) => {
             return;
         }
         else if (otp) {
-            navigation.navigate("Package")
+            navigation.navigate("ResetPassword", route.params)
         }
 
     };
@@ -173,12 +171,7 @@ const Otp = ({ navigation, route }) => {
                 }}
                 onPress={() => {
                     onSaveHandler()
-                    // if (GLobal.statusid == 1) {
-                    //     navigation.replace('ResetPassword')
-                    // }
-                    // else {
-                    //     navigation.replace('Package')
-                    // }
+
                 }}>
                 {_customlang.submit}
             </Button>
@@ -187,7 +180,7 @@ const Otp = ({ navigation, route }) => {
     )
 }
 
-export default Otp
+export default ForgotOtp
 
 const styles = StyleSheet.create({
     underlineStyleBase: {

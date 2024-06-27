@@ -6,6 +6,12 @@ import Button from 'react-native-button';
 import { ReportDetailApi } from '../backend/Api';
 import { useIsFocused } from '@react-navigation/native';
 import Loader from '../utils/Loader';
+import RenderHtml, { defaultSystemFonts } from 'react-native-render-html';
+const systemFonts = [
+  ...defaultSystemFonts,
+  'AvenirLTStd-Medium',
+  'AvenirLTStd-Heavy',
+];
 
 const PremiumKundliDetailReport = ({ navigation, route }) => {
   // alert(JSON.stringify(route.params, null, 2))
@@ -13,33 +19,76 @@ const PremiumKundliDetailReport = ({ navigation, route }) => {
   const window = Dimensions.get('window');
   const { width, height } = Dimensions.get('window');
   const isFocused = useIsFocused();
-  const [astro, setAstro] = useState([])
+  const [astro, setAstro] = useState()
   const [report, setReport] = useState()
+  const [generalprice, setGeneralPrice] = useState('')
+  const [totatamount, setTotalAmount] = useState('')
+  const [generalcutprice, setGeneralCutPrice] = useState()
+  const [astrologercutprice, setAstrologerCutPrice] = useState()
   const [state, setState] = useState({
     loading: false,
   });
   const toggleLoading = bol => setState({ ...state, loading: bol });
-
-
   useEffect(() => {
-    reportdetail()
-  }, [isFocused])
+    banner()
+  }, [isFocused == true])
 
-  const reportdetail = () => {
+  const banner = () => {
     toggleLoading(true);
     let e = {
-      astro_id: route.params.id
+      astro_id: route.params?.item?.id,
     };
     ReportDetailApi(e)
       .then(data => {
         // alert(JSON.stringify(data, null, 2))
         toggleLoading(false);
         if (data.status) {
-          setAstro(data.data)
-          setReport(data.path)
+          setReport(data?.data[0])
+          setAstro(data)
+
+          let amount = data?.data[0]?.price
+          let discount = data?.data[0]?.discount_price
+          let taxable_amount = discount > 0 ? discount : amount;
+
+          let cutprice = discount == 0 ? discount : amount;       // astrologer cut price
+
+          let tax_amount = 0;
+          let total_amount = 0;
+          let tax_percentage = 0;
+          if (data?.data[0]?.tax == null) {
+            tax_percentage = 0
+            total_amount = taxable_amount
+          } else {
+            tax_percentage = data?.data[0]?.tax?.tax_percentage
+            tax_amount = taxable_amount * tax_percentage / 100;
+            total_amount = taxable_amount + tax_amount;
+          }
+          setTotalAmount(total_amount)
+          setAstrologerCutPrice(cutprice)
+
+          // general price
+          let amount1 = data?.data[0]?.general_price
+          let discount1 = data?.data[0]?.general_discount_price
+          let taxable_amount1 = discount1 > 0 ? discount1 : amount1;
+
+          let cutprice1 = discount1 == 0 ? discount1 : amount1;       // general cut price
+
+          let tax_amount1 = 0;
+          let total_amount1 = 0;
+          let tax_percentage1 = 0;
+          if (data?.data[0]?.tax == null) {
+            tax_percentage1 = 0
+            total_amount1 = taxable_amount1
+          } else {
+            tax_percentage1 = data?.data[0]?.tax?.tax_percentage
+            tax_amount1 = taxable_amount1 * tax_percentage1 / 100;
+            total_amount1 = taxable_amount1 + tax_amount1;
+          }
+          setGeneralPrice(total_amount1)
+          setGeneralCutPrice(cutprice1)
 
         } else {
-          alert(data.msg);
+          alert(data?.msg);
         }
       })
       .catch(error => {
@@ -47,7 +96,6 @@ const PremiumKundliDetailReport = ({ navigation, route }) => {
         console.log('error', error);
       });
   }
-
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
@@ -60,7 +108,7 @@ const PremiumKundliDetailReport = ({ navigation, route }) => {
       />
       {state.loading && <Loader />}
       <ScrollView>
-        {(astro &&
+        {(report &&
           <Text
             style={{
               color: '#333333',
@@ -69,11 +117,11 @@ const PremiumKundliDetailReport = ({ navigation, route }) => {
               alignSelf: 'center',
               marginTop: 18,
             }}>
-            {astro[0]?.report_detail_name}{' '}
+            {report?.report_name}{' '}
           </Text>
         )}
-        {(report &&
-          <Image
+        {(report && astro &&
+          < Image
             style={{
               width: 150,
               height: 167.95,
@@ -82,7 +130,7 @@ const PremiumKundliDetailReport = ({ navigation, route }) => {
               resizeMode: 'contain',
               alignSelf: 'center',
             }}
-            source={{ uri: `${report}/${astro[0]?.image}` }}
+            source={{ uri: `${astro?.path}/${report?.image}` }}
           />
         )}
         <View style={styles.ex_view}>
@@ -109,21 +157,39 @@ const PremiumKundliDetailReport = ({ navigation, route }) => {
               </View>
 
             </View>
-            {(astro &&
-              <View style={styles.dt_view_1}>
-                <View style={styles.dt_view_11}>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      marginTop: 2,
-                    }}>
-                    <Text style={styles.dt_name}>
-                      {astro[0]?.about_report}
-                    </Text>
-                  </View>
+            <View style={styles.dt_view_1}>
+              <View style={styles.dt_view_11}>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    marginTop: 2,
+                  }}>
+                  {/* <Text style={styles.dt_name}> */}
+                  {(report &&
+                    <RenderHtml
+                      containerStyle={{
+                        marginTop: 20,
+                        marginBottom: 10,
+                        // width: window.width - 250,
+                      }}
+                      source={{ html: report?.about_report }}
+                      systemFonts={systemFonts}
+                      tagsStyles={{
+                        p: {
+                          fontFamily: 'AvenirLTStd-Medium',
+                          fontSize: 14,
+                          marginTop: 2,
+                          lineHeight: 20,
+                          color: '#A6A7A9',
+                          marginLeft: 9,
+                        },
+                      }}
+                    />
+                  )}
+                  {/* </Text> */}
                 </View>
               </View>
-            )}
+            </View>
           </View>
         </View>
 
@@ -145,18 +211,33 @@ const PremiumKundliDetailReport = ({ navigation, route }) => {
               }}>
               General Price
             </Text>
-            {(astro &&
-              <Text
-                style={{
-                  color: '#1E1F20',
-                  fontFamily: 'AvenirLTStd-Heavy',
-                  fontSize: 18,
-                  marginLeft: 7,
-                  marginTop: 0,
-                }}>
-                ₹ {astro[0]?.general_price}
-              </Text>
-            )}
+            <View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
+              {(generalprice &&
+                <Text
+                  style={{
+                    color: '#1E1F20',
+                    fontFamily: 'AvenirLTStd-Heavy',
+                    fontSize: 18,
+                    marginLeft: 7,
+                    marginTop: 3,
+                  }}>
+                  ₹ {generalprice}
+                </Text>
+              )}
+              {generalcutprice && generalcutprice > 0 ?
+                <Text
+                  style={{
+                    color: '#1E1F2090',
+                    fontFamily: 'AvenirLTStd-Heavy',
+                    fontSize: 14,
+                    marginLeft: 3,
+                    marginTop: 6,
+                    textDecorationLine: 'line-through',
+                  }}>
+                  ₹ {generalcutprice}
+                </Text>
+                : null}
+            </View>
           </View>
 
           <View>
@@ -171,19 +252,35 @@ const PremiumKundliDetailReport = ({ navigation, route }) => {
               }}>
               Astrologer Price
             </Text>
-            {(astro &&
-              <Text
-                style={{
-                  color: '#1E1F20',
-                  fontFamily: 'AvenirLTStd-Heavy',
-                  fontSize: 18,
-                  marginRight: 7,
-                  marginTop: 0,
-                  textAlign: 'right',
-                }}>
-                ₹ {astro[0]?.astrologer_price}
-              </Text>
-            )}
+            <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
+              {(totatamount &&
+                <Text
+                  style={{
+                    color: '#1E1F20',
+                    fontFamily: 'AvenirLTStd-Heavy',
+                    fontSize: 18,
+                    marginRight: 3,
+                    marginTop: 3,
+                    textAlign: 'right',
+                  }}>
+                  ₹ {totatamount}
+                </Text>
+              )}
+              {astrologercutprice && astrologercutprice > 0 ?
+                < Text
+                  style={{
+                    color: '#1E1F2090',
+                    fontFamily: 'AvenirLTStd-Heavy',
+                    fontSize: 14,
+                    marginRight: 7,
+                    marginTop: 6,
+                    textAlign: 'right',
+                    textDecorationLine: 'line-through'
+                  }}>
+                  ₹ {astrologercutprice}
+                </Text>
+                : null}
+            </View>
           </View>
 
         </View>
@@ -214,20 +311,27 @@ const PremiumKundliDetailReport = ({ navigation, route }) => {
             </View>
             <View style={styles.dt_view_1}>
               <View style={styles.dt_view_11}>
-                <FlatList
-                  data={astro[0]?.inclusion?.split(',')}
-                  renderItem={({ item, index }) => (
-                    <View
-                      style={{
-                        flexDirection: 'row',
+
+                {(report &&
+                  <RenderHtml
+                    containerStyle={{
+                      marginTop: 20,
+                      marginBottom: 10,
+                    }}
+                    source={{ html: report?.inclusion }}
+                    systemFonts={systemFonts}
+                    tagsStyles={{
+                      p: {
+                        fontFamily: 'AvenirLTStd-Medium',
+                        fontSize: 14,
                         marginTop: 2,
-                      }}>
-                      <Text style={styles.dt_name}>
-                        {`\u2022 ${item}`}
-                      </Text>
-                    </View>
-                  )}
-                />
+                        lineHeight: 20,
+                        color: '#A6A7A9',
+                        marginLeft: 9,
+                      },
+                    }}
+                  />
+                )}
 
               </View>
             </View>
@@ -260,6 +364,7 @@ const PremiumKundliDetailReport = ({ navigation, route }) => {
             }}
 
             onPress={() => {
+              navigation.navigate('ViewSample', { item: `${astro?.path}/${report?.sample}` })
             }}>
             {_kundali.viewsample}
           </Button>

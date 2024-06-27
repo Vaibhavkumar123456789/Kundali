@@ -18,42 +18,94 @@ import {
 } from 'react-native';
 import Header from '../Custom/Header';
 import stringsoflanguages from '../language/Language'
-import { Astroreport } from '../backend/Api';
+import { Astroreport, Homebanner } from '../backend/Api';
 import { useIsFocused } from '@react-navigation/native';
 import Loader from '../utils/Loader';
+import GLobal from './GLobal';
+import RenderHtml, { defaultSystemFonts } from 'react-native-render-html';
+const systemFonts = [
+  ...defaultSystemFonts,
+  'AvenirLTStd-Medium',
+  'AvenirLTStd-Heavy',
+];
+
 const Report = ({ navigation }) => {
   const window = Dimensions.get('window');
   const { width, height } = Dimensions.get('window');
   const { _member, _home } = stringsoflanguages
   const isFocused = useIsFocused();
-  const [astro, setAstro] = useState([])
-  const [report, setReport] = useState()
+  const [astro, setAstro] = useState()
+  const [report, setReport] = useState([])
   const [state, setState] = useState({
     loading: false,
   });
   const toggleLoading = bol => setState({ ...state, loading: bol });
 
+  const limitHtmlContent = (htmlContent, maxLength) => {
+    const textContent = htmlContent.replace(/<[^>]+>/g, ''); // Remove HTML tags
+    if (textContent.length > maxLength) {
+      return textContent.substring(0, maxLength) + '...';
+    }
+    return textContent;
+  };
+
+
   useEffect(() => {
-    reportapi()
+    banner()
   }, [isFocused])
 
-  const reportapi = () => {
+  const banner = () => {
     toggleLoading(true);
+
     Astroreport()
       .then(data => {
         // alert(JSON.stringify(data, null, 2))
         toggleLoading(false);
         if (data.status) {
-          setAstro(data.data)
-          setReport(data.path)
+          setReport(data?.data)
+          setAstro(data)
+
+          calculateTaxDetails(data?.data)
         } else {
-          alert(data.msg);
+          alert(data?.msg);
         }
       })
       .catch(error => {
         toggleLoading(false);
         console.log('error', error);
       });
+  }
+
+  const calculateTaxDetails = (listed) => {
+
+    const updatedReport = listed?.map((item) => {
+      let amount = item["price"];
+      let discount = item["discount_price"];
+      let taxable_amount = discount > 0 ? discount : amount;
+
+      let cutprice = discount == 0 ? discount : amount;       // astrologer cut price
+
+      let tax_amount = 0;
+      let total_amount = 0;
+      let tax_percentage = 0;
+
+      if (item["tax"] == null) {
+        tax_percentage = 0;
+        total_amount = taxable_amount;
+      } else {
+        tax_percentage = item["tax"]["tax_percentage"];
+        tax_amount = taxable_amount * tax_percentage / 100;
+        total_amount = taxable_amount + tax_amount;
+      }
+      return {
+        ...item,
+        cutprice,
+        total_amount
+      };
+
+    })
+    setReport(updatedReport);
+
   }
 
   return (
@@ -66,10 +118,10 @@ const Report = ({ navigation }) => {
       />
       {state.loading && <Loader />}
 
-      {astro && astro.length > "0" ?
+      {report && report.length > "0" ?
         <FlatList
           style={{ marginTop: 5, }}
-          data={astro}
+          data={report}
           renderItem={({ item, index }) => (
 
             <View
@@ -90,42 +142,51 @@ const Report = ({ navigation }) => {
                   fontFamily: 'AvenirLTStd-Medium',
                   color: '#F44336',
                 }}>
-                {item.report_name}
+                {item?.report_name}
               </Text>
               <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 8 }}>
-                <View >
-
-                  <Text
-                    style={{
-                      fontSize: 13,
-                      fontFamily: 'AvenirLTStd-Medium',
-                      lineHeight: 20,
-                      marginLeft: 10,
-                      color: '#33333380',
-                      width: window.width - 170,
-                    }}>
-                    {item.about_report}
-                  </Text>
+                <View style={{ width: window.width - 175, marginLeft: 10 }}>
+                  <RenderHtml
+                    containerStyle={{
+                      marginTop: 20,
+                      marginBottom: 10,
+                    }}
+                    source={{ html: limitHtmlContent(item?.inclusion, 150) }}
+                    systemFonts={systemFonts}
+                    tagsStyles={{
+                      p: {
+                        fontSize: 13,
+                        fontFamily: 'AvenirLTStd-Medium',
+                        lineHeight: 20,
+                        marginLeft: 10,
+                        color: '#33333380',
+                      },
+                    }}
+                  />
 
                   <Text style={{
                     color: '#333333',
                     fontFamily: 'AvenirLTStd-Heavy',
                     fontSize: 15,
-                    marginLeft: 10,
+                    // marginLeft: 10,
                     marginTop: 5,
                     width: window.width - 170,
                   }}>
-                    {_home.price} ₹{item.general_discount_price}&nbsp;
-                    <Text
+                    {_home.price} ₹{item.total_amount}&nbsp;
+                    <>
+                      {item.cutprice > 0 && item.cutprice !== item.total_amount ? (
+                        <Text
 
-                      style={{
-                        color: '#333333',
-                        fontFamily: 'AvenirLTStd-Medium',
-                        fontSize: 11,
-                        textDecorationLine: 'line-through',
-                      }}>
-                      {item.general_price}&nbsp;
-                    </Text>
+                          style={{
+                            color: '#333333',
+                            fontFamily: 'AvenirLTStd-Medium',
+                            fontSize: 11,
+                            textDecorationLine: 'line-through',
+                          }}>
+                          ₹{item.cutprice}&nbsp;
+                        </Text>
+                      ) : null}
+                    </>
 
                   </Text>
 
@@ -138,11 +199,11 @@ const Report = ({ navigation }) => {
                     alignSelf: 'center',
                     marginRight: 8,
                   }}
-                  source={{ uri: `${report}/${item.image}` }}
+                  source={{ uri: `${astro?.path}/${item.image}` }}
                 />
               </View>
               <View style={{ flexDirection: 'row', marginTop: 5 }}>
-                <Pressable style={{
+                <Pressable onPress={() => { navigation.navigate('ViewSample', { item: `${astro?.path}/${item.sample}` }) }} style={{
                   backgroundColor: '#333333',
                   paddingHorizontal: 10, borderRadius: 20, paddingVertical: 7, marginHorizontal: 10
                 }}>
@@ -155,7 +216,7 @@ const Report = ({ navigation }) => {
                     {_home.viewsample}
                   </Text>
                 </Pressable>
-                <Pressable onPress={() => { navigation.navigate('PremiumKundliDetailReport', item) }}>
+                <Pressable onPress={() => { navigation.navigate('PremiumKundliDetailReport', { item, astro }) }}>
                   <Image
                     style={{
                       width: 30,

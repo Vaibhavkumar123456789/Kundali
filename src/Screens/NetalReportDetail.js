@@ -18,21 +18,13 @@ import {
 } from 'react-native';
 import Header from '../Custom/Header';
 import stringsoflanguages from '../language/Language'
-import Button from 'react-native-button';
-import DatePicker from 'react-native-date-picker'
-import moment from 'moment';
-import { Dropdown } from 'react-native-element-dropdown';
 
-const NetalReportDetail = ({ navigation }) => {
+const NetalReportDetail = ({ navigation, route }) => {
+    // alert(JSON.stringify(route.params, null, 2))
     const window = Dimensions.get('window');
     const { width, height } = Dimensions.get('window');
     const { _member, _invoice, _kundali, _setting, _customlang } = stringsoflanguages
-    const detail = [
-        {
 
-        },
-
-    ];
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
@@ -43,79 +35,75 @@ const NetalReportDetail = ({ navigation }) => {
                 title={_setting.reportdetail}
             />
             <ScrollView>
-                <FlatList
-                    data={detail}
-                    style={{ marginTop: 10, flexGrow: 0 }}
-                    renderItem={({ item, index }) => (
 
-                        <View style={styles.ex_view}>
-                            <View style={styles.ex_proView}>
-                                <Image style={{ width: 80, height: 80, resizeMode: 'contain' }}
-                                    source={require('../assets/add.png')} />
 
+                <View style={styles.ex_view}>
+                    <View style={styles.ex_proView}>
+                        <Image style={{ width: 80, height: 80, resizeMode: 'contain' }}
+                            source={require('../assets/defaultimage.png')} />
+
+                    </View>
+                    <View style={styles.dt_view}>
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginLeft: 2, marginTop: 4 }}>
+                            <View style={{ flexDirection: 'row' }}>
+
+                                <Text numberOfLines={1} style={{ color: '#1E1F20', fontFamily: 'AvenirLTStd-Heavy', fontSize: 16, marginLeft: 7, marginTop: 0, width: window.width - 210 }}>
+                                    {route.params?.maindetail?.name}
+                                </Text>
                             </View>
-                            <View style={styles.dt_view}>
-                                <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginLeft: 2, marginTop: 4 }}>
-                                    <View style={{ flexDirection: 'row' }}>
 
-                                        <Text numberOfLines={1} style={{ color: '#1E1F20', fontFamily: 'AvenirLTStd-Heavy', fontSize: 16, marginLeft: 7, marginTop: 0, width: window.width - 210 }}>
-                                            Deepak Kumar
-                                        </Text>
+                        </View>
+                        <View style={styles.dt_view_1}>
+                            <View style={styles.dt_view_11}>
+                                <View
+                                    style={{
+                                        flexDirection: 'row', marginTop: 2,
+                                    }}>
+                                    <Text numberOfLines={1}
+                                        style={styles.dt_name}>{route.params?.maindetail?.gender}</Text>
+                                    {/* <View style={{
+                                        width: 1.5,
+                                        backgroundColor: '#A6A7A9',
+                                        height: 13,
+                                        marginLeft: 5,
+                                        marginTop: 5,
+                                    }}>
                                     </View>
-
+                                    <Text numberOfLines={1}
+                                        style={styles.dt_name}>25 yrs</Text> */}
                                 </View>
-                                <View style={styles.dt_view_1}>
-                                    <View style={styles.dt_view_11}>
-                                        <View
-                                            style={{
-                                                flexDirection: 'row', marginTop: 2,
-                                            }}>
-                                            <Text numberOfLines={1}
-                                                style={styles.dt_name}>Male</Text>
-                                            <View style={{
-                                                width: 1.5,
-                                                backgroundColor: '#A6A7A9',
-                                                height: 13,
-                                                marginLeft: 5,
-                                                marginTop: 5,
-                                            }}>
-                                            </View>
-                                            <Text numberOfLines={1}
-                                                style={styles.dt_name}>25 yrs</Text>
-                                        </View>
 
-                                        <View style={styles.dt_viewOpt}>
-                                            <Text
-                                                style={{
-                                                    fontSize: 14,
-                                                    fontFamily: 'AvenirLTStd-Medium',
-                                                    color: '#A6A7A9',
-                                                    marginTop: 2,
-                                                    marginLeft: 9,
-                                                }}>
-                                                {_member.tob} :2:30PM
-                                            </Text>
-
-                                        </View>
-                                    </View>
-                                </View>
-                                <View style={styles.dt_view_2}>
-                                    <View style={styles.dt_viewOpt}>
-                                        <Text numberOfLines={1} style={styles.dt_viewOptText}>
-                                            {_member.pob} :New Delhi
-                                        </Text>
-                                    </View>
-                                    <View style={styles.dt_viewOpt}>
-                                        <Text numberOfLines={1} style={styles.dt_viewOptText}>
-                                            {_member.whatsapp}: 1234567892
-                                        </Text>
-                                    </View>
+                                <View style={styles.dt_viewOpt}>
+                                    <Text
+                                        style={{
+                                            fontSize: 14,
+                                            fontFamily: 'AvenirLTStd-Medium',
+                                            color: '#A6A7A9',
+                                            marginTop: 2,
+                                            marginLeft: 9,
+                                        }}>
+                                        {_member.tob} :{route.params?.maindetail?.tob}
+                                    </Text>
 
                                 </View>
                             </View>
                         </View>
-                    )}
-                />
+                        <View style={styles.dt_view_2}>
+                            <View style={styles.dt_viewOpt}>
+                                <Text numberOfLines={1} style={styles.dt_viewOptText}>
+                                    {_member.pob} :{route.params?.maindetail?.pob}
+                                </Text>
+                            </View>
+                            <View style={styles.dt_viewOpt}>
+                                <Text numberOfLines={1} style={styles.dt_viewOptText}>
+                                    {_member.whatsapp}:{route.params?.maindetail?.mobile}
+                                </Text>
+                            </View>
+
+                        </View>
+                    </View>
+                </View>
+
 
                 <Text
                     style={{
@@ -162,7 +150,7 @@ const styles = StyleSheet.create({
     ex_view: {
         flexDirection: 'row',
         margin: 7,
-        marginTop: 10,
+        marginTop: 15,
         paddingVertical: 10,
         alignSelf: 'center',
         width: '90%',

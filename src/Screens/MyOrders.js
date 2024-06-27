@@ -1,13 +1,55 @@
-import { View, Text, Image, StyleSheet, Dimensions, FlatList, TextInput, StatusBar, SafeAreaView, ImageBackground, Pressable, ScrollView, TouchableOpacity, } from 'react-native'
+import { View, Text, Image, StyleSheet, Modal, Dimensions, FlatList, TextInput, StatusBar, SafeAreaView, ImageBackground, Pressable, ScrollView, TouchableOpacity, } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import CustomHeader from '../Custom/CustomHeader';
 import stringsoflanguages from '../language/Language'
 import { TabView, TabBar, SceneMap } from 'react-native-tab-view';
+import Loader from '../utils/Loader';
+import { useIsFocused } from '@react-navigation/native';
+import { RadioButton } from 'react-native-paper';
+import { Kundlireporthistory } from '../backend/Api';
+import moment from 'moment';
 
 const MyOrders = ({ navigation }) => {
     const { _member, _home } = stringsoflanguages
     const window = Dimensions.get('window');
+    const isFocused = useIsFocused();
     const { width, height } = Dimensions.get('window');
+    const [state, setState] = useState({
+        loading: false,
+    });
+    const toggleLoading = bol => setState({ ...state, loading: bol });
+    const [modalOpen, setModalOpen] = useState(false);
+    const [checked, setChecked] = useState('all');
+    const [reportdetail, setReportDetail] = useState([])
+
+    useEffect(() => {
+        banner()
+    }, [isFocused == true])
+
+    const banner = (filter = 'all') => {
+        let e = {
+
+            "condition": filter,  // all , lastmonth ,lastmonth
+        };
+
+        toggleLoading(true);
+
+        Kundlireporthistory(e)
+            .then(data => {
+                // alert(JSON.stringify(data, null, 2))
+                toggleLoading(false);
+                if (data.status) {
+                    setReportDetail(data.list)
+
+                } else {
+                    alert(data?.msg);
+                }
+            })
+            .catch(error => {
+                toggleLoading(false);
+                console.log('error', error);
+            });
+    }
 
     const detail = [
         {
@@ -33,51 +75,55 @@ const MyOrders = ({ navigation }) => {
             case 'first':
                 return (
                     <View style={{ flex: 1, }}>
-                        <FlatList
-                            data={detail}
-                            style={{ marginTop: 10, flexGrow: 0 }}
-                            renderItem={({ item, index }) => (
+                        {reportdetail && reportdetail.length > 0 ?
+                            <FlatList
+                                data={reportdetail}
+                                style={{ marginTop: 10, flexGrow: 0 }}
+                                renderItem={({ item, index }) => (
 
-                                <View style={styles.ex_view}>
+                                    <View style={styles.ex_view}>
 
-                                    <View style={styles.dt_view}>
-                                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginLeft: 2, marginTop: 4 }}>
-                                            <View style={{ flexDirection: 'row' }}>
+                                        <View style={styles.dt_view}>
+                                            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginLeft: 2, marginTop: 4 }}>
+                                                <View style={{ flexDirection: 'row' }}>
 
-                                                <Text numberOfLines={1} style={{ color: '#1E1F20', fontFamily: 'AvenirLTStd-Heavy', fontSize: 16, marginLeft: 7, marginTop: 0, width: window.width - 210 }}>
-                                                    Deepak Kumar
-                                                </Text>
+                                                    <Text numberOfLines={1} style={{ color: '#1E1F20', fontFamily: 'AvenirLTStd-Heavy', fontSize: 16, marginLeft: 7, marginTop: 0, width: window.width - 210 }}>
+                                                        {item?.maindetail?.name}
+                                                    </Text>
+                                                </View>
+                                                <View style={{ flexDirection: 'row', alignSelf: 'flex-end', marginRight: 12, marginTop: 20 }}>
+                                                    <Text style={{ color: '#FFCC80', textDecorationLine: 'underline', }} onPress={() => navigation.navigate('NetalReportDetail', item)}>View</Text>
+                                                </View>
                                             </View>
-                                            <View style={{ flexDirection: 'row', alignSelf: 'flex-end', marginRight: 12, marginTop: 20 }}>
-                                                <Text style={{ color: '#FFCC80', textDecorationLine: 'underline', }} onPress={() => navigation.navigate('NetalReportDetail')}>View</Text>
-                                            </View>
-                                        </View>
-                                        <View style={styles.dt_view_1}>
-                                            <View style={styles.dt_view_11}>
-                                                <View
-                                                    style={{
-                                                        flexDirection: 'row', marginTop: -15,
-                                                    }}>
-                                                    <Text numberOfLines={1}
-                                                        style={styles.dt_name}>28-01-23, 01:30 PM</Text>
+                                            <View style={styles.dt_view_1}>
+                                                <View style={styles.dt_view_11}>
+                                                    <View
+                                                        style={{
+                                                            flexDirection: 'row', marginTop: -15,
+                                                        }}>
+                                                        <Text numberOfLines={1}
+                                                            style={styles.dt_name}>{`${moment(item?.maindetail?.updated_at).format('YYYY-MM-DD hh:mm a')}`}</Text>
+
+                                                    </View>
+
 
                                                 </View>
-
+                                            </View>
+                                            <View style={styles.dt_view_2}>
+                                                <View style={styles.dt_viewOpt}>
+                                                    <Text numberOfLines={1} style={styles.dt_viewOptText}>
+                                                        Amount : ₹ {item?.total_mrp}/-
+                                                    </Text>
+                                                </View>
 
                                             </View>
-                                        </View>
-                                        <View style={styles.dt_view_2}>
-                                            <View style={styles.dt_viewOpt}>
-                                                <Text numberOfLines={1} style={styles.dt_viewOptText}>
-                                                    Amount : ₹ 2000/-
-                                                </Text>
-                                            </View>
-
                                         </View>
                                     </View>
-                                </View>
-                            )}
-                        />
+                                )}
+                            />
+                            : <View style={{ justifyContent: 'center', alignItems: 'center', flex: 0.8 }}>
+                                <Text style={{ textAlign: 'center', color: 'black', fontSize: 14, fontFamily: 'AvenirLTStd-Medium' }}>No Kundali Report</Text>
+                            </View>}
                     </View>
                 )
             case 'second':
@@ -217,11 +263,9 @@ const MyOrders = ({ navigation }) => {
                 leftIcon={require('../assets/backtoback.png')}
                 // secondRightIcon={require('../assets/search.png')}
                 thirdRightIcon={require('../assets/filter.png')}
-                rightOption={() => {
-                    navigation.navigate('');
-                }}
+
                 right3Option={() => {
-                    navigation.navigate('');
+                    setModalOpen(true)
                 }}
             />
 
@@ -243,6 +287,65 @@ const MyOrders = ({ navigation }) => {
                     />
                 )}
             />
+            {state.loading && <Loader />}
+            <Modal
+                visible={modalOpen}
+                transparent={true}
+                onRequestClose={() => setModalOpen(false)}>
+                <View>
+                    <TouchableOpacity
+                        activeOpacity={0.9}
+                        onPress={() => {
+                            setModalOpen(false);
+                        }}>
+                        <View style={styles.mdtop}>
+                            <TouchableOpacity activeOpacity={0.9} onPress={() => { setChecked('all'); banner('all'); setModalOpen(false); }}>
+                                <View style={{ flexDirection: 'row' }}>
+                                    <Text style={styles.modalText}>All</Text>
+                                    <View style={{ marginLeft: 'auto', marginHorizontal: 10 }}>
+                                        <RadioButton
+                                            value="all"
+                                            status={checked === 'all' ? 'checked' : 'unchecked'}
+                                            onPress={() => { setChecked('all'), banner('all'), setModalOpen(false); }}
+                                            uncheckedColor={'#8D92A3'}
+                                            color={'#FFCC80'}
+                                        />
+                                    </View>
+                                </View>
+                            </TouchableOpacity>
+                            <TouchableOpacity activeOpacity={0.9} onPress={() => { setChecked('lastweek'); banner('lastweek'); setModalOpen(false); }}>
+                                <View style={{ flexDirection: 'row' }}>
+                                    <Text style={styles.modalText}>Weekly</Text>
+                                    <View style={{ marginLeft: 'auto', marginHorizontal: 10 }}>
+                                        <RadioButton
+                                            value="lastweek"
+                                            status={checked === 'lastweek' ? 'checked' : 'unchecked'}
+                                            onPress={() => { setChecked('lastweek'), banner('lastweek'), setModalOpen(false); }}
+                                            uncheckedColor={'#8D92A3'}
+                                            color={'#FFCC80'}
+                                        />
+                                    </View>
+                                </View>
+                            </TouchableOpacity>
+                            <TouchableOpacity activeOpacity={0.9} onPress={() => { setChecked('lastmonth'); banner('lastmonth'); setModalOpen(false); }}>
+                                <View style={{ flexDirection: 'row' }}>
+                                    <Text style={styles.modalText}>Monthly</Text>
+                                    <View style={{ marginLeft: 'auto', marginHorizontal: 10 }}>
+                                        <RadioButton
+                                            value="lastmonth"
+                                            status={checked === 'lastmonth' ? 'checked' : 'unchecked'}
+                                            onPress={() => { setChecked('lastmonth'), banner('lastmonth'), setModalOpen(false); }}
+                                            uncheckedColor={'#8D92A3'}
+                                            color={'#FFCC80'}
+                                        />
+                                    </View>
+                                </View>
+                            </TouchableOpacity>
+
+                        </View>
+                    </TouchableOpacity>
+                </View>
+            </Modal>
 
         </SafeAreaView>
     )
@@ -372,6 +475,28 @@ const styles = StyleSheet.create({
     },
     dt_view_21: {
         flex: 0.4,
+    },
+    mdtop: {
+        backgroundColor: '#FFFFFF',
+        marginTop: 50,
+        marginLeft: 'auto',
+        marginHorizontal: 30,
+        elevation: 5,
+        width: '50%',
+        borderRadius: 8,
+    },
+    modalText: {
+        fontFamily: 'AvenirLTStd-Medium',
+        fontSize: 14,
+        color: '#242A37',
+        marginTop: 8,
+        marginLeft: 10,
+    },
+    centerText: {
+        fontFamily: 'AvenirLTStd-Medium',
+        fontSize: 16,
+        color: '#000',
+        textAlign: 'center',
     },
 
 })
