@@ -4,29 +4,46 @@ import CustomHeader from '../Custom/CustomHeader';
 import stringsoflanguages from '../language/Language'
 import { TabView, TabBar, SceneMap } from 'react-native-tab-view';
 import Button from 'react-native-button';
+import Toast from 'react-native-simple-toast';
 import { useIsFocused } from '@react-navigation/native';
 import { RadioButton } from 'react-native-paper';
-import { walletplan } from '../backend/Api';
+import { addwalletapi, walletplan } from '../backend/Api';
 
 const Wallet = ({ navigation }) => {
   const { _member, _home, _drawer } = stringsoflanguages
   const window = Dimensions.get('window');
   const isFocused = useIsFocused();
   const { width, height } = Dimensions.get('window');
-  const [select, setSelect] = useState()
-  const [custom, setCustom] = useState(false)
+  const [select, setSelect] = useState(null)
+  const [walletBalance, setWalletBalance] = useState(0);
   const [checked1, setChecked1] = useState(0);
   const [popupVisible, setPopupVisible] = useState(false);
   const [plandetail, setPlanDetail] = useState([])
+  const [amount, setAmount] = useState()
+  const [gst, setGST] = useState()
+  const [totalamount, setTotalAmount] = useState()
+  const [result, setResult] = useState(null);
 
-  // alert(JSON.stringify(custom,null,2))
+  const getRandomNumberWithTimestamp = () => {
+    const randomInteger = Math.floor(Math.random() * 1001);
+    const timestamp = Date.now();
+    const combined = `${randomInteger}+${timestamp}`;
+    return combined;
+  };
+
+  const handlePress = () => {
+    const combined = getRandomNumberWithTimestamp();
+    const [randomInteger, timestamp] = combined.split('+').map(Number);
+    const sum = randomInteger + timestamp;
+    setResult(sum);
+  };
 
   useEffect(() => {
     planadd()
+    handlePress()
   }, [isFocused == true])
 
   const planadd = () => {
-
     walletplan()
       .then(data => {
         // alert(JSON.stringify(data, null, 2))
@@ -38,14 +55,55 @@ const Wallet = ({ navigation }) => {
         }
       })
       .catch(error => {
-        console.log('bannererror', error);
+        console.log('error', error);
       });
   }
 
-  const list1 = [
-    {
+  const handledata = async (payment) => {
+    // alert(JSON.stringify(payment, null, 2))
+    let amount = parseFloat(payment.recharge).toFixed(2);
+    let gst = (parseFloat(payment.recharge) * 0.18).toFixed(2);          // 18% gst
+    let total = (parseFloat(amount) + parseFloat(gst)).toFixed(2);
 
-    },
+    setAmount(amount)
+    setGST(gst)
+    setTotalAmount(total)
+
+  }
+
+  const recharge = () => {
+    if (select == null) {
+      Toast.show("Please Select Amount")
+
+    } else {
+
+      let e = {
+        "plan_id": plandetail[select]?.id || 1,
+        "tax_amt": gst,
+        "net_amount": amount,
+        "total_mrp": totalamount,
+        "payment_mode": "online",
+        "booking_txn_id": result,
+      };
+      addwalletapi(e)
+        .then(data => {
+          console.log('add walet amount ...', data)
+          // alert(JSON.stringify(data, null, 2))
+          if (data.status) {
+            Toast.show(data?.msg);
+            navigation.goBack()
+          } else {
+            Toast.show(data?.msg);
+          }
+        })
+        .catch(error => {
+          console.log('error', error);
+        });
+    }
+  }
+
+
+  const list1 = [
     {
 
     },
@@ -60,8 +118,6 @@ const Wallet = ({ navigation }) => {
 
         menuOption={() => navigation.goBack()}
         leftIcon={require('../assets/backtoback.png')}
-        // secondRightIcon={require('../assets/search.png')}
-        // thirdRightIcon={require('../assets/filter.png')}
         rightOption={() => {
           navigation.navigate('');
         }}
@@ -80,13 +136,14 @@ const Wallet = ({ navigation }) => {
           }}>
             AVAILABLE BALANCE
           </Text>
+
           <Text style={{
             color: 'black',
             fontSize: 25,
             marginTop: 10,
             fontFamily: 'AvenirLTStd-Heavy',
           }}>
-            ₹120.00
+            ₹ {`${parseFloat(walletBalance).toFixed(2)}`}
           </Text>
         </View>
 
@@ -109,7 +166,7 @@ const Wallet = ({ navigation }) => {
               style={{ width: window.width / 3 - 27, marginLeft: 18, }}
               onPress={() => {
                 setSelect(index)
-                setCustom(item)
+                handledata(item)
               }}>
               <View style={{
                 paddingVertical: 15,
@@ -134,7 +191,7 @@ const Wallet = ({ navigation }) => {
             </TouchableOpacity>
           )}
         />
-        {custom && (
+        {(amount && gst && totalamount &&
           <View style={{
             paddingVertical: 15,
             backgroundColor: '#FFFFFF',
@@ -157,6 +214,7 @@ const Wallet = ({ navigation }) => {
             <View style={{
               flexDirection: 'row', justifyContent: 'space-between', marginTop: 15,
             }}>
+
               <Text style={{
                 marginLeft: 10,
                 color: '#333333',
@@ -165,7 +223,7 @@ const Wallet = ({ navigation }) => {
               }}>
                 Amount
               </Text>
-              {(custom &&
+              {(amount &&
                 <Text style={{
                   marginRight: 10,
                   color: '#333333',
@@ -173,7 +231,7 @@ const Wallet = ({ navigation }) => {
                   fontFamily: 'AvenirLTStd-Heavy',
                   textAlign: 'right',
                 }}>
-                  ₹{parseFloat(custom?.recharge).toFixed(2)}
+                  ₹{amount}
                 </Text>
               )}
             </View>
@@ -188,7 +246,7 @@ const Wallet = ({ navigation }) => {
               }}>
                 18% Gst Charges
               </Text>
-              {(custom &&
+              {(gst &&
                 <Text style={{
                   marginRight: 10,
                   color: '#333333',
@@ -196,7 +254,7 @@ const Wallet = ({ navigation }) => {
                   textAlign: 'right',
                   fontFamily: 'AvenirLTStd-Heavy',
                 }}>
-                  ₹{parseFloat(custom?.recharge * (18 / 100)).toFixed(2)}
+                  ₹{gst}
 
                 </Text>
               )}
@@ -213,7 +271,7 @@ const Wallet = ({ navigation }) => {
               }}>
                 TOTAL AMOUNT
               </Text>
-              {(custom &&
+              {(totalamount &&
                 <Text style={{
                   marginRight: 10,
                   color: '#333333',
@@ -222,7 +280,7 @@ const Wallet = ({ navigation }) => {
                   textAlign: 'right',
                   fontFamily: 'AvenirLTStd-Heavy',
                 }}>
-                  ₹{parseFloat(custom?.recharge + (custom?.recharge * (18 / 100))).toFixed(2)}
+                  ₹{totalamount}
                 </Text>
               )}
             </View>
@@ -248,6 +306,7 @@ const Wallet = ({ navigation }) => {
           fontFamily: 'AvenirLTStd-Medium',
         }}
         onPress={() => {
+          recharge()
           // setPopupVisible(true)
         }}>
         Proceed

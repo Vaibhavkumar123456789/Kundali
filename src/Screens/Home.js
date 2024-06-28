@@ -177,8 +177,8 @@ const Home = ({ navigation }) => {
                 <View style={{ flexDirection: 'row', }}>
 
                     <Pressable onPress={() => {
-                        // navigation.navigate('Wallet')
-                        navigation.navigate('SelectAddress')
+                        navigation.navigate('Wallet')
+                        // navigation.navigate('SelectAddress')
                     }} style={{
                         flexDirection: 'row', borderColor: '#333333', borderWidth: 1,
                         paddingHorizontal: 5, paddingVertical: 5, borderRadius: 4,

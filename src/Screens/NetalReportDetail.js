@@ -61,16 +61,7 @@ const NetalReportDetail = ({ navigation, route }) => {
                                     }}>
                                     <Text numberOfLines={1}
                                         style={styles.dt_name}>{route.params?.maindetail?.gender}</Text>
-                                    {/* <View style={{
-                                        width: 1.5,
-                                        backgroundColor: '#A6A7A9',
-                                        height: 13,
-                                        marginLeft: 5,
-                                        marginTop: 5,
-                                    }}>
-                                    </View>
-                                    <Text numberOfLines={1}
-                                        style={styles.dt_name}>25 yrs</Text> */}
+
                                 </View>
 
                                 <View style={styles.dt_viewOpt}>
@@ -117,7 +108,21 @@ const NetalReportDetail = ({ navigation, route }) => {
                     {_setting.netal}
                 </Text>
 
-
+                <Pressable onPress={() => { navigation.navigate('ViewSample', { item: `${route.params?.maindetail?.report}` }) }}>
+                    <Image style={{ width: 240, height: 160, resizeMode: 'contain', alignSelf: 'center', marginTop: 20 }}
+                        source={require('../assets/reportimage.png')} />
+                    <Text
+                        style={{
+                            fontFamily: 'AvenirLTStd-Heavy',
+                            color: '#333333',
+                            fontSize: 18,
+                            marginTop: 15,
+                            marginHorizontal: 10,
+                            textAlign: 'center',
+                        }}>
+                        View Report
+                    </Text>
+                </Pressable>
 
 
 

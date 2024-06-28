@@ -1,6 +1,6 @@
 
-// export const BASE_URL = 'http://zedcredit.zedfinance.com/Kundali/api/';
-export const BASE_URL = 'http://13.244.146.8/api/';
+export const BASE_URL = 'http://zedcredit.zedfinance.com/Kundali/api/';
+// export const BASE_URL = 'http://13.244.146.8/api/';
 export const BASE_URL_EXTERNAL = 'https://api.astrovedicapi.com/api/v1/';         // third party api url
 
 
@@ -41,6 +41,7 @@ export const PATH_URL = {
   removemember: 'astrologer/remove-membershipuser',
   updatemember: 'astrologer/edit-membershipuser',
   plan: 'WalletPlans',
+  addwallet: 'astrologer/add-wallet',
   address: 'astrologer/address-get',
   addaddress: 'astrologer/address-store',
   deleteaddress: 'astrologer/address-delete',
@@ -49,6 +50,10 @@ export const PATH_URL = {
   list: 'productdetail',
   addtocart: 'astrologer/cart',
   getcart: 'astrologer/getcart',
+  addorder: 'astrologer/add-order',
+  oederhistory: 'astrologer/order_history',
+  orderdetail: 'astrologer/order_history_details',
+
 
 
 

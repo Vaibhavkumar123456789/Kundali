@@ -124,6 +124,7 @@ const SelectAddress = ({ navigation }) => {
                                         status={checked === index ? 'checked' : 'unchecked'}
                                         onPress={() => {
                                             setChecked(index)
+                                            navigation.navigate('PlaceOrder', item)
                                         }}
                                         uncheckedColor='#69707F'
                                         color='#FFCC80'

@@ -183,6 +183,7 @@ export const kundlireportgenerate = json => requesth(PATH_URL.kundlireport, json
 export const deletememberlist = json => requesth(PATH_URL.removemember, json);
 export const updatememberlist = json => requesth(PATH_URL.updatemember, json);
 export const walletplan = json => requestGet1(PATH_URL.plan, json);
+export const addwalletapi = json => requesth(PATH_URL.addwallet, json);
 export const addresslist = json => requestGet1(PATH_URL.address, json);
 export const addnewaddress = json => requesth(PATH_URL.addaddress, json);
 export const deletedaddress = json => requesth(PATH_URL.deleteaddress, json);
@@ -191,7 +192,9 @@ export const productdatalist = json => requestGet1(PATH_URL.productlist, json);
 export const productlist = json => requesth(PATH_URL.list, json);
 export const addtocardapi = json => requesth(PATH_URL.addtocart, json);
 export const getcartapi = json => requesth(PATH_URL.getcart, json);
-
+export const addorderapi = json => requesth(PATH_URL.addorder, json);
+export const getorderhistory = json => requesth(PATH_URL.oederhistory, json);
+export const postorderhistory = json => requesth(PATH_URL.orderdetail, json);
 
 // third party api
 export const LalkitabForm = json => requestExternal(PATH_URL.lalkitab, json);

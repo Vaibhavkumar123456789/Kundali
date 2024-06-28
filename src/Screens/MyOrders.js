@@ -6,7 +6,7 @@ import { TabView, TabBar, SceneMap } from 'react-native-tab-view';
 import Loader from '../utils/Loader';
 import { useIsFocused } from '@react-navigation/native';
 import { RadioButton } from 'react-native-paper';
-import { Kundlireporthistory } from '../backend/Api';
+import { Kundlireporthistory, getorderhistory } from '../backend/Api';
 import moment from 'moment';
 
 const MyOrders = ({ navigation }) => {
@@ -21,9 +21,11 @@ const MyOrders = ({ navigation }) => {
     const [modalOpen, setModalOpen] = useState(false);
     const [checked, setChecked] = useState('all');
     const [reportdetail, setReportDetail] = useState([])
+    const [orderdetail, setOrderDetail] = useState([])
 
     useEffect(() => {
         banner()
+        OrderHistory()
     }, [isFocused == true])
 
     const banner = (filter = 'all') => {
@@ -51,24 +53,26 @@ const MyOrders = ({ navigation }) => {
             });
     }
 
-    const detail = [
-        {
+    const OrderHistory = () => {
+        toggleLoading(true);
 
-        },
-        {
+        getorderhistory()
+            .then(data => {
+                // alert(JSON.stringify(data, null, 2))
+                toggleLoading(false);
+                if (data.status) {
+                    setOrderDetail(data?.order)
 
-        },
+                } else {
+                    alert(data?.msg);
+                }
+            })
+            .catch(error => {
+                toggleLoading(false);
+                console.log('error', error);
+            });
+    }
 
-    ];
-    const list = [
-        {
-
-        },
-        {
-
-        },
-
-    ];
 
     const renderScene = ({ route }) => {
         switch (route.key) {
@@ -129,120 +133,128 @@ const MyOrders = ({ navigation }) => {
             case 'second':
                 return (
                     <View style={{ flex: 1, }}>
-                        <FlatList
-                            data={detail}
-                            style={{ marginTop: 10, flexGrow: 0 }}
-                            renderItem={({ item, index }) => (
-                                <View style={{
-                                    marginHorizontal: 18,
-                                    paddingVertical: 10,
-                                    backgroundColor: 'white',
-                                    elevation: 5, bottom: 8,
-                                    marginTop: 10,
-                                    borderRadius: 10,
-                                }}>
-                                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                                        <Text
-                                            style={{
-                                                fontSize: 16,
-                                                fontFamily: 'AvenirLTStd-Heavy',
-                                                color: '#333333',
-                                                marginLeft: 10,
-                                            }}>
-                                            Order #123456
-                                        </Text>
-                                        <Text
-                                            style={{
-                                                fontSize: 12,
-                                                fontFamily: 'AvenirLTStd-Medium',
-                                                color: '#33333360',
-                                                marginRight: 10,
-                                            }}>
-                                            15/03/2023 - 10:30 AM
-                                        </Text>
-                                    </View>
-                                    <View style={{ marginHorizontal: 10, marginTop: 10, borderStyle: 'dashed', borderBottomColor: '#33333360', borderBottomWidth: 1 }}></View>
-                                    <FlatList
-                                        data={list}
-                                        style={{ marginTop: 0, flexGrow: 0 }}
-                                        renderItem={({ item, index }) => (
-                                            <View style={{ flexDirection: 'row', marginHorizontal: 10, paddingVertical: 10, borderStyle: 'dashed', borderBottomColor: '#33333360', borderBottomWidth: 1 }}>
-                                                <Image style={{ width: 80, height: 80, borderRadius: 5, resizeMode: 'contain' }}
-                                                    source={require('../assets/reicon.png')} />
-                                                <View>
-                                                    <Text numberOfLines={2}
-                                                        style={{
-                                                            fontSize: 13,
-                                                            fontFamily: 'AvenirLTStd-Heavy',
-                                                            color: '#333333',
-                                                            marginLeft: 10,
-                                                            width: window.width - 150,
-                                                        }}>
-                                                        6 Ratti Blue Sapphire (Neelam) Gen..
-                                                    </Text>
-                                                    <Text
-                                                        style={{
-                                                            fontSize: 12,
-                                                            fontFamily: 'AvenirLTStd-Heavy',
-                                                            color: '#33333360',
-                                                            marginLeft: 10,
-                                                            marginTop: 5,
-                                                        }}>
-                                                        Quantity : 1
-                                                    </Text>
-                                                    <View style={{ flexDirection: 'row' }}>
-                                                        <Text
-                                                            style={{
-                                                                fontSize: 10,
-                                                                fontFamily: 'AvenirLTStd-Heavy',
-                                                                color: '#33333360',
-                                                                marginLeft: 10,
-                                                                marginTop: 5,
-                                                            }}>
-                                                            MRP:
-                                                        </Text>
-                                                        <Text
-                                                            style={{
-                                                                fontSize: 12,
-                                                                fontFamily: 'AvenirLTStd-Heavy',
-                                                                color: '#FFCC80',
-                                                                marginLeft: 5,
-                                                                marginTop: 5,
-                                                                width: window.width - 150,
-                                                            }}>
-                                                            1800
-                                                        </Text>
-                                                    </View>
-                                                </View>
+                        {orderdetail && orderdetail?.length > "0" ?
+                            <FlatList
+                                data={orderdetail}
+                                style={{ marginTop: 10, flexGrow: 0 }}
+                                renderItem={({ item, index }) => (
+                                    <Pressable onPress={() => { navigation.navigate('MyOrderProductDetail', item) }}>
+                                        <View style={{
+                                            marginHorizontal: 18,
+                                            paddingVertical: 10,
+                                            backgroundColor: 'white',
+                                            elevation: 5,
+                                            bottom: 8,
+                                            marginTop: 10,
+                                            borderRadius: 10,
+                                        }}>
+                                            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                                                <Text
+                                                    style={{
+                                                        fontSize: 16,
+                                                        fontFamily: 'AvenirLTStd-Heavy',
+                                                        color: '#333333',
+                                                        marginLeft: 10,
+                                                    }}>
+                                                    Order #{item?.id}
+                                                </Text>
+                                                <Text
+                                                    style={{
+                                                        fontSize: 12,
+                                                        fontFamily: 'AvenirLTStd-Medium',
+                                                        color: '#33333360',
+                                                        marginRight: 10,
+                                                        marginTop: 2,
+                                                    }}>
+                                                    {`${moment(item?.created_at).format('YYYY-MM-DD-hh:mm a')}`}
+                                                </Text>
                                             </View>
-                                        )}
-                                    />
-                                    <View style={{ flexDirection: 'row' }}>
-                                        <Text
-                                            style={{
-                                                fontSize: 16,
-                                                fontFamily: 'AvenirLTStd-Heavy',
-                                                color: '#000521',
-                                                marginLeft: 10,
-                                                marginTop: 5,
-                                            }}>
-                                            MRP:
-                                        </Text>
-                                        <Text
-                                            style={{
-                                                fontSize: 16,
-                                                fontFamily: 'AvenirLTStd-Heavy',
-                                                color: '#FFCC80',
-                                                marginLeft: 5,
-                                                marginTop: 5,
-                                            }}>
-                                            1800
-                                        </Text>
-                                    </View>
-                                </View>
-
-                            )}
-                        />
+                                            <View style={{ marginHorizontal: 10, marginTop: 10, borderStyle: 'dashed', borderBottomColor: '#33333360', borderBottomWidth: 1 }}></View>
+                                            <FlatList
+                                                data={item?.products}
+                                                style={{ marginTop: 0, flexGrow: 0 }}
+                                                renderItem={({ item, index }) => (
+                                                    <View style={{ flexDirection: 'row', marginHorizontal: 10, paddingVertical: 10, borderStyle: 'dashed', borderBottomColor: '#33333360', borderBottomWidth: 1 }}>
+                                                        <Image style={{ width: 80, height: 80, borderRadius: 5, resizeMode: 'contain' }}
+                                                            source={{uri:item?.image}} />
+                                                        <View>
+                                                            <Text numberOfLines={2}
+                                                                style={{
+                                                                    fontSize: 13,
+                                                                    fontFamily: 'AvenirLTStd-Heavy',
+                                                                    color: '#333333',
+                                                                    marginLeft: 10,
+                                                                    width: window.width - 150,
+                                                                }}>
+                                                                {item?.product_name}
+                                                            </Text>
+                                                            <Text
+                                                                style={{
+                                                                    fontSize: 12,
+                                                                    fontFamily: 'AvenirLTStd-Heavy',
+                                                                    color: '#33333360',
+                                                                    marginLeft: 10,
+                                                                    marginTop: 5,
+                                                                }}>
+                                                                Quantity :{item?.qty}
+                                                            </Text>
+                                                            <View style={{ flexDirection: 'row' }}>
+                                                                <Text
+                                                                    style={{
+                                                                        fontSize: 10,
+                                                                        fontFamily: 'AvenirLTStd-Heavy',
+                                                                        color: '#33333360',
+                                                                        marginLeft: 10,
+                                                                        marginTop: 5,
+                                                                    }}>
+                                                                    MRP:
+                                                                </Text>
+                                                                <Text
+                                                                    style={{
+                                                                        fontSize: 12,
+                                                                        fontFamily: 'AvenirLTStd-Heavy',
+                                                                        color: '#FFCC80',
+                                                                        marginLeft: 5,
+                                                                        marginTop: 5,
+                                                                        width: window.width - 150,
+                                                                    }}>
+                                                                    ₹{item?.total_price}
+                                                                </Text>
+                                                            </View>
+                                                        </View>
+                                                    </View>
+                                                )}
+                                            />
+                                            <View style={{ flexDirection: 'row' }}>
+                                                <Text
+                                                    style={{
+                                                        fontSize: 16,
+                                                        fontFamily: 'AvenirLTStd-Heavy',
+                                                        color: '#000521',
+                                                        marginLeft: 10,
+                                                        marginTop: 5,
+                                                    }}>
+                                                    Total:
+                                                </Text>
+                                                <Text
+                                                    style={{
+                                                        fontSize: 16,
+                                                        fontFamily: 'AvenirLTStd-Heavy',
+                                                        color: '#FFCC80',
+                                                        marginLeft: 5,
+                                                        marginTop: 5,
+                                                    }}>
+                                                    ₹{item?.net_amount}
+                                                </Text>
+                                            </View>
+                                        </View>
+                                    </Pressable>
+                                )}
+                            />
+                            :
+                            <View style={{ justifyContent: 'center', alignItems: 'center', flex: 0.7 }}>
+                                <Text style={{ textAlign: 'center', color: 'black', fontSize: 15, fontFamily: 'AvenirLTStd-Medium' }}>No Order Detail</Text>
+                            </View>}
                     </View>
                 )
         }

@@ -60,6 +60,9 @@ import ViewSample from '../Screens/ViewSample';
 import UpdateMember from '../Screens/UpdateMember';
 import EditAddress from '../Screens/EditAddress';
 import ProductDetail from '../Screens/ProductDetail';
+import PlaceOrder from '../Screens/PlaceOrder';
+import ProductPaymentSuccessful from '../Screens/ProductPaymentSuccessful';
+import MyOrderProductDetail from '../Screens/MyOrderProductDetail';
 
 
 const Stack = createStackNavigator();
@@ -378,6 +381,21 @@ const StackNavigator = () => {
                 <Stack.Screen
                     name="ProductDetail"
                     component={ProductDetail}
+                    options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                    name="PlaceOrder"
+                    component={PlaceOrder}
+                    options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                    name="ProductPaymentSuccessful"
+                    component={ProductPaymentSuccessful}
+                    options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                    name="MyOrderProductDetail"
+                    component={MyOrderProductDetail}
                     options={{ headerShown: false }}
                 />
 

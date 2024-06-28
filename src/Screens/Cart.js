@@ -5,6 +5,7 @@ import { View, Text, FlatList, Image, TouchableOpacity, StyleSheet, Alert, SafeA
 import { useIsFocused } from '@react-navigation/native';
 import { addtocardapi, getcartapi } from '../backend/Api';
 import Button from 'react-native-button';
+import Loader from '../utils/Loader';
 
 const Cart = ({ navigation }) => {
   const isFocused = useIsFocused();
@@ -14,6 +15,10 @@ const Cart = ({ navigation }) => {
   const [subtotal, setSubtotal] = useState(0);
   const [total, setTotal] = useState(0);
   const [cart, setCart] = useState([])
+  const [state, setState] = useState({
+    loading: false,
+  });
+  const toggleLoading = bol => setState({ ...state, loading: bol });
 
 
   useEffect(() => {
@@ -21,18 +26,25 @@ const Cart = ({ navigation }) => {
   }, [isFocused == true])
 
   const productlistapi = () => {
-
+    toggleLoading(true);
     getcartapi()
       .then(data => {
         // console.log(data)
-        alert(JSON.stringify(data, null, 2))
+        // alert(JSON.stringify(data, null, 2))
+        toggleLoading(false);
         if (data.status) {
           setCart(data.carts)
+          setSubtotal(data?.sub_total)
+          setCouponDiscount(data?.couponDiscount)
+          setDeliveryPrice(data?.deliveryprice)
+          setTotalTaxPrice(data?.total_tax_price)
+          setTotal(data?.total)
         } else {
           alert(data?.msg);
         }
       })
       .catch(error => {
+        toggleLoading(false);
         console.log('error', error);
       });
   }
@@ -45,11 +57,12 @@ const Cart = ({ navigation }) => {
       qty: "0",
       variant: product.variant,
     };
-
+    console.log(JSON.stringify(e, null, 2))
+    toggleLoading(true);
     addtocardapi(e)
       .then(res => {
         console.log('remove cart ', res);
-
+        toggleLoading(false);
         if (res.status) {
           setCart(cart.filter(item => item.id !== product.id));
           productlistapi()
@@ -60,6 +73,7 @@ const Cart = ({ navigation }) => {
 
       })
       .catch(error => {
+        toggleLoading(false);
         console.log('error', error);
       });
 
@@ -73,11 +87,11 @@ const Cart = ({ navigation }) => {
       qty: quantity,
       variant: product.variant,
     };
-
+    toggleLoading(true);
     addtocardapi(e)
       .then(res => {
         console.log('update cart......... ', res);
-
+        toggleLoading(false);
         if (res.status) {
 
           setCart(cart.map(item => item.id === product.id ? { ...item, qty: quantity } : item));
@@ -88,33 +102,39 @@ const Cart = ({ navigation }) => {
 
       })
       .catch(error => {
+        toggleLoading(false);
         console.log('error', error);
       });
 
   };
 
   const deleteProductFromCart = async (product) => {
-
-    // let e = {
-    //   type: "1",
-    //   product_id: product.id,
-    //   qty: '0',
-    //   variant: product.variant,
-    // };
-
-    // addtocardapi(e)
-    //   .then(res => {
-    //     console.log('delete product cart ', res);
-    //     alert(JSON.stringify(res, null, 2))
-    //     if (res.status) {
-    //       // productlistapi()
-    //     } else {
-    //       Toast.show(data?.msg);
-    //     }
-    //   })
-    //   .catch(error => {
-    //     console.log('error', error);
-    //   });
+    // alert(JSON.stringify(product, null, 2))
+    let e = {
+      type: "1",
+      product_id: product?.product?.id,
+      qty: '0',
+      variant: product.variant,
+    };
+    console.log(JSON.stringify(e, null, 2))
+    // alert(JSON.stringify(e, null, 2))
+    // return
+    toggleLoading(true);
+    addtocardapi(e)
+      .then(res => {
+        console.log('delete product cart ', res);
+        // alert(JSON.stringify(res, null, 2))
+        toggleLoading(false);
+        if (res.status) {
+          productlistapi()
+        } else {
+          Toast.show(data?.msg);
+        }
+      })
+      .catch(error => {
+        toggleLoading(false);
+        console.log('error', error);
+      });
 
   };
 
@@ -133,13 +153,6 @@ const Cart = ({ navigation }) => {
     }
   };
 
-  const calculateSubTotal = () => {
-    return cart.reduce((sum, item) => sum + (item.discount_price || item.price) * item.qty, 0);
-  };
-
-  const calculateTotal = () => {
-    return calculateSubTotal() + deliveryPrice + totalTaxPrice - couponDiscount;
-  };
 
   const renderCartItem = ({ item, index }) => {
 
@@ -174,16 +187,16 @@ const Cart = ({ navigation }) => {
               }}>
               {item?.product?.name}
             </Text>
-            {/* <Pressable onPress={() => { deleteProductFromCart(item) }}> */}
-            <Image
-              style={{
-                width: 18,
-                height: 18,
-                resizeMode: 'contain',
-              }}
-              source={require('../assets/delete1.png')}
-            />
-            {/* </Pressable> */}
+            <Pressable onPress={() => { deleteProductFromCart(item) }}>
+              <Image
+                style={{
+                  width: 18,
+                  height: 18,
+                  resizeMode: 'contain',
+                }}
+                source={require('../assets/delete1.png')}
+              />
+            </Pressable>
           </View>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
 
@@ -319,169 +332,171 @@ const Cart = ({ navigation }) => {
 
         </View>
       </View>
-      <ScrollView>
-        <View style={styles.container}>
-          <FlatList
-            data={cart}
-            renderItem={renderCartItem}
-            keyExtractor={(item) => item.id.toString()}
-          />
-          {/* <View style={styles.summaryContainer}>
-          <Text>Subtotal: ${calculateSubTotal().toFixed(2)}</Text>
-          <Text>Delivery: ${deliveryPrice.toFixed(2)}</Text>
-          <Text>Tax: ${totalTaxPrice.toFixed(2)}</Text>
-          <Text>Coupon Discount: -${couponDiscount.toFixed(2)}</Text>
-          <Text>Total: ${calculateTotal().toFixed(2)}</Text>
-        </View> */}
+      {state.loading && <Loader />}
+      {cart && cart?.length > "0" ?
+        <>
+          <ScrollView >
+            <View style={styles.container}>
+              <FlatList
+                data={cart}
+                renderItem={renderCartItem}
+                keyExtractor={(item) => item.id.toString()}
+              />
 
-          <View style={{
-            paddingVertical: 15,
-            backgroundColor: '#FFFFFF',
-            marginTop: 20,
-            borderRadius: 6,
-            elevation: 5,
-            marginHorizontal: 5,
-            bottom: 7,
-          }}>
-            <Text style={{
-              marginHorizontal: 10,
+              <View style={{
+                paddingVertical: 15,
+                backgroundColor: '#FFFFFF',
+                marginTop: 20,
+                borderRadius: 6,
+                elevation: 5,
+                marginHorizontal: 5,
+                bottom: 7,
+              }}>
+                <Text style={{
+                  marginHorizontal: 10,
+                  color: '#333333',
+                  fontFamily: 'AvenirLTStd-Heavy',
+                  fontSize: 14,
+                  textTransform: 'uppercase'
+                }}>
+                  PAYMENT DETAILS
+                </Text>
+                <View style={{
+                  flexDirection: 'row', justifyContent: 'space-between', marginTop: 15,
+                }}>
+                  <Text style={{
+                    marginLeft: 10,
+                    color: '#333333',
+                    fontSize: 14,
+                    fontFamily: 'AvenirLTStd-Roman',
+                  }}>
+                    Subtotal
+                  </Text>
+                  <Text style={{
+                    marginRight: 10,
+                    color: '#333333',
+                    fontSize: 14,
+                    fontFamily: 'AvenirLTStd-Heavy',
+                  }}>
+                    ₹{subtotal}
+                  </Text>
+                </View>
+                <View style={{
+                  flexDirection: 'row', justifyContent: 'space-between', marginTop: 15,
+                }}>
+                  <Text style={{
+                    marginLeft: 10,
+                    color: '#333333',
+                    fontSize: 14,
+                    fontFamily: 'AvenirLTStd-Roman',
+                  }}>
+                    Delivery Charge
+                  </Text>
+                  <Text style={{
+                    marginRight: 10,
+                    color: '#333333',
+                    fontSize: 14,
+                    fontFamily: 'AvenirLTStd-Heavy',
+                  }}>
+                    ₹{deliveryPrice}
+                  </Text>
+                </View>
+
+                <View style={{
+                  flexDirection: 'row', justifyContent: 'space-between', marginTop: 10,
+                }}>
+                  <Text style={{
+                    marginLeft: 10,
+                    color: '#333333',
+                    fontSize: 14,
+                    fontFamily: 'AvenirLTStd-Roman',
+                  }}>
+                    Discount
+                  </Text>
+                  <Text style={{
+                    marginRight: 10,
+                    color: '#333333',
+                    fontSize: 14,
+                    fontFamily: 'AvenirLTStd-Heavy',
+                  }}>
+                    ₹{couponDiscount}
+                  </Text>
+                </View>
+                <View style={{
+                  flexDirection: 'row', justifyContent: 'space-between', marginTop: 10,
+                }}>
+                  <Text style={{
+                    marginLeft: 10,
+                    color: '#333333',
+                    fontSize: 14,
+                    fontFamily: 'AvenirLTStd-Roman',
+                  }}>
+                    Tax
+                  </Text>
+                  <Text style={{
+                    marginRight: 10,
+                    color: '#333333',
+                    fontSize: 14,
+                    fontFamily: 'AvenirLTStd-Heavy',
+                  }}>
+                    ₹{totalTaxPrice}
+                  </Text>
+                </View>
+
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 15, backgroundColor: '#FFC62925', bottom: -15, borderBottomLeftRadius: 6, borderBottomRightRadius: 6 }}>
+                  <Text style={{
+                    marginLeft: 10,
+                    color: '#333333',
+                    fontSize: 12,
+                    letterSpacing: 0.2,
+                    fontFamily: 'AvenirLTStd-Heavy',
+                  }}>
+                    TOTAL AMOUNT
+                  </Text>
+                  <Text style={{
+                    marginRight: 10,
+                    color: '#333333',
+                    fontSize: 14,
+                    letterSpacing: 0.2,
+                    fontFamily: 'AvenirLTStd-Heavy',
+                  }}>
+                    ₹{total}
+                  </Text>
+                </View>
+              </View>
+            </View>
+
+
+          </ScrollView>
+          <Button
+            containerStyle={{
+              width: '92%',
+              bottom: 20,
+              position: 'absolute',
+              height: 52,
+              borderRadius: 12,
+              overflow: 'hidden',
+              alignSelf: 'center',
+              justifyContent: 'center',
+              backgroundColor: '#FFCC80',
+            }}
+            style={{
+              fontSize: 18,
               color: '#333333',
-              fontFamily: 'AvenirLTStd-Heavy',
-              fontSize: 14,
-              textTransform: 'uppercase'
+              alignSelf: 'center',
+              fontFamily: 'AvenirLTStd-Medium',
+            }}
+            onPress={() => {
+              navigation.navigate('SelectAddress')
             }}>
-              PAYMENT DETAILS
-            </Text>
-            <View style={{
-              flexDirection: 'row', justifyContent: 'space-between', marginTop: 15,
-            }}>
-              <Text style={{
-                marginLeft: 10,
-                color: '#333333',
-                fontSize: 14,
-                fontFamily: 'AvenirLTStd-Roman',
-              }}>
-                Subtotal
-              </Text>
-              <Text style={{
-                marginRight: 10,
-                color: '#333333',
-                fontSize: 14,
-                fontFamily: 'AvenirLTStd-Heavy',
-              }}>
-                ₹10000.00
-              </Text>
-            </View>
-            <View style={{
-              flexDirection: 'row', justifyContent: 'space-between', marginTop: 15,
-            }}>
-              <Text style={{
-                marginLeft: 10,
-                color: '#333333',
-                fontSize: 14,
-                fontFamily: 'AvenirLTStd-Roman',
-              }}>
-                Delivery Charge
-              </Text>
-              <Text style={{
-                marginRight: 10,
-                color: '#333333',
-                fontSize: 14,
-                fontFamily: 'AvenirLTStd-Heavy',
-              }}>
-                ₹10000.00
-              </Text>
-            </View>
+            Submit
+          </Button>
+        </>
 
-            <View style={{
-              flexDirection: 'row', justifyContent: 'space-between', marginTop: 10,
-            }}>
-              <Text style={{
-                marginLeft: 10,
-                color: '#333333',
-                fontSize: 14,
-                fontFamily: 'AvenirLTStd-Roman',
-              }}>
-                Discount
-              </Text>
-              <Text style={{
-                marginRight: 10,
-                color: '#333333',
-                fontSize: 14,
-                fontFamily: 'AvenirLTStd-Heavy',
-              }}>
-                ₹10000.00
-              </Text>
-            </View>
-            <View style={{
-              flexDirection: 'row', justifyContent: 'space-between', marginTop: 10,
-            }}>
-              <Text style={{
-                marginLeft: 10,
-                color: '#333333',
-                fontSize: 14,
-                fontFamily: 'AvenirLTStd-Roman',
-              }}>
-                Tax
-              </Text>
-              <Text style={{
-                marginRight: 10,
-                color: '#333333',
-                fontSize: 14,
-                fontFamily: 'AvenirLTStd-Heavy',
-              }}>
-                ₹10000.00
-              </Text>
-            </View>
-
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 15, backgroundColor: '#FFC62925', bottom: -15, borderBottomLeftRadius: 6, borderBottomRightRadius: 6 }}>
-              <Text style={{
-                marginLeft: 10,
-                color: '#333333',
-                fontSize: 12,
-                letterSpacing: 0.2,
-                fontFamily: 'AvenirLTStd-Heavy',
-              }}>
-                TOTAL AMOUNT
-              </Text>
-              <Text style={{
-                marginRight: 10,
-                color: '#333333',
-                fontSize: 14,
-                letterSpacing: 0.2,
-                fontFamily: 'AvenirLTStd-Heavy',
-              }}>
-                ₹10000.00
-              </Text>
-            </View>
-          </View>
-        </View>
-
-        <Button
-          containerStyle={{
-            width: '92%',
-            bottom: 20,
-            marginTop: 20,
-            // position:'absolute',
-            height: 52,
-            borderRadius: 12,
-            overflow: 'hidden',
-            alignSelf: 'center',
-            justifyContent: 'center',
-            backgroundColor: '#FFCC80',
-          }}
-          style={{
-            fontSize: 18,
-            color: '#333333',
-            alignSelf: 'center',
-            fontFamily: 'AvenirLTStd-Medium',
-          }}
-          onPress={() => {
-            navigation.navigate('SelectAddress')
-          }}>
-          Submit
-        </Button>
-      </ScrollView>
+        :
+        <View style={{ justifyContent: 'center', alignItems: 'center', flex: 0.7 }}>
+          <Text style={{ textAlign: 'center', color: 'black', fontSize: 15, fontFamily: 'AvenirLTStd-Medium' }}>No Data Found</Text>
+        </View>}
     </SafeAreaView >
   );
 };
