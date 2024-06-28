@@ -60,7 +60,7 @@ const MembershipForm = ({ navigation }) => {
     const [should3, setShould3] = useState('')
     const [planlist, setPlanList] = useState([])
     const [consultlist, setConsultancyList] = useState([])
-    const [select, setSelect] = useState()
+    const [select, setSelect] = useState(null)
     const [type1, setType1] = useState(false)
     const [date1, setDate1] = useState('')
     const [pdate1, setPDate1] = useState('')
@@ -192,7 +192,15 @@ const MembershipForm = ({ navigation }) => {
                 console.log('error', error);
             });
     }
-    const addmembership = (item) => {
+
+    const addmembership = () => {
+
+        if (select == null) {
+            Toast.show('Please Select Any One Package')
+            return
+        }
+        const item = planlist[select];
+
         let jj = selected.map(i => {
             return i.value;
         });
@@ -1151,11 +1159,11 @@ const MembershipForm = ({ navigation }) => {
                                     bottom: 10,
                                     marginTop: 15,
                                 }} onPress={() => {
-                                    if (item.is_free == 1) {           // free
-                                        addmembership(item)
-                                    } else {
-
-                                    }
+                                    // if (item.is_free == 1) {           // free
+                                    //     addmembership(item)
+                                    // } else {
+                                    //     addmembership(item)
+                                    // }
                                     setSelect(index)
 
                                 }}>
@@ -1570,7 +1578,8 @@ const MembershipForm = ({ navigation }) => {
                         }}
 
                         onPress={() => {
-                            navigation.navigate('Payment')
+                            // navigation.navigate('Payment')
+                            addmembership()
                         }}>
                         {_kundali.paynow}
                     </Button>

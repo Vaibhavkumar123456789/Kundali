@@ -7,7 +7,7 @@ import Button from 'react-native-button';
 import Toast from 'react-native-simple-toast';
 import { useIsFocused } from '@react-navigation/native';
 import { RadioButton } from 'react-native-paper';
-import { addwalletapi, walletplan } from '../backend/Api';
+import { GetProfile, addwalletapi, walletplan } from '../backend/Api';
 
 const Wallet = ({ navigation }) => {
   const { _member, _home, _drawer } = stringsoflanguages
@@ -41,7 +41,24 @@ const Wallet = ({ navigation }) => {
   useEffect(() => {
     planadd()
     handlePress()
+    profile()
   }, [isFocused == true])
+
+  const profile = () => {
+    GetProfile()
+      .then(data => {
+        // alert(JSON.stringify(data, null, 2))
+        if (data.status) {
+          setWalletBalance(data?.user_profile?.wallet)
+        } else {
+          alert(data?.msg);
+        }
+      })
+      .catch(error => {
+
+        console.log('error', error);
+      });
+  }
 
   const planadd = () => {
     walletplan()
@@ -90,6 +107,7 @@ const Wallet = ({ navigation }) => {
           console.log('add walet amount ...', data)
           // alert(JSON.stringify(data, null, 2))
           if (data.status) {
+            profile()
             Toast.show(data?.msg);
             navigation.goBack()
           } else {
@@ -136,7 +154,6 @@ const Wallet = ({ navigation }) => {
           }}>
             AVAILABLE BALANCE
           </Text>
-
           <Text style={{
             color: 'black',
             fontSize: 25,
@@ -145,6 +162,7 @@ const Wallet = ({ navigation }) => {
           }}>
             ₹ {`${parseFloat(walletBalance).toFixed(2)}`}
           </Text>
+
         </View>
 
         <Text style={{

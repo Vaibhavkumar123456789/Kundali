@@ -1,18 +1,21 @@
 import { View, Text, Image, StyleSheet, Dimensions, FlatList, TextInput, StatusBar, SafeAreaView, ImageBackground, Pressable, ScrollView, TouchableOpacity, } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import CustomHeader from '../Custom/CustomHeader';
+import { useIsFocused } from '@react-navigation/native';
 import stringsoflanguages from '../language/Language'
 import { TabView, TabBar, SceneMap } from 'react-native-tab-view';
-import { productdatalist } from '../backend/Api';
+import { GetProfile, productdatalist } from '../backend/Api';
 import FastImage from 'react-native-fast-image'
 import Loader from '../utils/Loader';
 
 const Astromart = ({ navigation }) => {
   const { _member, _home, _productlist } = stringsoflanguages
+  const isFocused = useIsFocused();
   const window = Dimensions.get('window');
   const { width, height } = Dimensions.get('window');
   const [index, setIndex] = useState(0);
   const [routes, setRoutes] = useState([]);
+  const [walletBalance, setWalletBalance] = useState(0);
   const [data, setData] = useState({});
   const [state, setState] = useState({
     loading: false,
@@ -23,7 +26,24 @@ const Astromart = ({ navigation }) => {
 
   useEffect(() => {
     banner()
-  }, [])
+    profile()
+  }, [isFocused == true])
+
+  const profile = () => {
+    GetProfile()
+      .then(data => {
+        // alert(JSON.stringify(data, null, 2))
+        if (data.status) {
+          setWalletBalance(data?.user_profile?.wallet)
+        } else {
+          alert(data?.msg);
+        }
+      })
+      .catch(error => {
+
+        console.log('error', error);
+      });
+  }
 
   const banner = () => {
     toggleLoading(true)
@@ -180,7 +200,7 @@ const Astromart = ({ navigation }) => {
                 marginLeft: 10,
                 letterSpacing: -0.22,
               }}>
-              ₹10,000
+              ₹{walletBalance}
             </Text>
           </TouchableOpacity>
 

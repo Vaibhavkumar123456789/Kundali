@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, Image, TouchableOpacity, StyleSheet, Alert, SafeAreaView, StatusBar, Pressable, ScrollView } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
-import { addtocardapi, getcartapi } from '../backend/Api';
+import { GetProfile, addtocardapi, getcartapi } from '../backend/Api';
 import Button from 'react-native-button';
 import Loader from '../utils/Loader';
 
@@ -15,6 +15,7 @@ const Cart = ({ navigation }) => {
   const [subtotal, setSubtotal] = useState(0);
   const [total, setTotal] = useState(0);
   const [cart, setCart] = useState([])
+  const [walletBalance, setWalletBalance] = useState(0);
   const [state, setState] = useState({
     loading: false,
   });
@@ -23,7 +24,24 @@ const Cart = ({ navigation }) => {
 
   useEffect(() => {
     productlistapi()
+    profile()
   }, [isFocused == true])
+
+  const profile = () => {
+    GetProfile()
+      .then(data => {
+        // alert(JSON.stringify(data, null, 2))
+        if (data.status) {
+          setWalletBalance(data?.user_profile?.wallet)
+        } else {
+          alert(data?.msg);
+        }
+      })
+      .catch(error => {
+
+        console.log('error', error);
+      });
+  }
 
   const productlistapi = () => {
     toggleLoading(true);
@@ -325,7 +343,7 @@ const Cart = ({ navigation }) => {
                 marginLeft: 10,
                 letterSpacing: -0.22,
               }}>
-              ₹10,000
+              ₹{walletBalance}
             </Text>
           </TouchableOpacity>
 

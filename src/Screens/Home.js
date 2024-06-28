@@ -178,7 +178,6 @@ const Home = ({ navigation }) => {
 
                     <Pressable onPress={() => {
                         navigation.navigate('Wallet')
-                        // navigation.navigate('SelectAddress')
                     }} style={{
                         flexDirection: 'row', borderColor: '#333333', borderWidth: 1,
                         paddingHorizontal: 5, paddingVertical: 5, borderRadius: 4,
@@ -192,16 +191,18 @@ const Home = ({ navigation }) => {
                                 resizeMode: 'contain',
                             }}
                         />
-                        <Text numberOfLines={1}
-                            style={{
-                                fontSize: 12,
-                                color: '#333333',
-                                fontFamily: 'AvenirLTStd-Heavy',
-                                marginLeft: 10,
-                                letterSpacing: -0.22,
-                            }}>
-                            ₹10,000
-                        </Text>
+                        {(astro &&
+                            <Text numberOfLines={1}
+                                style={{
+                                    fontSize: 12,
+                                    color: '#333333',
+                                    fontFamily: 'AvenirLTStd-Heavy',
+                                    marginLeft: 10,
+                                    letterSpacing: -0.22,
+                                }}>
+                                ₹{astro?.data?.wallet}
+                            </Text>
+                        )}
                     </Pressable>
 
                     <TouchableOpacity activeOpacity={0.9}
