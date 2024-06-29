@@ -206,7 +206,7 @@ const Astromart = ({ navigation }) => {
 
           <TouchableOpacity activeOpacity={0.9}
             style={{ paddingVertical: 6 }}
-            onPress={() => { navigation.navigate('') }}>
+            onPress={() => { navigation.navigate('Cart') }}>
             <Image
               source={require('../assets/cart.png')}
               style={{

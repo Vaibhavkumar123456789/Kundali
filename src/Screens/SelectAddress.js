@@ -98,6 +98,7 @@ const SelectAddress = ({ navigation }) => {
                     renderItem={({ item, index }) => (
                         <Pressable onPress={() => {
                             setChecked(index)
+                            navigation.navigate('PlaceOrder', item)
                         }}>
 
                             <View style={{

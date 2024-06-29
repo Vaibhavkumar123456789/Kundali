@@ -32,6 +32,7 @@ import { validateEmail } from '../utils/utils';
 import { consultancylist, updatememberlist } from '../backend/Api';
 const UpdateMember = ({ navigation, route }) => {
     // alert(JSON.stringify(route.params, null, 2))
+    console.log(JSON.stringify(route.params?.maindetailuser?.consultancy_for, null, 2))
     const { _kundali, _customlang } = stringsoflanguages
     const window = Dimensions.get('window');
     const isFocused = useIsFocused();
@@ -79,7 +80,6 @@ const UpdateMember = ({ navigation, route }) => {
     useEffect(() => {
         listconsultancy()
     }, [isFocused == true])
-
 
     const proficiencies = [
         { label: 'Male', value: 'Male' },
@@ -200,13 +200,13 @@ const UpdateMember = ({ navigation, route }) => {
             "marital_status": checked1 === 0 ? "Married" : checked1 === 1 ? "Unmarried" : "Divorce",
             "no_of_childern": noofchildren,
             "child_detail": languages,
-            "occupation": checked2 === 0 ? "Business" : checked === 1 ? "Service" : null,
+            "occupation": checked2 === 0 ? "Business" : checked2 === 1 ? "Service" : null,
             "filled_of_business": filedbusiness,
-            "service_type": checked3 === 0 ? "Private" : checked === 1 ? "Government" : null,
-            "consultancy_for": jj[0] == undefined || null ? selected : jj.join('|'),
+            "service_type": checked3 === 0 ? "Private" : checked3 === 1 ? "Government" : null,
+            "consultancy_for": jj[0] == undefined || null ? selected.join('|') : jj.join('|'),
             "others": other,
         };
-
+        //  alert(JSON.stringify(e,null,2))
         toggleLoading(true);
         updatememberlist(e)
             .then(data => {

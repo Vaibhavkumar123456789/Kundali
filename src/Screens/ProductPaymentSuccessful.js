@@ -86,7 +86,10 @@ const ProductPaymentSuccessful = ({ navigation, route }) => {
                     fontFamily: 'AvenirLTStd-Medium',
                 }}
                 onPress={() => {
-                    navigation.navigate('TabNavigator')
+                    navigation.reset({
+                        index: 0,
+                        routes: [{ name: 'DrawerNavigator' }],
+                    });
                 }}>
                 {_astrologerForm.gotohomepage}
             </Button>
