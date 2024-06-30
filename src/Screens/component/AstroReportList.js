@@ -26,6 +26,7 @@ function AstroReportList({ data, astro }) {
         }
     }, [data]);
 
+
     const calculateTaxDetails = (listed) => {
         // alert(JSON.stringify(item, null, 2))
         // return
