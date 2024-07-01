@@ -116,6 +116,13 @@ function AstroReportList({ data, astro }) {
 
                                                     color: '#33333380',
                                                 },
+                                                a: {
+                                                    fontSize: 13,
+                                                    fontFamily: 'AvenirLTStd-Medium',
+                                                    lineHeight: 20,
+
+                                                    color: '#33333380',
+                                                },
                                             }}
                                         />
 

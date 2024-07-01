@@ -540,8 +540,11 @@ const ProductDetail = ({ navigation, route }) => {
   const handleQualityChange = (item, search) => {
 
     setShould1(item);
+    toggleLoading(true);
+
     getcartapi()
       .then(data => {
+        toggleLoading(false);
         // alert(JSON.stringify(data, null, 2))
         if (data.status) {
           const cartItems = data.carts || [];
@@ -559,6 +562,7 @@ const ProductDetail = ({ navigation, route }) => {
         }
       })
       .catch(error => {
+        toggleLoading(false);
         console.log('error', error);
       });
 

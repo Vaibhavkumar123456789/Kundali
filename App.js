@@ -5,6 +5,7 @@ import StackNavigator from './src/Navigator/StackNavigator';
 import store from './src/redux/store';
 import NetInfo, { useNetInfo } from "@react-native-community/netinfo";
 import { Provider } from 'react-redux';
+import Orientation from 'react-native-orientation-locker';
 LogBox.ignoreAllLogs();
 
 const App = () => {
@@ -21,6 +22,10 @@ const App = () => {
     unsubscribe()
     requestCameraPermission()
 
+    Orientation.lockToPortrait();    // Lock to portrait
+    return () => {
+      Orientation.unlockAllOrientations(); // Unlock when unmounting
+    };
   }, [])
 
   const requestCameraPermission = async () => {
