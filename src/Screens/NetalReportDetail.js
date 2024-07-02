@@ -23,7 +23,7 @@ const NetalReportDetail = ({ navigation, route }) => {
     // alert(JSON.stringify(route.params, null, 2))
     const window = Dimensions.get('window');
     const { width, height } = Dimensions.get('window');
-    const { _member, _invoice, _kundali, _setting, _customlang } = stringsoflanguages
+    const { _member, _invoice, _kundali, _setting, _customlang, _order } = stringsoflanguages
 
 
     return (
@@ -35,7 +35,6 @@ const NetalReportDetail = ({ navigation, route }) => {
                 title={_setting.reportdetail}
             />
             <ScrollView>
-
 
                 <View style={styles.ex_view}>
                     <View style={styles.ex_proView}>
@@ -120,7 +119,7 @@ const NetalReportDetail = ({ navigation, route }) => {
                             marginHorizontal: 10,
                             textAlign: 'center',
                         }}>
-                        View Report
+                        {_order.viewreport}
                     </Text>
                 </Pressable>
 

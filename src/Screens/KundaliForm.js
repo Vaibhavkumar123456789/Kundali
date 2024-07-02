@@ -35,7 +35,7 @@ import { BASE_URL_EXTERNAL } from '../backend/Config';
 const KundaliForm = ({ navigation }) => {
     const window = Dimensions.get('window');
     const { width, height } = Dimensions.get('window');
-    const { _customlang, _kundali } = stringsoflanguages
+    const { _customlang, _kundali, _product } = stringsoflanguages
     const isFocused = useIsFocused();
     const [toggleCheckBox, setToggleCheckBox] = useState(false)
     const [checked, setChecked] = React.useState(false);
@@ -281,7 +281,7 @@ const KundaliForm = ({ navigation }) => {
                         marginTop: 19,
                         marginHorizontal: 18,
                     }}>
-                    Kundli Type
+                    {_product.kundli}
                 </Text>
                 <Dropdown
                     style={{
@@ -301,11 +301,11 @@ const KundaliForm = ({ navigation }) => {
                     }
                     maxHeight={200}
                     search
-                    searchPlaceholder={'Kundli Type'}
+                    searchPlaceholder={_product.kundli}
                     inputSearchStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333' }}
                     labelField="label"
                     valueField="value"
-                    placeholder={'Kundli Type'}
+                    placeholder={_product.kundli}
                     value={should2}
                     onChange={(item) => { setShould2(item), setTex(item), taxdetail(item) }}
                 />

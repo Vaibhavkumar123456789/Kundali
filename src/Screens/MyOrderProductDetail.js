@@ -9,7 +9,7 @@ import moment from 'moment';
 
 const MyOrderProductDetail = ({ navigation, route }) => {
     // alert(JSON.stringify(route.params, null, 2))
-    const { _member, _home } = stringsoflanguages
+    const { _member, _home, _order } = stringsoflanguages
     const window = Dimensions.get('window');
     const isFocused = useIsFocused();
     const { width, height } = Dimensions.get('window');
@@ -60,220 +60,97 @@ const MyOrderProductDetail = ({ navigation, route }) => {
             />
 
             {state.loading && <Loader />}
-
-            <FlatList
-                data={orderdetail}
-                style={{ marginTop: 10, flexGrow: 0 }}
-                renderItem={({ item, index }) => (
-                    <View style={{
-                        marginHorizontal: 18,
-                        paddingVertical: 10,
-                        backgroundColor: 'white',
-                        elevation: 5,
-                        bottom: 8,
-                        marginTop: 10,
-                        borderRadius: 10,
-                    }}>
-                        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                            <Text
-                                style={{
-                                    fontSize: 16,
-                                    fontFamily: 'AvenirLTStd-Heavy',
-                                    color: '#333333',
-                                    marginLeft: 10,
-                                }}>
-                                Order #{item?.order_id}
-                            </Text>
-                            <Text
-                                style={{
-                                    fontSize: 12,
-                                    fontFamily: 'AvenirLTStd-Medium',
-                                    color: '#33333360',
-                                    marginRight: 10,
-                                    marginTop: 2,
-                                }}>
-                                {`${moment(item?.created_at).format('YYYY-MM-DD-hh:mm a')}`}
-                            </Text>
-                        </View>
-
-                        <View style={{ flexDirection: 'row', marginHorizontal: 10, marginTop: 10, }}>
-                            <Image style={{ width: 80, height: 80, borderRadius: 5, resizeMode: 'contain' }}
-                                source={{ uri: item?.image }} />
-                            <View>
-                                <Text numberOfLines={2}
+            <ScrollView>
+                <FlatList
+                    data={orderdetail}
+                    style={{ marginTop: 10, flexGrow: 0 }}
+                    renderItem={({ item, index }) => (
+                        <View style={{
+                            marginHorizontal: 18,
+                            paddingVertical: 10,
+                            backgroundColor: 'white',
+                            elevation: 5,
+                            bottom: 8,
+                            marginTop: 10,
+                            borderRadius: 10,
+                        }}>
+                            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                                <Text
                                     style={{
-                                        fontSize: 13,
+                                        fontSize: 16,
                                         fontFamily: 'AvenirLTStd-Heavy',
                                         color: '#333333',
                                         marginLeft: 10,
-                                        width: window.width - 150,
                                     }}>
-                                    {item?.product_name}
+                                    {_order.orderid} #{item?.order_id}
                                 </Text>
                                 <Text
                                     style={{
                                         fontSize: 12,
-                                        fontFamily: 'AvenirLTStd-Heavy',
+                                        fontFamily: 'AvenirLTStd-Medium',
                                         color: '#33333360',
-                                        marginLeft: 10,
-                                        marginTop: 5,
+                                        marginRight: 10,
+                                        marginTop: 2,
                                     }}>
-                                    Quantity :{item?.qty}
+                                    {`${moment(item?.created_at).format('YYYY-MM-DD-hh:mm a')}`}
                                 </Text>
-                                <View style={{ flexDirection: 'row' }}>
-                                    <Text
+                            </View>
+
+                            <View style={{ flexDirection: 'row', marginHorizontal: 10, marginTop: 10, }}>
+                                <Image style={{ width: 80, height: 80, borderRadius: 5, resizeMode: 'contain' }}
+                                    source={{ uri: item?.image }} />
+                                <View>
+                                    <Text numberOfLines={2}
                                         style={{
-                                            fontSize: 10,
+                                            fontSize: 13,
                                             fontFamily: 'AvenirLTStd-Heavy',
-                                            color: '#33333360',
+                                            color: '#333333',
                                             marginLeft: 10,
-                                            marginTop: 5,
+                                            width: window.width - 150,
                                         }}>
-                                        MRP:
+                                        {item?.product_name}
                                     </Text>
                                     <Text
                                         style={{
                                             fontSize: 12,
                                             fontFamily: 'AvenirLTStd-Heavy',
-                                            color: '#FFCC80',
-                                            marginLeft: 5,
+                                            color: '#33333360',
+                                            marginLeft: 10,
                                             marginTop: 5,
-                                            width: window.width - 150,
                                         }}>
-                                        ₹{item?.total_price}
+                                        {_order.quantity} :{item?.qty}
                                     </Text>
+                                    <View style={{ flexDirection: 'row' }}>
+                                        <Text
+                                            style={{
+                                                fontSize: 10,
+                                                fontFamily: 'AvenirLTStd-Heavy',
+                                                color: '#33333360',
+                                                marginLeft: 10,
+                                                marginTop: 5,
+                                            }}>
+                                            {_order.mrp}:
+                                        </Text>
+                                        <Text
+                                            style={{
+                                                fontSize: 12,
+                                                fontFamily: 'AvenirLTStd-Heavy',
+                                                color: '#FFCC80',
+                                                marginLeft: 5,
+                                                marginTop: 5,
+                                                width: window.width - 150,
+                                            }}>
+                                            ₹{item?.total_price}
+                                        </Text>
+                                    </View>
                                 </View>
                             </View>
+
+
                         </View>
+                    )}
+                />
 
-
-                    </View>
-                )}
-            />
-
-            <View style={{
-                paddingVertical: 15,
-                backgroundColor: '#FFFFFF',
-                marginTop: 15,
-                marginHorizontal: 18,
-                borderRadius: 10,
-                elevation: 5,
-                bottom: 8,
-            }}>
-                <Text style={{
-                    marginHorizontal: 10,
-                    color: '#333333',
-                    fontFamily: 'AvenirLTStd-Heavy',
-                    fontSize: 14,
-                    textTransform: 'uppercase'
-                }}>
-                    PAYMENT DETAILS
-                </Text>
-                <View style={{
-                    flexDirection: 'row', justifyContent: 'space-between', marginTop: 15,
-                }}>
-                    <Text style={{
-                        marginLeft: 10,
-                        color: '#333333',
-                        fontSize: 14,
-                        fontFamily: 'AvenirLTStd-Roman',
-                    }}>
-                        Subtotal
-                    </Text>
-                    <Text style={{
-                        marginRight: 10,
-                        color: '#333333',
-                        fontSize: 14,
-                        fontFamily: 'AvenirLTStd-Heavy',
-                    }}>
-                        ₹{route.params?.total_mrp}
-                    </Text>
-                </View>
-                <View style={{
-                    flexDirection: 'row', justifyContent: 'space-between', marginTop: 15,
-                }}>
-                    <Text style={{
-                        marginLeft: 10,
-                        color: '#333333',
-                        fontSize: 14,
-                        fontFamily: 'AvenirLTStd-Roman',
-                    }}>
-                        Delivery Charge
-                    </Text>
-                    <Text style={{
-                        marginRight: 10,
-                        color: '#333333',
-                        fontSize: 14,
-                        fontFamily: 'AvenirLTStd-Heavy',
-                    }}>
-                        ₹{route.params?.delivery_price}
-                    </Text>
-                </View>
-
-                <View style={{
-                    flexDirection: 'row', justifyContent: 'space-between', marginTop: 10,
-                }}>
-                    <Text style={{
-                        marginLeft: 10,
-                        color: '#333333',
-                        fontSize: 14,
-                        fontFamily: 'AvenirLTStd-Roman',
-                    }}>
-                        Discount
-                    </Text>
-                    <Text style={{
-                        marginRight: 10,
-                        color: '#333333',
-                        fontSize: 14,
-                        fontFamily: 'AvenirLTStd-Heavy',
-                    }}>
-                        ₹{route.params?.coupon_discount}
-                    </Text>
-                </View>
-                <View style={{
-                    flexDirection: 'row', justifyContent: 'space-between', marginTop: 10,
-                }}>
-                    <Text style={{
-                        marginLeft: 10,
-                        color: '#333333',
-                        fontSize: 14,
-                        fontFamily: 'AvenirLTStd-Roman',
-                    }}>
-                        Tax
-                    </Text>
-                    <Text style={{
-                        marginRight: 10,
-                        color: '#333333',
-                        fontSize: 14,
-                        fontFamily: 'AvenirLTStd-Heavy',
-                    }}>
-                        ₹{route.params?.tax_amt}
-                    </Text>
-                </View>
-
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 15, backgroundColor: '#FFC62925', bottom: -15, borderBottomLeftRadius: 6, borderBottomRightRadius: 6 }}>
-                    <Text style={{
-                        marginLeft: 10,
-                        color: '#333333',
-                        fontSize: 12,
-                        letterSpacing: 0.2,
-                        fontFamily: 'AvenirLTStd-Heavy',
-                    }}>
-                        TOTAL AMOUNT
-                    </Text>
-                    <Text style={{
-                        marginRight: 10,
-                        color: '#333333',
-                        fontSize: 14,
-                        letterSpacing: 0.2,
-                        fontFamily: 'AvenirLTStd-Heavy',
-                    }}>
-                        ₹{route.params?.net_amount}
-                    </Text>
-                </View>
-            </View>
-
-            {(address &&
                 <View style={{
                     paddingVertical: 15,
                     backgroundColor: '#FFFFFF',
@@ -290,45 +167,168 @@ const MyOrderProductDetail = ({ navigation, route }) => {
                         fontSize: 14,
                         textTransform: 'uppercase'
                     }}>
-                        Shipping Address:
+                        {_order.payment}
                     </Text>
+                    <View style={{
+                        flexDirection: 'row', justifyContent: 'space-between', marginTop: 15,
+                    }}>
+                        <Text style={{
+                            marginLeft: 10,
+                            color: '#333333',
+                            fontSize: 14,
+                            fontFamily: 'AvenirLTStd-Roman',
+                        }}>
+                            {_order.subtotal}
+                        </Text>
+                        <Text style={{
+                            marginRight: 10,
+                            color: '#333333',
+                            fontSize: 14,
+                            fontFamily: 'AvenirLTStd-Heavy',
+                        }}>
+                            ₹{route.params?.total_mrp}
+                        </Text>
+                    </View>
+                    <View style={{
+                        flexDirection: 'row', justifyContent: 'space-between', marginTop: 15,
+                    }}>
+                        <Text style={{
+                            marginLeft: 10,
+                            color: '#333333',
+                            fontSize: 14,
+                            fontFamily: 'AvenirLTStd-Roman',
+                        }}>
+                            {_order.delivery}
+                        </Text>
+                        <Text style={{
+                            marginRight: 10,
+                            color: '#333333',
+                            fontSize: 14,
+                            fontFamily: 'AvenirLTStd-Heavy',
+                        }}>
+                            ₹{route.params?.delivery_price}
+                        </Text>
+                    </View>
 
-                    <Text style={{
-                        marginHorizontal: 10,
-                        color: '#33333390',
-                        fontSize: 13,
-                        marginTop:2,
-                        letterSpacing: 0.18,
-                        lineHeight: 20,
-                        fontFamily: 'AvenirLTStd-Roman',
+                    <View style={{
+                        flexDirection: 'row', justifyContent: 'space-between', marginTop: 10,
                     }}>
-                        {address?.address},{address?.city},{address?.state},{address?.country}-{address?.pincode}
-                    </Text>
-                    <Text style={{
-                        marginHorizontal: 10,
-                        color: '#33333390',
-                        fontSize: 13,
-                        marginTop: 2,
-                        letterSpacing: 0.18,
-                        lineHeight: 20,
-                        fontFamily: 'AvenirLTStd-Roman',
+                        <Text style={{
+                            marginLeft: 10,
+                            color: '#333333',
+                            fontSize: 14,
+                            fontFamily: 'AvenirLTStd-Roman',
+                        }}>
+                            {_order.discount}
+                        </Text>
+                        <Text style={{
+                            marginRight: 10,
+                            color: '#333333',
+                            fontSize: 14,
+                            fontFamily: 'AvenirLTStd-Heavy',
+                        }}>
+                            ₹{route.params?.coupon_discount}
+                        </Text>
+                    </View>
+                    <View style={{
+                        flexDirection: 'row', justifyContent: 'space-between', marginTop: 10,
                     }}>
-                        {address?.state},{address?.country}-{address?.pincode}
-                    </Text>
-                    <Text style={{
-                        marginHorizontal: 10,
-                        color: '#33333390',
-                        fontSize: 13,
-                        marginTop: 2,
-                        letterSpacing: 0.18,
-                        lineHeight: 20,
-                        fontFamily: 'AvenirLTStd-Roman',
-                    }}>
-                        Mobile No: {address?.mobile}
-                    </Text>
+                        <Text style={{
+                            marginLeft: 10,
+                            color: '#333333',
+                            fontSize: 14,
+                            fontFamily: 'AvenirLTStd-Roman',
+                        }}>
+                            {_order.tax}
+                        </Text>
+                        <Text style={{
+                            marginRight: 10,
+                            color: '#333333',
+                            fontSize: 14,
+                            fontFamily: 'AvenirLTStd-Heavy',
+                        }}>
+                            ₹{route.params?.tax_amt}
+                        </Text>
+                    </View>
+
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 15, backgroundColor: '#FFC62925', bottom: -15, borderBottomLeftRadius: 6, borderBottomRightRadius: 6 }}>
+                        <Text style={{
+                            marginLeft: 10,
+                            color: '#333333',
+                            fontSize: 12,
+                            letterSpacing: 0.2,
+                            fontFamily: 'AvenirLTStd-Heavy',
+                        }}>
+                            {_order.totalamount}
+                        </Text>
+                        <Text style={{
+                            marginRight: 10,
+                            color: '#333333',
+                            fontSize: 14,
+                            letterSpacing: 0.2,
+                            fontFamily: 'AvenirLTStd-Heavy',
+                        }}>
+                            ₹{route.params?.net_amount}
+                        </Text>
+                    </View>
                 </View>
-            )}
 
+                {(address &&
+                    <View style={{
+                        paddingVertical: 15,
+                        backgroundColor: '#FFFFFF',
+                        marginTop: 15,
+                        marginHorizontal: 18,
+                        borderRadius: 10,
+                        elevation: 5,
+                        bottom: 8,
+                    }}>
+                        <Text style={{
+                            marginHorizontal: 10,
+                            color: '#333333',
+                            fontFamily: 'AvenirLTStd-Heavy',
+                            fontSize: 14,
+                            textTransform: 'uppercase'
+                        }}>
+                            {_order.shipping}:
+                        </Text>
+
+                        <Text style={{
+                            marginHorizontal: 10,
+                            color: '#33333390',
+                            fontSize: 13,
+                            marginTop: 2,
+                            letterSpacing: 0.18,
+                            lineHeight: 20,
+                            fontFamily: 'AvenirLTStd-Roman',
+                        }}>
+                            {address?.address},{address?.city},{address?.state},{address?.country}-{address?.pincode}
+                        </Text>
+                        <Text style={{
+                            marginHorizontal: 10,
+                            color: '#33333390',
+                            fontSize: 13,
+                            marginTop: 2,
+                            letterSpacing: 0.18,
+                            lineHeight: 20,
+                            fontFamily: 'AvenirLTStd-Roman',
+                        }}>
+                            {address?.state},{address?.country}-{address?.pincode}
+                        </Text>
+                        <Text style={{
+                            marginHorizontal: 10,
+                            color: '#33333390',
+                            fontSize: 13,
+                            marginTop: 2,
+                            letterSpacing: 0.18,
+                            lineHeight: 20,
+                            fontFamily: 'AvenirLTStd-Roman',
+                        }}>
+                            Mobile No: {address?.mobile}
+                        </Text>
+                    </View>
+                )}
+            </ScrollView>
         </SafeAreaView>
     )
 }

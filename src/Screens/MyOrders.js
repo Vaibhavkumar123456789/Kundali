@@ -10,7 +10,7 @@ import { Kundlireporthistory, getorderhistory } from '../backend/Api';
 import moment from 'moment';
 
 const MyOrders = ({ navigation }) => {
-    const { _member, _home } = stringsoflanguages
+    const { _member, _home, _order } = stringsoflanguages
     const window = Dimensions.get('window');
     const isFocused = useIsFocused();
     const { width, height } = Dimensions.get('window');
@@ -96,7 +96,7 @@ const MyOrders = ({ navigation }) => {
                                                     </Text>
                                                 </View>
                                                 <View style={{ flexDirection: 'row', alignSelf: 'flex-end', marginRight: 12, marginTop: 20 }}>
-                                                    <Text style={{ color: '#FFCC80', textDecorationLine: 'underline', }} onPress={() => navigation.navigate('NetalReportDetail', item)}>View</Text>
+                                                    <Text style={{ color: '#FFCC80', textDecorationLine: 'underline', }} onPress={() => navigation.navigate('NetalReportDetail', item)}>{_order.view}</Text>
                                                 </View>
                                             </View>
                                             <View style={styles.dt_view_1}>
@@ -116,7 +116,7 @@ const MyOrders = ({ navigation }) => {
                                             <View style={styles.dt_view_2}>
                                                 <View style={styles.dt_viewOpt}>
                                                     <Text numberOfLines={1} style={styles.dt_viewOptText}>
-                                                        Amount : ₹ {item?.total_mrp}/-
+                                                        {_order.amount} : ₹ {item?.total_mrp}/-
                                                     </Text>
                                                 </View>
 
@@ -156,7 +156,7 @@ const MyOrders = ({ navigation }) => {
                                                         color: '#333333',
                                                         marginLeft: 10,
                                                     }}>
-                                                    Order #{item?.id}
+                                                    {_order.orderid} #{item?.id}
                                                 </Text>
                                                 <Text
                                                     style={{
@@ -176,7 +176,7 @@ const MyOrders = ({ navigation }) => {
                                                 renderItem={({ item, index }) => (
                                                     <View style={{ flexDirection: 'row', marginHorizontal: 10, paddingVertical: 10, borderStyle: 'dashed', borderBottomColor: '#33333360', borderBottomWidth: 1 }}>
                                                         <Image style={{ width: 80, height: 80, borderRadius: 5, resizeMode: 'contain' }}
-                                                            source={{uri:item?.image}} />
+                                                            source={{ uri: item?.image }} />
                                                         <View>
                                                             <Text numberOfLines={2}
                                                                 style={{
@@ -196,7 +196,7 @@ const MyOrders = ({ navigation }) => {
                                                                     marginLeft: 10,
                                                                     marginTop: 5,
                                                                 }}>
-                                                                Quantity :{item?.qty}
+                                                                {_order.quantity} :{item?.qty}
                                                             </Text>
                                                             <View style={{ flexDirection: 'row' }}>
                                                                 <Text
@@ -207,7 +207,7 @@ const MyOrders = ({ navigation }) => {
                                                                         marginLeft: 10,
                                                                         marginTop: 5,
                                                                     }}>
-                                                                    MRP:
+                                                                    {_order.mrp}:
                                                                 </Text>
                                                                 <Text
                                                                     style={{
@@ -234,7 +234,7 @@ const MyOrders = ({ navigation }) => {
                                                         marginLeft: 10,
                                                         marginTop: 5,
                                                     }}>
-                                                    Total:
+                                                    {_order.totalorder}:
                                                 </Text>
                                                 <Text
                                                     style={{
@@ -269,7 +269,7 @@ const MyOrders = ({ navigation }) => {
         <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
             <StatusBar barStyle="dark-content" backgroundColor="#FFCC80" />
             <CustomHeader
-                title={_home.myOrder}
+                title={_order.order}
 
                 menuOption={() => navigation.goBack()}
                 leftIcon={require('../assets/backtoback.png')}
@@ -313,7 +313,7 @@ const MyOrders = ({ navigation }) => {
                         <View style={styles.mdtop}>
                             <TouchableOpacity activeOpacity={0.9} onPress={() => { setChecked('all'); banner('all'); setModalOpen(false); }}>
                                 <View style={{ flexDirection: 'row' }}>
-                                    <Text style={styles.modalText}>All</Text>
+                                    <Text style={styles.modalText}>{_order.all}</Text>
                                     <View style={{ marginLeft: 'auto', marginHorizontal: 10 }}>
                                         <RadioButton
                                             value="all"
@@ -327,7 +327,7 @@ const MyOrders = ({ navigation }) => {
                             </TouchableOpacity>
                             <TouchableOpacity activeOpacity={0.9} onPress={() => { setChecked('lastweek'); banner('lastweek'); setModalOpen(false); }}>
                                 <View style={{ flexDirection: 'row' }}>
-                                    <Text style={styles.modalText}>Weekly</Text>
+                                    <Text style={styles.modalText}>{_order.weekly}</Text>
                                     <View style={{ marginLeft: 'auto', marginHorizontal: 10 }}>
                                         <RadioButton
                                             value="lastweek"
@@ -341,7 +341,7 @@ const MyOrders = ({ navigation }) => {
                             </TouchableOpacity>
                             <TouchableOpacity activeOpacity={0.9} onPress={() => { setChecked('lastmonth'); banner('lastmonth'); setModalOpen(false); }}>
                                 <View style={{ flexDirection: 'row' }}>
-                                    <Text style={styles.modalText}>Monthly</Text>
+                                    <Text style={styles.modalText}>{_order.monthly}</Text>
                                     <View style={{ marginLeft: 'auto', marginHorizontal: 10 }}>
                                         <RadioButton
                                             value="lastmonth"

@@ -10,7 +10,7 @@ import { RadioButton } from 'react-native-paper';
 import { GetProfile, addwalletapi, walletplan } from '../backend/Api';
 
 const Wallet = ({ navigation }) => {
-  const { _member, _home, _drawer } = stringsoflanguages
+  const { _member, _home, _drawer, _order } = stringsoflanguages
   const window = Dimensions.get('window');
   const isFocused = useIsFocused();
   const { width, height } = Dimensions.get('window');
@@ -152,7 +152,7 @@ const Wallet = ({ navigation }) => {
             marginTop: 25,
             fontFamily: 'AvenirLTStd-Heavy',
           }}>
-            AVAILABLE BALANCE
+            {_order.balance}
           </Text>
           <Text style={{
             color: 'black',
@@ -172,7 +172,7 @@ const Wallet = ({ navigation }) => {
           marginTop: 10,
           fontFamily: 'AvenirLTStd-Heavy',
         }}>
-          Recharge Wallet
+          {_order.recharge}
         </Text>
 
         <FlatList
@@ -227,7 +227,7 @@ const Wallet = ({ navigation }) => {
               fontSize: 14,
               textTransform: 'uppercase'
             }}>
-              PAYMENT DETAILS
+              {_order.payment}
             </Text>
             <View style={{
               flexDirection: 'row', justifyContent: 'space-between', marginTop: 15,
@@ -239,7 +239,7 @@ const Wallet = ({ navigation }) => {
                 fontSize: 14,
                 fontFamily: 'AvenirLTStd-Roman',
               }}>
-                Amount
+                {_order.amount}
               </Text>
               {(amount &&
                 <Text style={{
@@ -262,7 +262,7 @@ const Wallet = ({ navigation }) => {
                 fontSize: 14,
                 fontFamily: 'AvenirLTStd-Roman',
               }}>
-                18% Gst Charges
+                18% {_order.gst}
               </Text>
               {(gst &&
                 <Text style={{
@@ -287,7 +287,7 @@ const Wallet = ({ navigation }) => {
                 letterSpacing: 0.2,
                 fontFamily: 'AvenirLTStd-Heavy',
               }}>
-                TOTAL AMOUNT
+                {_order.totalamount}
               </Text>
               {(totalamount &&
                 <Text style={{
@@ -327,7 +327,7 @@ const Wallet = ({ navigation }) => {
           recharge()
           // setPopupVisible(true)
         }}>
-        Proceed
+        {_order.proceed}
       </Button>
 
       <Modal
