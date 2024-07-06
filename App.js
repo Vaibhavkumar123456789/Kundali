@@ -10,18 +10,24 @@ LogBox.ignoreAllLogs();
 
 const App = () => {
 
+  const unsubscribe = NetInfo.addEventListener(state => {
+    // alert(state.isConnected)
+    console.log('Connection type', state.type);
+    console.log('Is connected?', state.isConnected);
+    if (state.isConnected == false) {
+      Alert.alert('Kundali', 'Your internet connectivity is low.', [
+        {
+          text: 'Ok',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel',
+        },
+      ]);
+    }
+  });
+
   useEffect(() => {
-    const unsubscribe = NetInfo.addEventListener(state => {
-      console.log("Connection type", state.type);
-      console.log("Is connected?", state.isConnected);
-
-      if (state.isConnected == false) {
-        alert('No Internet Available.Please connect to internet')
-      }
-    });
-    unsubscribe()
     requestCameraPermission()
-
+    unsubscribe()
     Orientation.lockToPortrait();    // Lock to portrait
     return () => {
       Orientation.unlockAllOrientations(); // Unlock when unmounting
@@ -53,7 +59,6 @@ const App = () => {
   };
 
   return (
-
     <Provider store={store}>
       <StackNavigator />
     </Provider>

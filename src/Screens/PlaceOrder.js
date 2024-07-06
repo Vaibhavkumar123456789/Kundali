@@ -41,7 +41,6 @@ const PlaceOrder = ({ navigation, route }) => {
                 }
             })
             .catch(error => {
-
                 console.log('error', error);
             });
     }

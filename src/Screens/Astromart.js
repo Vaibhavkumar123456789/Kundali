@@ -220,7 +220,8 @@ const Astromart = ({ navigation }) => {
         </View>
       </View>
 
-      {routes && routes?.length > 0 && (
+
+      {routes && routes?.length > "0" ?
         <TabView
           navigationState={{ index, routes }}
           renderScene={renderScene}
@@ -239,7 +240,9 @@ const Astromart = ({ navigation }) => {
             />
           )}
         />
-      )}
+        : <View style={{ justifyContent: 'center', alignItems: 'center', flex: 0.7 }}>
+          <Text style={{ textAlign: 'center', color: 'black', fontSize: 15, fontFamily: 'AvenirLTStd-Medium' }}>No Product List</Text>
+        </View>}
       {state.loading && <Loader />}
 
     </SafeAreaView>
