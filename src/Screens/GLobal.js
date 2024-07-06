@@ -13,6 +13,7 @@ module.exports = {
     data: {},
     camera_report_uri: '',
     payment: {},
+    walletpaymentdata: {},
     doctorinc: '',
     getdata: {},
     healer: '0',

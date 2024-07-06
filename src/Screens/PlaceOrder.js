@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, Image, Dimensions, TouchableOpacity, StyleSheet, Alert, SafeAreaView, StatusBar, Pressable, ScrollView } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
-import { addorderapi, addtocardapi, getcartapi } from '../backend/Api';
+import { addorderapi, addtocardapi, getcartapi, GetProfile } from '../backend/Api';
 import stringsoflanguages from '../language/Language'
+import Toast from 'react-native-simple-toast';
 import Button from 'react-native-button';
 import Loader from '../utils/Loader';
 const PlaceOrder = ({ navigation, route }) => {
@@ -17,7 +18,7 @@ const PlaceOrder = ({ navigation, route }) => {
     const [total, setTotal] = useState(0);
     const [cart, setCart] = useState([])
     const [qty, setQty] = useState()
-    const [result, setResult] = useState(null);
+    const [walletBalance, setWalletBalance] = useState(0);
     const { _member, _invoice, _kundali, _setting, _customlang } = stringsoflanguages
     const [state, setState] = useState({
         loading: false,
@@ -26,29 +27,30 @@ const PlaceOrder = ({ navigation, route }) => {
 
     useEffect(() => {
         productlistapi()
-        handlePress()
+        profile()
     }, [isFocused == true])
 
-    const getRandomNumberWithTimestamp = () => {
-        const randomInteger = Math.floor(Math.random() * 1001);
-        const timestamp = Date.now();
-        const combined = `${randomInteger}+${timestamp}`;
-        return combined;
-    };
+    const profile = () => {
+        GetProfile()
+            .then(data => {
+                // alert(JSON.stringify(data?.user_profile?.wallet, null, 2))
+                if (data.status) {
+                    setWalletBalance(data?.user_profile?.wallet)
+                } else {
+                    alert(data?.msg);
+                }
+            })
+            .catch(error => {
 
-    const handlePress = () => {
-        const combined = getRandomNumberWithTimestamp();
-        const [randomInteger, timestamp] = combined.split('+').map(Number);
-        const sum = randomInteger + timestamp;
-        setResult(sum);
-    };
+                console.log('error', error);
+            });
+    }
 
     const productlistapi = () => {
         toggleLoading(true);
         getcartapi()
             .then(data => {
-
-                // alert(JSON.stringify(data, null, 2))
+                // alert(JSON.stringify(data?.total, null, 2))
                 toggleLoading(false);
                 if (data.status) {
                     setQty(data)
@@ -70,38 +72,42 @@ const PlaceOrder = ({ navigation, route }) => {
 
 
     const order = () => {
+        if (walletBalance.toString() <= total) {
+            Toast.show("Please Add Wallet Balance")
+        } else {
 
-        let list = cart.map(item => item.id)
-
-        let e = {
-            "sub_total": subtotal,
-            "tax_amt": totalTaxPrice,
-            "total": total,
-            "delivery_price": deliveryPrice,
-            "discount_amount": couponDiscount,
-            "addressid": route.params?.id,
-            "total_qty": qty?.total_qty,
-            "cart_id": list,
-            "payment_mode": "online",
-            "currency": "inr",
-            "trxn_id": result
-        };
-        toggleLoading(true);
-        addorderapi(e)
-            .then(data => {
-                console.log('add order ...', data)
-                // alert(JSON.stringify(data, null, 2))
-                toggleLoading(false);
-                if (data.status) {
-                    navigation.navigate('ProductPaymentSuccessful', data?.order)
-                } else {
-                    Toast.show(data?.msg);
-                }
-            })
-            .catch(error => {
-                toggleLoading(false);
-                console.log('error', error);
-            });
+            let list = cart.map(item => item.id)
+            var txnid = new Date().getTime().toString();
+            let e = {
+                "sub_total": subtotal,
+                "tax_amt": totalTaxPrice,
+                "total": total,
+                "delivery_price": deliveryPrice,
+                "discount_amount": couponDiscount,
+                "addressid": route.params?.id,
+                "total_qty": qty?.total_qty,
+                "cart_id": list,
+                "payment_mode": "online",
+                "currency": "inr",
+                "trxn_id": txnid,
+            };
+            toggleLoading(true);
+            addorderapi(e)
+                .then(data => {
+                    console.log('add order ...', data)
+                    // alert(JSON.stringify(data, null, 2))
+                    toggleLoading(false);
+                    if (data.status) {
+                        navigation.navigate('ProductPaymentSuccessful', data?.order)
+                    } else {
+                        Toast.show(data?.msg);
+                    }
+                })
+                .catch(error => {
+                    toggleLoading(false);
+                    console.log('error', error);
+                });
+        }
     }
 
     const renderCartItem = ({ item, index }) => {
@@ -222,7 +228,7 @@ const PlaceOrder = ({ navigation, route }) => {
             </View>
             {state.loading && <Loader />}
             <>
-                <ScrollView>
+                <ScrollView style={{ marginBottom: 70 }}>
                     <View style={styles.container}>
                         <FlatList
                             data={cart}

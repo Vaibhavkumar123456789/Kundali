@@ -353,7 +353,7 @@ const Cart = ({ navigation }) => {
       {state.loading && <Loader />}
       {cart && cart?.length > "0" ?
         <>
-          <ScrollView >
+          <ScrollView style={{ marginBottom: 70 }}>
             <View style={styles.container}>
               <FlatList
                 data={cart}

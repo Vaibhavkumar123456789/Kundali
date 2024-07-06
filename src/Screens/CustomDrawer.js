@@ -19,6 +19,10 @@ const CustomDrawer = ({ navigation }) => {
             icon: require('../assets/sidebar-history.png'),
             input: "Complete Profile",
         },
+        // {
+        //     icon: require('../assets/sidebar-history.png'),
+        //     input: "My Subscriptions",
+        // },
         {
             icon: require('../assets/sidebar-history.png'),
             input: _drawer.order,
@@ -82,6 +86,9 @@ const CustomDrawer = ({ navigation }) => {
             case "Complete Profile":
                 navigation.navigate('AstrologerRegister');
                 break;
+            // case "My Subscriptions":
+            //     navigation.navigate('MySubscriptions');
+            //     break;
             case _drawer.order:
                 navigation.navigate('MyOrders');
                 break;

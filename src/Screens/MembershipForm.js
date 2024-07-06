@@ -212,7 +212,7 @@ const MembershipForm = ({ navigation }) => {
         // alert(JSON.stringify(taxable_amount, null, 2))
         // return
         tax_amount = 0
-        if (item.mastertax == null || item.is_free == 1) {
+        if (item.mastertax == null || item.is_free == 1) {                //free
             tax_percentage = 0
             total_amount = taxable_amount
         } else {
@@ -1591,6 +1591,7 @@ const MembershipForm = ({ navigation }) => {
                 modal
                 open={open}
                 mode={'date'}
+                maximumDate={new Date()}
                 date={date == '' ? new Date() : date}
                 onConfirm={date => {
                     setOpen(false);

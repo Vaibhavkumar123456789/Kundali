@@ -34,7 +34,7 @@ const Home = ({ navigation }) => {
             "device_id": '123',
             "device_token": GLobal.firebaseToken,
             "device_type": Platform.OS,
-        };
+        }
         Homebanner(e)
             .then(data => {
                 // alert(JSON.stringify(data, null, 2))

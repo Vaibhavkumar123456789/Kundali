@@ -64,7 +64,7 @@ const MyOrders = ({ navigation }) => {
                     setOrderDetail(data?.order)
 
                 } else {
-                    alert(data?.msg);
+                    // alert(data?.msg);
                 }
             })
             .catch(error => {
@@ -252,8 +252,8 @@ const MyOrders = ({ navigation }) => {
                                 )}
                             />
                             :
-                            <View style={{ justifyContent: 'center', alignItems: 'center', flex: 0.7 }}>
-                                <Text style={{ textAlign: 'center', color: 'black', fontSize: 15, fontFamily: 'AvenirLTStd-Medium' }}>No Order Detail</Text>
+                            <View style={{ justifyContent: 'center', alignItems: 'center', flex: 0.8 }}>
+                                <Text style={{ textAlign: 'center', color: 'black', fontSize: 14, fontFamily: 'AvenirLTStd-Medium' }}>No Order Detail</Text>
                             </View>}
                     </View>
                 )

@@ -22,6 +22,7 @@ import Toast from 'react-native-simple-toast';
 import stringsoflanguages from '../language/Language'
 import { Dropdown } from 'react-native-element-dropdown';
 import Button from 'react-native-button';
+import { useIsFocused } from '@react-navigation/native';
 import { AstrologerCheckMobile, City1, Country, State1 } from '../backend/Api';
 import Loader from '../utils/Loader';
 var validator = require('email-validator');
@@ -33,6 +34,7 @@ import GLobal from './GLobal';
 const AstrologerForm = ({ navigation }) => {
     const window = Dimensions.get('window');
     const { width, height } = Dimensions.get('window');
+    const isFocused = useIsFocused();
     const { _customlang, _kundali, _astrologerForm } = stringsoflanguages
     const [countrylist, setCountryList] = useState([])
     const [cityname, setCityName] = useState([])
@@ -56,11 +58,13 @@ const AstrologerForm = ({ navigation }) => {
 
     useEffect(() => {
         Countrysearch()
-    }, [])
+    }, [isFocused == true])
 
     const Countrysearch = () => {
+        toggleLoading(true);
         Country()
             .then(data => {
+                toggleLoading(false);
                 if (data.status) {
                     let tempCArr = []
                     data?.data.map((i) => {
@@ -151,7 +155,7 @@ const AstrologerForm = ({ navigation }) => {
         <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
             <StatusBar barStyle="dark-content" backgroundColor="#FFCC80" />
             <Header
-                menuOption={() => navigation.goBack()}
+                menuOption={() => navigation.replace('AstrologerLogin')}
                 leftIcon={require('../assets/backtoback.png')}
                 title={_astrologerForm.astologerform}
             />
@@ -366,7 +370,11 @@ const AstrologerForm = ({ navigation }) => {
                     valueField="value"
                     placeholder={_kundali.country}
                     value={should1}
-                    onChange={(item) => { setShould1(item.value), statelist(item.value) }}
+                    onChange={(item) => {
+                        setShould1(item.value), statelist(item.value),
+                            setShould6('');
+                        setShould7('');
+                    }}
                 />
                 <Text
                     style={{
@@ -402,7 +410,10 @@ const AstrologerForm = ({ navigation }) => {
                     valueField="value"
                     placeholder={_astrologerForm.statename}
                     value={should6}
-                    onChange={(item) => { setShould6(item.value), citylist(item.value) }}
+                    onChange={(item) => {
+                        setShould6(item.value), citylist(item.value),
+                            setShould7('');
+                    }}
                 />
 
                 <Text
@@ -509,7 +520,7 @@ const AstrologerForm = ({ navigation }) => {
                                     toggleLoading(false);
                                     if (data.status == true) {
                                         verifyuser()
-                                        navigation.navigate("Otp", e)
+                                        navigation.replace("Otp", e)
                                     } else {
                                         Toast.show(data?.msg);
                                         return

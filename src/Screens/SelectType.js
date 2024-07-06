@@ -23,7 +23,7 @@ const SelectType = ({ navigation }) => {
                 </Text>
                 <View style={{ flexDirection: 'row', marginLeft: 18, marginTop: 20 }}>
                     {/* <Pressable onPress={() => { navigation.navigate('AstrologerRegister') }}> */}
-                    <Pressable onPress={() => { navigation.navigate('AstrologerLogin') }}>
+                    <Pressable onPress={() => { navigation.replace('AstrologerLogin') }}>
                         <ImageBackground
                             resizeMode='contain'
                             style={{
@@ -46,7 +46,7 @@ const SelectType = ({ navigation }) => {
                             </Text>
                         </ImageBackground>
                     </Pressable>
-                    <Pressable onPress={() => { navigation.navigate('SignUp') }}>
+                    <Pressable onPress={() => { navigation.replace('SignUp') }}>
                         <ImageBackground
                             resizeMode='contain'
                             style={{

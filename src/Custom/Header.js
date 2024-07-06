@@ -24,7 +24,7 @@ function Header(props) {
             }}>
 
             <View style={{ flexDirection: 'row', }}>
-                <TouchableOpacity
+            <TouchableOpacity
                     style={{ paddingVertical: 6 }}
                     onPress={() => props.menuOption()}>
                     <Image
@@ -35,7 +35,6 @@ function Header(props) {
                             resizeMode: 'contain',
                             marginLeft: 18,
                         }}
-
                     />
                 </TouchableOpacity>
                 <Text numberOfLines={1}

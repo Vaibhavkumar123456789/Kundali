@@ -63,6 +63,7 @@ import ProductDetail from '../Screens/ProductDetail';
 import PlaceOrder from '../Screens/PlaceOrder';
 import ProductPaymentSuccessful from '../Screens/ProductPaymentSuccessful';
 import MyOrderProductDetail from '../Screens/MyOrderProductDetail';
+import MySubscriptions from '../Screens/MySubscriptions';
 
 
 const Stack = createStackNavigator();
@@ -398,8 +399,11 @@ const StackNavigator = () => {
                     component={MyOrderProductDetail}
                     options={{ headerShown: false }}
                 />
-
-
+                <Stack.Screen
+                    name="MySubscriptions"
+                    component={MySubscriptions}
+                    options={{ headerShown: false }}
+                />
 
             </Stack.Navigator>
         </NavigationContainer>

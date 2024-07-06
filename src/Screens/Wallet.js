@@ -2,7 +2,7 @@ import { View, Text, Image, StyleSheet, Dimensions, Modal, FlatList, TextInput, 
 import React, { useEffect, useState } from 'react'
 import CustomHeader from '../Custom/CustomHeader';
 import stringsoflanguages from '../language/Language'
-import { TabView, TabBar, SceneMap } from 'react-native-tab-view';
+import GLobal, { data } from './GLobal';
 import Button from 'react-native-button';
 import Toast from 'react-native-simple-toast';
 import { useIsFocused } from '@react-navigation/native';
@@ -37,6 +37,7 @@ const Wallet = ({ navigation }) => {
     const sum = randomInteger + timestamp;
     setResult(sum);
   };
+  // alert(JSON.stringify(GLobal.walletpaymentdata, null, 2))
 
   useEffect(() => {
     planadd()
@@ -77,7 +78,7 @@ const Wallet = ({ navigation }) => {
   }
 
   const handledata = async (payment) => {
-    // alert(JSON.stringify(payment, null, 2))
+    let id = payment.id;
     let amount = parseFloat(payment.recharge).toFixed(2);
     let gst = (parseFloat(payment.recharge) * 0.18).toFixed(2);          // 18% gst
     let total = (parseFloat(amount) + parseFloat(gst)).toFixed(2);
@@ -85,39 +86,39 @@ const Wallet = ({ navigation }) => {
     setAmount(amount)
     setGST(gst)
     setTotalAmount(total)
-
+    GLobal.walletpaymentdata = ({
+      id: id,
+      amount: amount,
+      gst: gst,
+      total: total
+    })
   }
 
   const recharge = () => {
-    if (select == null) {
-      Toast.show("Please Select Amount")
 
-    } else {
-
-      let e = {
-        "plan_id": plandetail[select]?.id || 1,
-        "tax_amt": gst,
-        "net_amount": amount,
-        "total_mrp": totalamount,
-        "payment_mode": "online",
-        "booking_txn_id": result,
-      };
-      addwalletapi(e)
-        .then(data => {
-          console.log('add walet amount ...', data)
-          // alert(JSON.stringify(data, null, 2))
-          if (data.status) {
-            profile()
-            Toast.show(data?.msg);
-            navigation.goBack()
-          } else {
-            Toast.show(data?.msg);
-          }
-        })
-        .catch(error => {
-          console.log('error', error);
-        });
-    }
+    let e = {
+      "plan_id": plandetail[select]?.id || 1,
+      "tax_amt": gst,
+      "net_amount": amount,
+      "total_mrp": totalamount,
+      "payment_mode": "online",
+      "booking_txn_id": result,
+    };
+    addwalletapi(e)
+      .then(data => {
+        console.log('add walet amount ...', data)
+        // alert(JSON.stringify(data, null, 2))
+        if (data.status) {
+          profile()
+          Toast.show(data?.msg);
+          navigation.goBack()
+        } else {
+          Toast.show(data?.msg);
+        }
+      })
+      .catch(error => {
+        console.log('error', error);
+      });
   }
 
 
@@ -305,31 +306,33 @@ const Wallet = ({ navigation }) => {
           </View>
         )}
       </ScrollView>
-      <Button
-        containerStyle={{
-          width: '90%',
-          bottom: 20,
-          // position:'absolute',
-          height: 52,
-          borderRadius: 12,
-          overflow: 'hidden',
-          alignSelf: 'center',
-          justifyContent: 'center',
-          backgroundColor: '#FFCC80',
-        }}
-        style={{
-          fontSize: 18,
-          color: '#333333',
-          alignSelf: 'center',
-          fontFamily: 'AvenirLTStd-Medium',
-        }}
-        onPress={() => {
-          recharge()
-          // setPopupVisible(true)
-        }}>
-        {_order.proceed}
-      </Button>
-
+      {select == null ?
+        <></> :
+        <Button
+          containerStyle={{
+            width: '90%',
+            bottom: 20,
+            // position:'absolute',
+            height: 52,
+            borderRadius: 12,
+            overflow: 'hidden',
+            alignSelf: 'center',
+            justifyContent: 'center',
+            backgroundColor: '#FFCC80',
+          }}
+          style={{
+            fontSize: 18,
+            color: '#333333',
+            alignSelf: 'center',
+            fontFamily: 'AvenirLTStd-Medium',
+          }}
+          onPress={() => {
+            recharge()
+            // setPopupVisible(true)
+          }}>
+          {_order.proceed}
+        </Button>
+      }
       <Modal
         animationType="slide"
         transparent={true}

@@ -409,6 +409,7 @@ const UpdateMember = ({ navigation, route }) => {
                             keyboardType='numeric'
                             placeholder={_kundali.mobile}
                             maxLength={10}
+                            editable={false}
                             value={number}
                             onChangeText={(text) => setNumber(text)}
                         />
@@ -1344,6 +1345,7 @@ const UpdateMember = ({ navigation, route }) => {
                 modal
                 open={open}
                 mode={'date'}
+                maximumDate={new Date()}
                 date={date ? new Date(date) : new Date()}
                 onConfirm={date => {
                     setOpen(false);

@@ -33,6 +33,7 @@ const Splash = ({ navigation }) => {
         setLanguage()
         requestUserPermission()
         requestLocationPermission()
+
     }, [navigation]);
 
     async function requestLocationPermission() {

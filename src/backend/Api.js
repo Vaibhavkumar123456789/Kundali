@@ -55,8 +55,10 @@ const requestMultipart = (path, formdata) => {
       if (response.ok) {
         resolve(response.data);
       } else {
-        alert(JSON.stringify(response));
-        reject(response.err);
+        // alert(JSON.stringify(response));
+        // reject(response.err);
+        console.log(JSON.stringify(response.data?.msg));
+        reject(response.data?.msg);
       }
     });
   });
@@ -84,8 +86,10 @@ const requesth = (path, json) => {
         resolve(response.data);
       } else {
         //  alert(JSON.stringify(response))
-        console.log(response.data);
-        reject(response.err);
+        // console.log(response.data);
+        // reject(response.err);
+        console.log(JSON.stringify(response.data?.msg));
+        reject(response.data?.msg);
       }
     });
   });
@@ -104,8 +108,10 @@ export const requestGet = (path, json) => {
       if (response.ok) {
         resolve(response.data);
       } else {
-        console.log(JSON.stringify(response, null, 2));
-        resolve({ status: false, data: response.data, error: response?.problem });
+        // console.log(JSON.stringify(response, null, 2));
+        // resolve({ status: false, data: response.data, error: response?.problem });
+        console.log(JSON.stringify(response.data?.msg));
+        reject(response.data?.msg);
       }
     });
   });
@@ -123,8 +129,10 @@ export const requestGet1 = (path, json) => {
       if (response.ok) {
         resolve(response.data);
       } else {
-        console.log(JSON.stringify(response, null, 2));
-        resolve({ status: false, data: response.data, error: response?.problem });
+        // console.log(JSON.stringify(response, null, 2));
+        // resolve({ status: false, data: response.data, error: response?.problem });
+        console.log(JSON.stringify(response.data?.msg));
+        reject(response.data?.msg);
       }
     });
   });
@@ -141,8 +149,10 @@ const requestExternal = (path, json) => {
       if (response.ok) {
         resolve(response.data);
       } else {
-        console.log(response.err);
-        reject(response.err);
+        // console.log(response.err);
+        // reject(response.err);
+        console.log(JSON.stringify(response.data?.msg));
+        reject(response.data?.msg);
       }
     });
   });
@@ -164,6 +174,8 @@ export const AstrologerUserApi = json => request(PATH_URL.astrologeruserlogin, j
 export const SkipHome = json => request(PATH_URL.skip, json);
 export const Passwordforgot = json => request(PATH_URL.forgot, json);
 export const PasswordReset = json => request(PATH_URL.changepassword, json);
+export const loginastrologer = json => request(PATH_URL.authuser, json);
+
 
 //token
 export const Homebanner = json => requesth(PATH_URL.homebanner, json);
@@ -195,6 +207,7 @@ export const getcartapi = json => requesth(PATH_URL.getcart, json);
 export const addorderapi = json => requesth(PATH_URL.addorder, json);
 export const getorderhistory = json => requesth(PATH_URL.oederhistory, json);
 export const postorderhistory = json => requesth(PATH_URL.orderdetail, json);
+export const activepackageapi = json => requesth(PATH_URL.activepackage, json);
 
 // third party api
 export const LalkitabForm = json => requestExternal(PATH_URL.lalkitab, json);

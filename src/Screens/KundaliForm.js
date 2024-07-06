@@ -10,13 +10,14 @@ import {
     Pressable,
     TextInput,
     Dimensions,
-    Alert,
+    Alert, KeyboardAvoidingView,
     FlatList,
     SafeAreaView,
     ScrollView,
-    StatusBar, Modal
+    StatusBar, Modal, Keyboard
 } from 'react-native';
 import Header from '../Custom/Header';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import stringsoflanguages from '../language/Language'
 import { RadioButton } from 'react-native-paper';
 import Toast from 'react-native-simple-toast';
@@ -29,13 +30,14 @@ import Button from 'react-native-button';
 import Loader from '../utils/Loader';
 import GLobal from './GLobal';
 import { useIsFocused } from '@react-navigation/native';
-import { Country, Homebanner, kundlireportgenerate } from '../backend/Api';
+import { Astroreport, Country, Homebanner, kundlireportgenerate } from '../backend/Api';
 import { BASE_URL_EXTERNAL } from '../backend/Config';
 
 const KundaliForm = ({ navigation }) => {
     const window = Dimensions.get('window');
     const { width, height } = Dimensions.get('window');
     const { _customlang, _kundali, _product } = stringsoflanguages
+    const [keyboardVisible, setKeyboardVisible] = useState(false);
     const isFocused = useIsFocused();
     const [toggleCheckBox, setToggleCheckBox] = useState(false)
     const [checked, setChecked] = React.useState(false);
@@ -76,37 +78,34 @@ const KundaliForm = ({ navigation }) => {
     useEffect(() => {
         Countrysearch()
         banner()
+
     }, [isFocused == true])
 
     const banner = () => {
         toggleLoading(true);
-        let e = {
-            "device_id": '123',
-            "device_token": GLobal.firebaseToken,
-            "device_type": Platform.OS,
-        };
-        Homebanner(e)
+
+        Astroreport()
             .then(data => {
-                // alert(JSON.stringify(data.astro_report_detail, null, 2))
+                // alert(JSON.stringify(data, null, 2))
                 toggleLoading(false);
                 if (data.status) {
                     let tempCArr = []
-                    data?.astro_report_detail.map((i) => {
+                    data?.data.map((i) => {
                         tempCArr.push({
                             label: i.report_name,
                             value: i,
                         })
                         setReport(tempCArr)
                     })
-
                 } else {
                     alert(data?.msg);
                 }
             })
             .catch(error => {
                 toggleLoading(false);
-                console.log('bannererror', error);
+                console.log('error', error);
             });
+
     }
 
 
@@ -271,234 +270,60 @@ const KundaliForm = ({ navigation }) => {
                 title={_kundali.kundali}
             />
             {state.loading && <Loader />}
-            <ScrollView>
-                <Text
-                    style={{
-                        fontFamily: 'AvenirLTStd-Medium',
-                        color: '#ADADAD',
-                        fontSize: 18,
-                        letterSpacing: -0.2,
-                        marginTop: 19,
-                        marginHorizontal: 18,
-                    }}>
-                    {_product.kundli}
-                </Text>
-                <Dropdown
-                    style={{
-                        height: 50,
-                        marginHorizontal: 18, marginTop: 10, borderWidth: 1.5, borderColor: '#00000020',
-                        borderRadius: 10,
-                    }}
-                    placeholderStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', paddingHorizontal: 15, }}
-                    selectedTextStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', paddingHorizontal: 15, textTransform: 'capitalize' }}
-                    iconStyle={{
-                        width: 20,
-                        height: 20,
-                        marginRight: 12,
-                    }}
-                    itemTextStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', textTransform: 'capitalize' }}
-                    data={report
-                    }
-                    maxHeight={200}
-                    search
-                    searchPlaceholder={_product.kundli}
-                    inputSearchStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333' }}
-                    labelField="label"
-                    valueField="value"
-                    placeholder={_product.kundli}
-                    value={should2}
-                    onChange={(item) => { setShould2(item), setTex(item), taxdetail(item) }}
-                />
-                <Text
-                    style={{
-                        fontFamily: 'AvenirLTStd-Medium',
-                        color: '#ADADAD',
-                        fontSize: 18,
-                        letterSpacing: -0.2,
-                        marginTop: 19,
-                        marginHorizontal: 18,
-                    }}>
-                    {_kundali.name}
-                </Text>
-                <TextInput
-                    style={{
-                        fontSize: 16,
-                        fontFamily: 'AvenirLTStd-Medium',
-                        borderRadius: 10,
-                        borderColor: '#00000020',
-                        borderWidth: 1.5,
-                        marginTop: 10,
-                        marginHorizontal: 18,
-                        paddingHorizontal: 15,
-                        paddingVertical: 11,
-                        color: '#333333',
-                    }}
-                    placeholderTextColor={'#333333'}
-                    placeholder={_kundali.name}
-                    value={name}
-                    onChangeText={(text) => setName(text)}
-                />
-                <Text
-                    style={{
-                        fontFamily: 'AvenirLTStd-Medium',
-                        color: '#ADADAD',
-                        fontSize: 18,
-                        letterSpacing: -0.2,
-                        marginTop: 19,
-                        marginHorizontal: 18,
-                    }}>
-                    {_kundali.gender}
-                </Text>
-                <FlatList
-                    data={gender}
-                    horizontal
-                    renderItem={({ item, index }) => (
-                        <TouchableOpacity onPress={() => {
-                            setChecked(index)
-                        }}>
-                            <View style={{ flexDirection: 'row', alignItems: 'center', marginHorizontal: 15, marginTop: 5 }}>
-                                <RadioButton
-                                    value={checked}
-                                    status={checked === index ? 'checked' : 'unchecked'}
-                                    onPress={() => {
-                                        setChecked(index)
-                                    }}
-                                    uncheckedColor='#69707F'
-                                    color='#FFCC80'
-                                />
-                                <Text style={{
-                                    fontSize: 16,
-                                    color: '#333333',
-                                    fontFamily: 'AvenirLTStd-Medium',
-                                }}>
-                                    {item}
-                                </Text>
-                            </View>
-                        </TouchableOpacity>
-                    )}
-                />
-                <Text
-                    style={{
-                        fontFamily: 'AvenirLTStd-Medium',
-                        color: '#ADADAD',
-                        fontSize: 18,
-                        letterSpacing: -0.2,
-                        marginTop: 10,
-                        marginHorizontal: 18,
-                    }}>
-                    {_kundali.dateofbirth}
-                </Text>
-                <TouchableOpacity activeOpacity={0.9} style={{
-                    borderRadius: 10,
-                    paddingHorizontal: 15,
-                    marginHorizontal: 18,
-                    marginTop: 10,
-                    borderColor: '#00000020',
-                    borderWidth: 1.5,
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                }} onPress={() => { setOpen(true), setType(false) }}>
-                    <TextInput
-                        style={{
-                            fontSize: 16,
-                            color: '#333333',
-                            fontFamily: 'AvenirLTStd-Medium',
-                            width: '90%',
-                        }}
-                        editable={false}
-                        value={date != '' ? moment(date).format('DD-MM-YYYY') : ''}
-                        placeholder={_kundali.dateofbirth}
-                        placeholderTextColor={'#333333'}
-                    />
-
-                </TouchableOpacity>
-
-                <Text
-                    style={{
-                        fontFamily: 'AvenirLTStd-Medium',
-                        color: '#ADADAD',
-                        fontSize: 18,
-                        letterSpacing: -0.2,
-                        marginTop: 19,
-                        marginHorizontal: 18,
-                    }}>
-                    {_kundali.timeofbirth}
-                </Text>
-
-                <TouchableOpacity activeOpacity={0.9} style={{
-                    borderRadius: 10,
-                    paddingHorizontal: 15,
-                    marginHorizontal: 18,
-                    marginTop: 10,
-                    borderColor: '#00000020',
-                    borderWidth: 1.5,
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                }} onPress={() => { setOpen1(true), setType1(false) }}>
-                    <TextInput
-                        style={{
-                            fontSize: 16,
-                            color: '#333333',
-                            fontFamily: 'AvenirLTStd-Medium',
-                            width: '90%',
-                        }}
-                        editable={false}
-                        value={date1 != '' ? moment(date1).format('hh:mm a') : ''}
-                        placeholder={_kundali.timeofbirth}
-                        placeholderTextColor={'#333333'}
-                    />
-
-                </TouchableOpacity>
-                <Text
-                    style={{
-                        fontFamily: 'AvenirLTStd-Medium',
-                        color: '#ADADAD',
-                        fontSize: 18,
-                        letterSpacing: -0.2,
-                        marginTop: 19,
-                        marginHorizontal: 18,
-                    }}>
-                    {_kundali.country}
-                </Text>
-                <Dropdown
-                    style={{
-                        height: 50,
-                        marginHorizontal: 18, marginTop: 10, borderWidth: 1.5, borderColor: '#00000020',
-                        borderRadius: 10,
-                    }}
-                    placeholderStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', paddingHorizontal: 15, }}
-                    selectedTextStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', paddingHorizontal: 15, textTransform: 'capitalize' }}
-                    iconStyle={{
-                        width: 20,
-                        height: 20,
-                        marginRight: 12,
-                    }}
-                    itemTextStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', textTransform: 'capitalize' }}
-                    data={clist
-                    }
-                    maxHeight={200}
-                    search
-                    searchPlaceholder={_kundali.country}
-                    inputSearchStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333' }}
-                    labelField="label"
-                    valueField="value"
-                    placeholder={_kundali.country}
-                    value={should1}
-                    onChange={(item) => setShould1(item.value)}
-                />
-                <Text
-                    style={{
-                        fontFamily: 'AvenirLTStd-Medium',
-                        color: '#ADADAD',
-                        fontSize: 18,
-                        letterSpacing: -0.2,
-                        marginTop: 19,
-                        marginHorizontal: 18,
-                    }}>
-                    {_kundali.birth}
-                </Text>
-                <Pressable onPress={() => setModalVisible(true)}>
+            <KeyboardAvoidingView
+                behavior={Platform.OS === "ios" ? "padding" : "height"}
+                style={styles.container}
+            >
+                <KeyboardAwareScrollView keyboardShouldPersistTaps="always"  >
                     <Text
+                        style={{
+                            fontFamily: 'AvenirLTStd-Medium',
+                            color: '#ADADAD',
+                            fontSize: 18,
+                            letterSpacing: -0.2,
+                            marginTop: 19,
+                            marginHorizontal: 18,
+                        }}>
+                        {_product.kundli}
+                    </Text>
+                    <Dropdown
+                        style={{
+                            height: 50,
+                            marginHorizontal: 18, marginTop: 10, borderWidth: 1.5, borderColor: '#00000020',
+                            borderRadius: 10,
+                        }}
+                        placeholderStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', paddingHorizontal: 15, }}
+                        selectedTextStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', paddingHorizontal: 15, textTransform: 'capitalize' }}
+                        iconStyle={{
+                            width: 20,
+                            height: 20,
+                            marginRight: 12,
+                        }}
+                        itemTextStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', textTransform: 'capitalize' }}
+                        data={report
+                        }
+                        maxHeight={200}
+                        search
+                        searchPlaceholder={_product.kundli}
+                        inputSearchStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333' }}
+                        labelField="label"
+                        valueField="value"
+                        placeholder={_product.kundli}
+                        value={should2}
+                        onChange={(item) => { setShould2(item), setTex(item), taxdetail(item) }}
+                    />
+                    <Text
+                        style={{
+                            fontFamily: 'AvenirLTStd-Medium',
+                            color: '#ADADAD',
+                            fontSize: 18,
+                            letterSpacing: -0.2,
+                            marginTop: 19,
+                            marginHorizontal: 18,
+                        }}>
+                        {_kundali.name}
+                    </Text>
+                    <TextInput
                         style={{
                             fontSize: 16,
                             fontFamily: 'AvenirLTStd-Medium',
@@ -508,227 +333,407 @@ const KundaliForm = ({ navigation }) => {
                             marginTop: 10,
                             marginHorizontal: 18,
                             paddingHorizontal: 15,
-                            paddingVertical: 14,
+                            paddingVertical: 11,
                             color: '#333333',
-                        }}>
-                        {selectedcity == '' ? _kundali.birth : `${selectedcity.cityName},${selectedcity.state},${selectedcity.countryCode}`}
-                    </Text>
-                </Pressable>
-
-                <Text
-                    style={{
-                        fontFamily: 'AvenirLTStd-Medium',
-                        color: '#ADADAD',
-                        fontSize: 18,
-                        letterSpacing: -0.2,
-                        marginTop: 19,
-                        marginHorizontal: 18,
-                    }}>
-                    {_kundali.mobile}
-                </Text>
-                <TextInput
-                    style={{
-                        fontSize: 16,
-                        fontFamily: 'AvenirLTStd-Medium',
-                        borderRadius: 10,
-                        borderColor: '#00000020',
-                        borderWidth: 1.5,
-                        marginTop: 10,
-                        marginHorizontal: 18,
-                        paddingHorizontal: 15,
-                        paddingVertical: 11,
-                        color: '#333333',
-                    }}
-                    placeholderTextColor={'#333333'}
-                    keyboardType='numeric'
-                    placeholder={_kundali.mobile}
-                    value={number}
-                    onChangeText={(text) => setNumber(text)}
-                    maxLength={10}
-                />
-                <Text
-                    style={{
-                        fontFamily: 'AvenirLTStd-Medium',
-                        color: '#ADADAD',
-                        fontSize: 18,
-                        letterSpacing: -0.2,
-                        marginTop: 19,
-                        marginHorizontal: 18,
-                    }}>
-                    {_kundali.email}
-                </Text>
-                <TextInput
-                    style={{
-                        fontSize: 16,
-                        fontFamily: 'AvenirLTStd-Medium',
-                        borderRadius: 10,
-                        borderColor: '#00000020',
-                        borderWidth: 1.5,
-                        marginTop: 10,
-                        marginHorizontal: 18,
-                        paddingHorizontal: 15,
-                        paddingVertical: 11,
-                        color: '#333333',
-                    }}
-                    placeholderTextColor={'#333333'}
-                    placeholder={_kundali.email}
-                    value={email}
-                    onChangeText={(text) => setEmail(text)}
-                />
-                <Text
-                    style={{
-                        fontFamily: 'AvenirLTStd-Medium',
-                        color: '#ADADAD',
-                        fontSize: 18,
-                        letterSpacing: -0.2,
-                        marginTop: 19,
-                        marginHorizontal: 18,
-                    }}>
-                    {_kundali.pincode}
-                </Text>
-                <TextInput
-                    style={{
-                        fontSize: 16,
-                        fontFamily: 'AvenirLTStd-Medium',
-                        borderRadius: 10,
-                        borderColor: '#00000020',
-                        borderWidth: 1.5,
-                        marginTop: 10,
-                        marginHorizontal: 18,
-                        paddingHorizontal: 15,
-                        paddingVertical: 11,
-                        color: '#333333',
-                    }}
-                    placeholderTextColor={'#333333'}
-                    placeholder={_kundali.pincode}
-                    keyboardType='numeric'
-                    maxLength={6}
-                    value={pincode}
-                    onChangeText={(text) => setPincode(text)}
-                />
-                <Text
-                    style={{
-                        fontFamily: 'AvenirLTStd-Medium',
-                        color: '#ADADAD',
-                        fontSize: 18,
-                        letterSpacing: -0.2,
-                        marginTop: 19,
-                        marginHorizontal: 18,
-                    }}>
-                    {_kundali.address}
-                </Text>
-                <TextInput
-                    style={{
-                        fontSize: 16,
-                        fontFamily: 'AvenirLTStd-Medium',
-                        borderRadius: 10,
-                        borderColor: '#00000020',
-                        borderWidth: 1.5,
-                        marginTop: 10,
-                        marginHorizontal: 18,
-                        paddingHorizontal: 15,
-                        paddingVertical: 11,
-                        color: '#333333',
-                    }}
-                    placeholderTextColor={'#333333'}
-                    placeholder={_kundali.address}
-                    value={address}
-                    onChangeText={(text) => setAddress(text)}
-                />
-
-                <View style={{ flexDirection: 'row', marginLeft: 14, marginTop: 15 }}>
-                    <CheckBox
-                        disabled={false}
-                        boxType='square'
-                        tintColors={{ true: '#FFC629', false: '#00000050' }}
-                        value={toggleCheckBox}
-                        onValueChange={(newValue) => setToggleCheckBox(newValue)}
+                        }}
+                        placeholderTextColor={'#333333'}
+                        placeholder={_kundali.name}
+                        value={name}
+                        onChangeText={(text) => setName(text)}
                     />
-                    <Text style={{
-                        color: '#333333',
-                        fontFamily: 'AvenirLTStd-Medium',
-                        fontSize: 15,
-                        marginLeft: 5,
-                        marginTop: 5,
-                        width: window.width - 70,
-                        lineHeight: 20,
-                    }}>
-                        {_kundali.text}
+                    <Text
+                        style={{
+                            fontFamily: 'AvenirLTStd-Medium',
+                            color: '#ADADAD',
+                            fontSize: 18,
+                            letterSpacing: -0.2,
+                            marginTop: 19,
+                            marginHorizontal: 18,
+                        }}>
+                        {_kundali.gender}
+                    </Text>
+                    <FlatList
+                        data={gender}
+                        horizontal
+                        renderItem={({ item, index }) => (
+                            <TouchableOpacity onPress={() => {
+                                setChecked(index)
+                            }}>
+                                <View style={{ flexDirection: 'row', alignItems: 'center', marginHorizontal: 15, marginTop: 5 }}>
+                                    <RadioButton
+                                        value={checked}
+                                        status={checked === index ? 'checked' : 'unchecked'}
+                                        onPress={() => {
+                                            setChecked(index)
+                                        }}
+                                        uncheckedColor='#69707F'
+                                        color='#FFCC80'
+                                    />
+                                    <Text style={{
+                                        fontSize: 16,
+                                        color: '#333333',
+                                        fontFamily: 'AvenirLTStd-Medium',
+                                    }}>
+                                        {item}
+                                    </Text>
+                                </View>
+                            </TouchableOpacity>
+                        )}
+                    />
+                    <Text
+                        style={{
+                            fontFamily: 'AvenirLTStd-Medium',
+                            color: '#ADADAD',
+                            fontSize: 18,
+                            letterSpacing: -0.2,
+                            marginTop: 10,
+                            marginHorizontal: 18,
+                        }}>
+                        {_kundali.dateofbirth}
+                    </Text>
+                    <TouchableOpacity activeOpacity={0.9} style={{
+                        borderRadius: 10,
+                        paddingHorizontal: 15,
+                        marginHorizontal: 18,
+                        marginTop: 10,
+                        borderColor: '#00000020',
+                        borderWidth: 1.5,
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                    }} onPress={() => { setOpen(true), setType(false) }}>
+                        <TextInput
+                            style={{
+                                fontSize: 16,
+                                color: '#333333',
+                                fontFamily: 'AvenirLTStd-Medium',
+                                width: '90%',
+                            }}
+                            editable={false}
+                            value={date != '' ? moment(date).format('DD-MM-YYYY') : ''}
+                            placeholder={_kundali.dateofbirth}
+                            placeholderTextColor={'#333333'}
+                        />
 
+                    </TouchableOpacity>
+
+                    <Text
+                        style={{
+                            fontFamily: 'AvenirLTStd-Medium',
+                            color: '#ADADAD',
+                            fontSize: 18,
+                            letterSpacing: -0.2,
+                            marginTop: 19,
+                            marginHorizontal: 18,
+                        }}>
+                        {_kundali.timeofbirth}
                     </Text>
 
-                </View>
-                <Text
-                    style={{
-                        fontFamily: 'AvenirLTStd-Medium',
-                        color: '#ADADAD',
-                        fontSize: 18,
-                        letterSpacing: -0.2,
-                        marginTop: 19,
+                    <TouchableOpacity activeOpacity={0.9} style={{
+                        borderRadius: 10,
+                        paddingHorizontal: 15,
                         marginHorizontal: 18,
-                    }}>
-                    {_kundali.mode}
-                </Text>
-                <FlatList
-                    data={payment}
-                    horizontal
-                    renderItem={({ item, index }) => (
-                        <TouchableOpacity onPress={() => {
-                            setChecked1(index)
+                        marginTop: 10,
+                        borderColor: '#00000020',
+                        borderWidth: 1.5,
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                    }} onPress={() => { setOpen1(true), setType1(false) }}>
+                        <TextInput
+                            style={{
+                                fontSize: 16,
+                                color: '#333333',
+                                fontFamily: 'AvenirLTStd-Medium',
+                                width: '90%',
+                            }}
+                            editable={false}
+                            value={date1 != '' ? moment(date1).format('hh:mm a') : ''}
+                            placeholder={_kundali.timeofbirth}
+                            placeholderTextColor={'#333333'}
+                        />
+
+                    </TouchableOpacity>
+                    <Text
+                        style={{
+                            fontFamily: 'AvenirLTStd-Medium',
+                            color: '#ADADAD',
+                            fontSize: 18,
+                            letterSpacing: -0.2,
+                            marginTop: 19,
+                            marginHorizontal: 18,
                         }}>
-                            <View style={{ flexDirection: 'row', alignItems: 'center', marginHorizontal: 15, marginTop: 5 }}>
-                                <RadioButton
-                                    value={checked1}
-                                    status={checked1 === index ? 'checked' : 'unchecked'}
-                                    onPress={() => {
-                                        setChecked1(index)
-                                    }}
-                                    uncheckedColor='#69707F'
-                                    color='#FFCC80'
-                                />
-                                <Text style={{
-                                    fontSize: 16,
-                                    color: '#333333',
-                                    fontFamily: 'AvenirLTStd-Medium',
-                                }}>
-                                    {item}
-                                </Text>
-                            </View>
-                        </TouchableOpacity>
-                    )}
-                />
+                        {_kundali.country}
+                    </Text>
+                    <Dropdown
+                        style={{
+                            height: 50,
+                            marginHorizontal: 18, marginTop: 10, borderWidth: 1.5, borderColor: '#00000020',
+                            borderRadius: 10,
+                        }}
+                        placeholderStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', paddingHorizontal: 15, }}
+                        selectedTextStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', paddingHorizontal: 15, textTransform: 'capitalize' }}
+                        iconStyle={{
+                            width: 20,
+                            height: 20,
+                            marginRight: 12,
+                        }}
+                        itemTextStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', textTransform: 'capitalize' }}
+                        data={clist
+                        }
+                        maxHeight={200}
+                        search
+                        searchPlaceholder={_kundali.country}
+                        inputSearchStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333' }}
+                        labelField="label"
+                        valueField="value"
+                        placeholder={_kundali.country}
+                        value={should1}
+                        onChange={(item) => setShould1(item.value)}
+                    />
+                    <Text
+                        style={{
+                            fontFamily: 'AvenirLTStd-Medium',
+                            color: '#ADADAD',
+                            fontSize: 18,
+                            letterSpacing: -0.2,
+                            marginTop: 19,
+                            marginHorizontal: 18,
+                        }}>
+                        {_kundali.birth}
+                    </Text>
+                    <Pressable onPress={() => setModalVisible(true)}>
+                        <Text
+                            style={{
+                                fontSize: 16,
+                                fontFamily: 'AvenirLTStd-Medium',
+                                borderRadius: 10,
+                                borderColor: '#00000020',
+                                borderWidth: 1.5,
+                                marginTop: 10,
+                                marginHorizontal: 18,
+                                paddingHorizontal: 15,
+                                paddingVertical: 14,
+                                color: '#333333',
+                            }}>
+                            {selectedcity == '' ? _kundali.birth : `${selectedcity.cityName},${selectedcity.state},${selectedcity.countryCode}`}
+                        </Text>
+                    </Pressable>
 
-                <Button
-                    containerStyle={{
-                        width: '90%',
-                        marginTop: 20,
-                        marginBottom: 20,
-                        height: 52,
-                        borderRadius: 12,
-                        overflow: 'hidden',
-                        alignSelf: 'center',
-                        justifyContent: 'center',
-                        backgroundColor: '#FFCC80',
-                    }}
-                    style={{
-                        fontSize: 18,
-                        color: '#333333',
-                        alignSelf: 'center',
-                        fontFamily: 'AvenirLTStd-Medium',
-                    }}
-                    onPress={() => {
-                        kundliformdata()
-                    }}>
-                    {_customlang.submit}
-                </Button>
+                    <Text
+                        style={{
+                            fontFamily: 'AvenirLTStd-Medium',
+                            color: '#ADADAD',
+                            fontSize: 18,
+                            letterSpacing: -0.2,
+                            marginTop: 19,
+                            marginHorizontal: 18,
+                        }}>
+                        {_kundali.mobile}
+                    </Text>
+                    <TextInput
+                        style={{
+                            fontSize: 16,
+                            fontFamily: 'AvenirLTStd-Medium',
+                            borderRadius: 10,
+                            borderColor: '#00000020',
+                            borderWidth: 1.5,
+                            marginTop: 10,
+                            marginHorizontal: 18,
+                            paddingHorizontal: 15,
+                            paddingVertical: 11,
+                            color: '#333333',
+                        }}
+                        placeholderTextColor={'#333333'}
+                        keyboardType='numeric'
+                        placeholder={_kundali.mobile}
+                        value={number}
+                        onChangeText={(text) => setNumber(text)}
+                        maxLength={10}
+                    />
+                    <Text
+                        style={{
+                            fontFamily: 'AvenirLTStd-Medium',
+                            color: '#ADADAD',
+                            fontSize: 18,
+                            letterSpacing: -0.2,
+                            marginTop: 19,
+                            marginHorizontal: 18,
+                        }}>
+                        {_kundali.email}
+                    </Text>
+                    <TextInput
+                        style={{
+                            fontSize: 16,
+                            fontFamily: 'AvenirLTStd-Medium',
+                            borderRadius: 10,
+                            borderColor: '#00000020',
+                            borderWidth: 1.5,
+                            marginTop: 10,
+                            marginHorizontal: 18,
+                            paddingHorizontal: 15,
+                            paddingVertical: 11,
+                            color: '#333333',
+                        }}
+                        placeholderTextColor={'#333333'}
+                        placeholder={_kundali.email}
+                        value={email}
+                        onChangeText={(text) => setEmail(text)}
+                    />
+                    <Text
+                        style={{
+                            fontFamily: 'AvenirLTStd-Medium',
+                            color: '#ADADAD',
+                            fontSize: 18,
+                            letterSpacing: -0.2,
+                            marginTop: 19,
+                            marginHorizontal: 18,
+                        }}>
+                        {_kundali.pincode}
+                    </Text>
+                    <TextInput
+                        style={{
+                            fontSize: 16,
+                            fontFamily: 'AvenirLTStd-Medium',
+                            borderRadius: 10,
+                            borderColor: '#00000020',
+                            borderWidth: 1.5,
+                            marginTop: 10,
+                            marginHorizontal: 18,
+                            paddingHorizontal: 15,
+                            paddingVertical: 11,
+                            color: '#333333',
+                        }}
+                        placeholderTextColor={'#333333'}
+                        placeholder={_kundali.pincode}
+                        keyboardType='numeric'
+                        maxLength={6}
+                        value={pincode}
+                        onChangeText={(text) => setPincode(text)}
+                    />
+                    <Text
+                        style={{
+                            fontFamily: 'AvenirLTStd-Medium',
+                            color: '#ADADAD',
+                            fontSize: 18,
+                            letterSpacing: -0.2,
+                            marginTop: 19,
+                            marginHorizontal: 18,
+                        }}>
+                        {_kundali.address}
+                    </Text>
+                    <TextInput
+                        style={{
+                            fontSize: 16,
+                            fontFamily: 'AvenirLTStd-Medium',
+                            borderRadius: 10,
+                            borderColor: '#00000020',
+                            borderWidth: 1.5,
+                            marginTop: 10,
+                            marginHorizontal: 18,
+                            paddingHorizontal: 15,
+                            paddingVertical: 11,
+                            color: '#333333',
+                        }}
+                        placeholderTextColor={'#333333'}
+                        placeholder={_kundali.address}
+                        value={address}
+                        onChangeText={(text) => setAddress(text)}
+                    />
+
+                    <View style={{ flexDirection: 'row', marginLeft: 14, marginTop: 15 }}>
+                        <CheckBox
+                            disabled={false}
+                            boxType='square'
+                            tintColors={{ true: '#FFC629', false: '#00000050' }}
+                            value={toggleCheckBox}
+                            onValueChange={(newValue) => setToggleCheckBox(newValue)}
+                        />
+                        <Text style={{
+                            color: '#333333',
+                            fontFamily: 'AvenirLTStd-Medium',
+                            fontSize: 15,
+                            marginLeft: 5,
+                            marginTop: 5,
+                            width: window.width - 70,
+                            lineHeight: 20,
+                        }}>
+                            {_kundali.text}
+
+                        </Text>
+
+                    </View>
+                    <Text
+                        style={{
+                            fontFamily: 'AvenirLTStd-Medium',
+                            color: '#ADADAD',
+                            fontSize: 18,
+                            letterSpacing: -0.2,
+                            marginTop: 19,
+                            marginHorizontal: 18,
+                        }}>
+                        {_kundali.mode}
+                    </Text>
+                    <FlatList
+                        data={payment}
+                        horizontal
+                        renderItem={({ item, index }) => (
+                            <TouchableOpacity onPress={() => {
+                                setChecked1(index)
+                            }}>
+                                <View style={{ flexDirection: 'row', alignItems: 'center', marginHorizontal: 15, marginTop: 5 }}>
+                                    <RadioButton
+                                        value={checked1}
+                                        status={checked1 === index ? 'checked' : 'unchecked'}
+                                        onPress={() => {
+                                            setChecked1(index)
+                                        }}
+                                        uncheckedColor='#69707F'
+                                        color='#FFCC80'
+                                    />
+                                    <Text style={{
+                                        fontSize: 16,
+                                        color: '#333333',
+                                        fontFamily: 'AvenirLTStd-Medium',
+                                    }}>
+                                        {item}
+                                    </Text>
+                                </View>
+                            </TouchableOpacity>
+                        )}
+                    />
+
+                    <Button
+                        containerStyle={{
+                            width: '90%',
+                            marginTop: 20,
+                            marginBottom: 20,
+                            height: 52,
+                            borderRadius: 12,
+                            overflow: 'hidden',
+                            alignSelf: 'center',
+                            justifyContent: 'center',
+                            backgroundColor: '#FFCC80',
+                        }}
+                        style={{
+                            fontSize: 18,
+                            color: '#333333',
+                            alignSelf: 'center',
+                            fontFamily: 'AvenirLTStd-Medium',
+                        }}
+                        onPress={() => {
+                            kundliformdata()
+                        }}>
+                        {_customlang.submit}
+                    </Button>
 
 
-            </ScrollView>
+                </KeyboardAwareScrollView>
+
+            </KeyboardAvoidingView>
             <DatePicker
                 modal
                 open={open}
                 mode={'date'}
-                // minimumDate={new Date()}
+                maximumDate={new Date()}
                 date={date == '' ? new Date() : date}
                 onConfirm={date => {
                     setOpen(false);
@@ -827,5 +832,12 @@ const KundaliForm = ({ navigation }) => {
 
 export default KundaliForm
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+    },
+
+})
+
+
 
