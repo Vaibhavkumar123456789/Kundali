@@ -23,7 +23,7 @@ const MyOrders = ({ navigation, route }) => {
             <Header
                 menuOption={() => navigation.goBack()}
                 leftIcon={require('../assets/backtoback.png')}
-                title={"View Sample"}
+                title={route.params?.title}
             />
 
             <WebView

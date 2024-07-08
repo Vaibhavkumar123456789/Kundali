@@ -1,13 +1,15 @@
 
 
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, Image, TouchableOpacity, StyleSheet, Alert, SafeAreaView, StatusBar, Pressable, ScrollView } from 'react-native';
+import { View, Text, FlatList, Image, TouchableOpacity, StyleSheet, Alert, SafeAreaView, StatusBar, Pressable, ScrollView, Dimensions } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
 import { GetProfile, addtocardapi, getcartapi } from '../backend/Api';
 import Button from 'react-native-button';
 import Loader from '../utils/Loader';
 
 const Cart = ({ navigation }) => {
+  const window = Dimensions.get('window');
+  const { width, height } = Dimensions.get('window');
   const isFocused = useIsFocused();
   const [deliveryPrice, setDeliveryPrice] = useState(0);
   const [couponDiscount, setCouponDiscount] = useState(0);
@@ -196,12 +198,13 @@ const Cart = ({ navigation }) => {
           justifyContent: 'center',
         }}>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-            <Text
+            <Text numberOfLines={3}
               style={{
                 fontSize: 16,
                 fontFamily: 'AvenirLTStd-Medium',
                 color: '#333333',
                 marginRight: 18,
+                width:window.width-180,
               }}>
               {item?.product?.name}
             </Text>
@@ -249,6 +252,7 @@ const Cart = ({ navigation }) => {
             <View style={{
               flexDirection: 'row',
               alignItems: 'center',
+              marginTop: 7,
             }}>
               <TouchableOpacity onPress={() => decrementQty(item)} style={{
                 padding: 8,

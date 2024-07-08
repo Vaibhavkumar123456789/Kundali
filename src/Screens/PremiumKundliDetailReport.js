@@ -364,7 +364,7 @@ const PremiumKundliDetailReport = ({ navigation, route }) => {
             }}
 
             onPress={() => {
-              navigation.navigate('ViewSample', { item: `${astro?.path}/${report?.sample}` })
+              navigation.navigate('ViewSample', { item: `${astro?.path}/${report?.sample}`, title: "View Sample" })
             }}>
             {_kundali.viewsample}
           </Button>

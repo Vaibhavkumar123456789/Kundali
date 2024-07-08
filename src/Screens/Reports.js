@@ -203,7 +203,7 @@ const Report = ({ navigation }) => {
                 />
               </View>
               <View style={{ flexDirection: 'row', marginTop: 5 }}>
-                <Pressable onPress={() => { navigation.navigate('ViewSample', { item: `${astro?.path}/${item.sample}` }) }} style={{
+                <Pressable onPress={() => { navigation.navigate('ViewSample', { item: `${astro?.path}/${item.sample}`, title: "View Sample" }) }} style={{
                   backgroundColor: '#333333',
                   paddingHorizontal: 10, borderRadius: 20, paddingVertical: 7, marginHorizontal: 10
                 }}>

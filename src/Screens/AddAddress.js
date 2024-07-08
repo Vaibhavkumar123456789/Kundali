@@ -130,8 +130,10 @@ const AddAddress = ({ navigation }) => {
 
 
     const Countrysearch = () => {
+        toggleLoading(true)
         Country()
             .then(data => {
+                toggleLoading(false)
                 if (data.status) {
                     let tempCArr = []
                     data?.data.map((i) => {
@@ -408,7 +410,10 @@ const AddAddress = ({ navigation }) => {
                     valueField="value"
                     placeholder={_astrologerForm.country}
                     value={should5}
-                    onChange={(item) => { setShould5(item.value), statelist(item.value) }}
+                    onChange={(item) => {
+                        setShould5(item.value), statelist(item.value), setShould6('');
+                        setShould7('');
+                    }}
                 />
 
                 <Text
@@ -445,7 +450,10 @@ const AddAddress = ({ navigation }) => {
                     valueField="value"
                     placeholder={_astrologerForm.statename}
                     value={should6}
-                    onChange={(item) => { setShould6(item.value), citylist(item.value) }}
+                    onChange={(item) => {
+                        setShould6(item.value), citylist(item.value),
+                        setShould7('');
+                    }}
                 />
 
                 <Text

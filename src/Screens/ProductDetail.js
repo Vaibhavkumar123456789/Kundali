@@ -515,7 +515,6 @@ const ProductDetail = ({ navigation, route }) => {
             const cartQuality = JSON.parse(cartItem.variant);
 
             const selectedQuality = productlisted.find(item => item.value.quality === cartQuality.toString());
-            // alert(JSON.stringify(selectedQuality, null, 2))
 
             if (selectedQuality) {
               setQuantity(cartItem.qty + 1);

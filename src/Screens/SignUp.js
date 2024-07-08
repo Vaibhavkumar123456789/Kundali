@@ -78,7 +78,7 @@ const SignUp = ({ navigation }) => {
                         password,
                         type: 1,
                     }
-                    navigation.replace('Otp')
+                    // navigation.replace('Otp')
                 } else {
                     Toast.show(data?.msg)                      // already register
                     return
