@@ -266,7 +266,7 @@ const Home = ({ navigation }) => {
                                         color: '#333333',
                                         lineHeight: 17,
                                     }}>
-                                    {item.title}
+                                    {item?.title}
                                 </Text>
                             </View>
                         </Pressable>
@@ -405,7 +405,7 @@ const Home = ({ navigation }) => {
                                         color: '#333333',
                                         lineHeight: 17,
                                     }}>
-                                    {item.title}
+                                    {item?.title}
                                 </Text>
                             </View>
                         </Pressable>

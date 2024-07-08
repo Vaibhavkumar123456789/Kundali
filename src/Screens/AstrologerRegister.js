@@ -339,10 +339,11 @@ const AstrologerRegister = ({ navigation }) => {
     useEffect(() => {
         GetProfile()
             .then(data => {
+                // alert(JSON.stringify(data, null, 2))
                 if (data.status) {
-                    setName(data?.data?.name)
-                    setMobile(data?.data?.mobile)
-                    setEmail(data?.data?.email)
+                    setName(data?.user_profile?.name)
+                    setMobile(data?.user_profile?.mobile)
+                    setEmail(data?.user_profile?.email)
                 } else {
                     alert(data.msg);
                 }

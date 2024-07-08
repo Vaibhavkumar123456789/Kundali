@@ -208,6 +208,7 @@ export const addorderapi = json => requesth(PATH_URL.addorder, json);
 export const getorderhistory = json => requesth(PATH_URL.oederhistory, json);
 export const postorderhistory = json => requesth(PATH_URL.orderdetail, json);
 export const activepackageapi = json => requesth(PATH_URL.activepackage, json);
+export const wallethistory = json => requesth(PATH_URL.wallet, json);
 
 // third party api
 export const LalkitabForm = json => requestExternal(PATH_URL.lalkitab, json);

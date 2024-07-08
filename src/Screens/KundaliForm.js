@@ -30,7 +30,7 @@ import Button from 'react-native-button';
 import Loader from '../utils/Loader';
 import GLobal from './GLobal';
 import { useIsFocused } from '@react-navigation/native';
-import { Astroreport, Country, Homebanner, kundlireportgenerate } from '../backend/Api';
+import { Astroreport, Country, GetProfile, Homebanner, kundlireportgenerate } from '../backend/Api';
 import { BASE_URL_EXTERNAL } from '../backend/Config';
 
 const KundaliForm = ({ navigation }) => {
@@ -74,12 +74,28 @@ const KundaliForm = ({ navigation }) => {
     const [taxstate, setTaxState] = useState('')
     const [netamount, setNetAmount] = useState('')
     const [totatamount, setTotalAmount] = useState('')
+    const [walletBalance, setWalletBalance] = useState(0);
 
     useEffect(() => {
         Countrysearch()
         banner()
-
+        profile()
     }, [isFocused == true])
+
+    const profile = () => {
+        GetProfile()
+            .then(data => {
+                // alert(JSON.stringify(data?.user_profile?.wallet, null, 2))
+                if (data.status) {
+                    setWalletBalance(data?.user_profile?.wallet)
+                } else {
+                    alert(data?.msg);
+                }
+            })
+            .catch(error => {
+                console.log('error', error);
+            });
+    }
 
     const banner = () => {
         toggleLoading(true);
@@ -179,6 +195,7 @@ const KundaliForm = ({ navigation }) => {
     }
 
     const kundliformdata = () => {
+        var txnid = new Date().getTime().toString();
 
         if (should2 == '') {
             Toast.show('Please Select Kundli Type');
@@ -217,6 +234,9 @@ const KundaliForm = ({ navigation }) => {
         } else if (checked1 === false) {
             Toast.show('Please Select Payment Mode');
         }
+        else if (walletBalance.toString() <= totatamount) {
+            Toast.show("Please Add Wallet Balance")
+        }
 
         else {
 
@@ -238,7 +258,8 @@ const KundaliForm = ({ navigation }) => {
                 "tax_amt": taxstate,
                 "net_amount": netamount,
                 "total_mrp": totatamount,
-                "payment_mode": checked1 === 0 ? "online" : checked1 === 1 ? "offline" : null
+                "payment_mode": checked1 === 0 ? "online" : checked1 === 1 ? "offline" : null,
+                "payment_id": txnid,
             };
             // alert(JSON.stringify(e, null, 2))
             // return

@@ -36,6 +36,10 @@ const CustomDrawer = ({ navigation }) => {
             input: _drawer.wallet,
         },
         {
+            icon: require('../assets/sidebar-wallet.png'),
+            input: "Wallet Transaction",
+        },
+        {
             icon: require('../assets/sidebar-invoice.png'),
             input: _drawer.invoice,
         },
@@ -94,6 +98,9 @@ const CustomDrawer = ({ navigation }) => {
                 break;
             case _drawer.kundli:
                 navigation.navigate('KundaliForm');
+                break;
+            case "Wallet Transaction":
+                navigation.navigate('WalletTransaction');
                 break;
             case _drawer.wallet:
                 navigation.navigate('Wallet');
