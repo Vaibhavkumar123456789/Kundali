@@ -107,7 +107,7 @@ const NetalReportDetail = ({ navigation, route }) => {
                     {_setting.netal}
                 </Text>
 
-                <Pressable onPress={() => { navigation.navigate('ViewSample', { item: `${route.params?.maindetail?.report}` }) }}>
+                <Pressable onPress={() => { navigation.navigate('ViewSample', { item: `${route.params?.maindetail?.report}`, title: "Kundali" }) }}>
                     <Image style={{ width: 240, height: 160, resizeMode: 'contain', alignSelf: 'center', marginTop: 20 }}
                         source={require('../assets/reportimage.png')} />
                     <Text

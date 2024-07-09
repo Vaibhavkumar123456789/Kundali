@@ -6,7 +6,6 @@ import { TabActions } from '@react-navigation/native';
 import { Astroreport, Homebanner } from '../backend/Api';
 import { useIsFocused } from '@react-navigation/native';
 import Loader from '../utils/Loader';
-
 import store from '../redux/store';
 import GLobal from './GLobal';
 import AstroReportList from './component/AstroReportList';

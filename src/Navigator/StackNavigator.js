@@ -66,6 +66,7 @@ import MyOrderProductDetail from '../Screens/MyOrderProductDetail';
 import MySubscriptions from '../Screens/MySubscriptions';
 import WalletTransaction from '../Screens/WalletTransaction';
 import PaymentSuccessfully1 from '../Screens/PaymentSuccessfully1';
+import KundliGenerate from '../Screens/KundliGenerate';
 
 
 const Stack = createStackNavigator();
@@ -414,6 +415,11 @@ const StackNavigator = () => {
                 <Stack.Screen
                     name="PaymentSuccessfully1"
                     component={PaymentSuccessfully1}
+                    options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                    name="KundliGenerate"
+                    component={KundliGenerate}
                     options={{ headerShown: false }}
                 />
 

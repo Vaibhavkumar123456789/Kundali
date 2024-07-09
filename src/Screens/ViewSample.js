@@ -8,6 +8,7 @@ import { WebView } from 'react-native-webview';
 
 const MyOrders = ({ navigation, route }) => {
     // alert(JSON.stringify(route.params.item, null, 2))
+    // console.log(JSON.stringify(route.params?.item, null, 2))
     const window = Dimensions.get('window');
     const isFocused = useIsFocused();
     const { width, height } = Dimensions.get('window');
