@@ -390,7 +390,7 @@ const PremiumKundliDetailReport = ({ navigation, route }) => {
             }}
 
             onPress={() => {
-              // navigation.navigate('Wallet')
+              navigation.navigate('KundaliForm')
             }}>
             {_kundali.buyNow}
           </Button>

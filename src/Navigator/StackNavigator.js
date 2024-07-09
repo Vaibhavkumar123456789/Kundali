@@ -65,6 +65,7 @@ import ProductPaymentSuccessful from '../Screens/ProductPaymentSuccessful';
 import MyOrderProductDetail from '../Screens/MyOrderProductDetail';
 import MySubscriptions from '../Screens/MySubscriptions';
 import WalletTransaction from '../Screens/WalletTransaction';
+import PaymentSuccessfully1 from '../Screens/PaymentSuccessfully1';
 
 
 const Stack = createStackNavigator();
@@ -408,6 +409,11 @@ const StackNavigator = () => {
                 <Stack.Screen
                     name="WalletTransaction"
                     component={WalletTransaction}
+                    options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                    name="PaymentSuccessfully1"
+                    component={PaymentSuccessfully1}
                     options={{ headerShown: false }}
                 />
 

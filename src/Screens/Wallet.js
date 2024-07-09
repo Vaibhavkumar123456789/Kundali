@@ -246,7 +246,7 @@ const Wallet = ({ navigation }) => {
         if (data.status) {
           profile()
           Toast.show(data?.msg);
-          navigation.goBack()
+          navigation.navigate('PaymentSuccessfully1')
         } else {
           Toast.show(data?.msg);
         }
