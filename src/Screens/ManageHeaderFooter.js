@@ -185,6 +185,7 @@ const ManageHeaderFooter = ({ navigation }) => {
                         },
                     )
                     .then(response => {
+                        // alert(JSON.stringify(response.data, null, 2))
                         toggleLoading(false);
                         navigation.navigate("HeaderFooterPreview")
                         console.log('Manage Header Footer', response.data)

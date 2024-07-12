@@ -234,7 +234,7 @@ const KundaliForm = ({ navigation }) => {
         } else if (checked1 === false) {
             Toast.show('Please Select Payment Mode');
         }
-        else if (walletBalance.toString() <= totatamount) {
+        else if (walletBalance <= totatamount) {
             Toast.show("Please Add Wallet Balance")
         }
 

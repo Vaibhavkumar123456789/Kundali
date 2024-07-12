@@ -168,6 +168,7 @@ const AstrologerRegister = ({ navigation }) => {
     const Skillset = () => {
         Skill()
             .then(data => {
+
                 if (data.status) {
                     let tempCArr = []
                     data?.data.map((i) => {
@@ -189,6 +190,8 @@ const AstrologerRegister = ({ navigation }) => {
     const mainset = () => {
         Specialization()
             .then(data => {
+                // alert(JSON.stringify(data,null,2))
+
                 if (data.status) {
                     let tempCArr = []
                     data?.data.map((i) => {
@@ -199,7 +202,7 @@ const AstrologerRegister = ({ navigation }) => {
                         setSpecilization(tempCArr)
                     })
                 } else {
-                    alert(data.msg)
+                    alert(data?.msg)
                 }
             })
             .catch(error => {
@@ -433,7 +436,7 @@ const AstrologerRegister = ({ navigation }) => {
                 )
                 .then(response => {
                     toggleLoading(false);
-                    alert(JSON.stringify(response.data, null, 2))
+                    // alert(JSON.stringify(response.data, null, 2))
                     navigation.goBack()
                 })
                 .catch(error => {

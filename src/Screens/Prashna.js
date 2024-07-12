@@ -165,7 +165,7 @@ const Prashna = ({ navigation }) => {
             },
           )
           .then(response => {
-            toggleLoading(false);
+            toggleLoading(false)
             navigation.goBack()
 
             console.log('Prashan Lagan', response.data)

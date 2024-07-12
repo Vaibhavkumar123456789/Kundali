@@ -71,7 +71,7 @@ const PlaceOrder = ({ navigation, route }) => {
 
 
     const order = () => {
-        if (walletBalance.toString() <= total) {
+        if (walletBalance <= total) {
             Toast.show("Please Add Wallet Balance")
         } else {
 
@@ -90,6 +90,7 @@ const PlaceOrder = ({ navigation, route }) => {
                 "currency": "inr",
                 "trxn_id": txnid,
             };
+            
             toggleLoading(true);
             addorderapi(e)
                 .then(data => {
