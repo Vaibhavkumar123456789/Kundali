@@ -269,7 +269,7 @@ const KundaliForm = ({ navigation }) => {
                     // alert(JSON.stringify(data, null, 2))
                     toggleLoading(false);
                     if (data.status) {
-                        navigation.navigate('ViewSample', { item: `${data?.detail?.report}`, title: "Kundali" })
+                        navigation.navigate('KundliGenerate', { item: `${data?.detail?.report}`, title: data?.detail?.email })
 
                     } else {
                         alert(data?.msg);

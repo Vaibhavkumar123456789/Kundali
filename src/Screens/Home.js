@@ -156,7 +156,7 @@ const Home = ({ navigation }) => {
                             source={require('../assets/menu.png')}
                             style={{
                                 height: 24,
-                                width: 24,
+                                width: 22,
                                 resizeMode: 'contain',
                                 marginLeft: 18,
                             }}
@@ -167,10 +167,10 @@ const Home = ({ navigation }) => {
                             fontSize: 18,
                             color: '#333333',
                             fontFamily: 'AvenirLTStd-Heavy',
-                            marginTop: 7,
-                            marginLeft: 10,
+                            marginTop: 8,
+                            marginLeft: 13,
                         }}>
-                        Astro Logo
+                        Kundli App
                     </Text>
                 </View>
                 <View style={{ flexDirection: 'row', }}>
@@ -179,8 +179,8 @@ const Home = ({ navigation }) => {
                         navigation.navigate('Wallet')
                     }} style={{
                         flexDirection: 'row', borderColor: '#333333', borderWidth: 1,
-                        paddingHorizontal: 5, paddingVertical: 5, borderRadius: 4,
-                        alignSelf: 'center', marginRight: 12
+                        paddingHorizontal: 5, paddingVertical: 4, borderRadius: 4,
+                        alignSelf: 'center', marginRight: 12, marginTop: 1
                     }}>
                         <Image
                             source={require('../assets/wallet.png')}
@@ -199,7 +199,7 @@ const Home = ({ navigation }) => {
                                     marginLeft: 10,
                                     letterSpacing: -0.22,
                                 }}>
-                                ₹{astro?.data?.wallet}
+                                {astro !== undefined ? `₹${parseFloat(astro.data.wallet).toFixed(2)}` : '₹0.00'}
                             </Text>
                         )}
                     </Pressable>

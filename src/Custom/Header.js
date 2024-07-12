@@ -24,26 +24,27 @@ function Header(props) {
             }}>
 
             <View style={{ flexDirection: 'row', }}>
-            <TouchableOpacity
+                <TouchableOpacity
                     style={{ paddingVertical: 6 }}
                     onPress={() => props.menuOption()}>
                     <Image
                         source={props.leftIcon}
                         style={{
-                            height: 20,
-                            width: 20,
+                            height: 22,
+                            width: 12,
                             resizeMode: 'contain',
                             marginLeft: 18,
+                            marginTop: 1,
                         }}
                     />
                 </TouchableOpacity>
                 <Text numberOfLines={1}
                     style={{
-                        fontSize: 18,
+                        fontSize: 17,
                         color: '#333333',
                         fontFamily: 'AvenirLTStd-Heavy',
-                        marginTop: 6,
-                        marginLeft: 10,
+                        marginTop: 8,
+                        marginLeft: 15,
                         width: Dimensions.get('window').width - 80,
                     }}>
                     {props.title}

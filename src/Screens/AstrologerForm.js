@@ -14,7 +14,8 @@ import {
     FlatList,
     SafeAreaView,
     ScrollView,
-    StatusBar
+    StatusBar,
+    BackHandler
 } from 'react-native';
 var randomstring = require("randomstring");
 import Header from '../Custom/Header';
@@ -58,6 +59,7 @@ const AstrologerForm = ({ navigation }) => {
 
     useEffect(() => {
         Countrysearch()
+
     }, [isFocused == true])
 
     const Countrysearch = () => {
@@ -155,7 +157,7 @@ const AstrologerForm = ({ navigation }) => {
         <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
             <StatusBar barStyle="dark-content" backgroundColor="#FFCC80" />
             <Header
-                menuOption={() => navigation.replace('AstrologerLogin')}
+                menuOption={() => navigation.goBack()}
                 leftIcon={require('../assets/backtoback.png')}
                 title={_astrologerForm.astologerform}
             />
@@ -520,7 +522,7 @@ const AstrologerForm = ({ navigation }) => {
                                     toggleLoading(false);
                                     if (data.status == true) {
                                         verifyuser()
-                                        navigation.replace("Otp", e)
+                                        navigation.navigate("Otp", e)
                                     } else {
                                         Toast.show(data?.msg);
                                         return

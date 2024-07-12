@@ -175,15 +175,16 @@ const MyOrders = ({ navigation }) => {
                                                 style={{ marginTop: 0, flexGrow: 0 }}
                                                 renderItem={({ item, index }) => (
                                                     <View style={{ flexDirection: 'row', marginHorizontal: 10, paddingVertical: 10, borderStyle: 'dashed', borderBottomColor: '#33333360', borderBottomWidth: 1 }}>
-                                                        <Image style={{ width: 80, height: 80, borderRadius: 5, resizeMode: 'contain' }}
+                                                        <Image style={{ width: 80, height: 80, borderRadius: 50, resizeMode: 'contain' }}
                                                             source={{ uri: item?.image }} />
                                                         <View>
-                                                            <Text numberOfLines={2}
+                                                            <Text numberOfLines={3}
                                                                 style={{
                                                                     fontSize: 13,
                                                                     fontFamily: 'AvenirLTStd-Heavy',
                                                                     color: '#333333',
                                                                     marginLeft: 10,
+                                                                    lineHeight: 18,
                                                                     width: window.width - 150,
                                                                 }}>
                                                                 {item?.product_name}

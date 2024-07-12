@@ -57,6 +57,7 @@ export const PATH_URL = {
   orderdetail: 'astrologer/order_history_details',
   activepackage: "astrologer/active-packge",
   wallet: 'astrologer/wallet-history',
+  support: 'astrologer/addcontact',
 
 
 

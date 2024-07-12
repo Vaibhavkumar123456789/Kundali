@@ -305,7 +305,7 @@ const Package = ({ navigation }) => {
                     actions.Token(data?.token);
                     AsyncStorageSettoken(data?.token);
                     AsyncStorageSetUser(data?.user_detail);
-                    navigation.replace('PaymentSuccessfully', data)
+                    navigation.navigate('PaymentSuccessfully', data)
                 } else {
                     Toast.show(data?.msg);
                 }
@@ -449,7 +449,10 @@ const Package = ({ navigation }) => {
                     actions.Token(data?.token);
                     AsyncStorageSettoken(data?.token);
                     AsyncStorageSetUser(data?.user_detail);
-                    navigation.replace('DrawerNavigator')
+                    navigation.reset({
+                        index: 0,
+                        routes: [{ name: 'DrawerNavigator' }],
+                    });
                 } else {
                     Toast.show(data?.msg);
                 }

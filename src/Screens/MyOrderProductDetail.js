@@ -60,7 +60,40 @@ const MyOrderProductDetail = ({ navigation, route }) => {
             />
 
             {state.loading && <Loader />}
+
             <ScrollView>
+                <View style={{
+                    marginHorizontal: 18,
+                    paddingVertical: 10,
+                    backgroundColor: 'white',
+                    elevation: 5,
+                    marginTop: 10,
+                    borderRadius: 10,
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                }}>
+                    <Text
+                        style={{
+                            fontSize: 16,
+                            fontFamily: 'AvenirLTStd-Heavy',
+                            color: '#333333',
+                            marginLeft: 10,
+                        }}>
+                        Status
+                    </Text>
+                    <Text
+                        style={{
+                            fontSize: 16,
+                            fontFamily: 'AvenirLTStd-Heavy',
+                            color: route.params?.status === "pending" ? "red" : route.params?.status === "completed" ? "green" : 'orange',
+                            marginRight: 10,
+                            textTransform: 'capitalize',
+                            textAlign: 'right',
+                        }}>
+                        {route.params?.status}
+                    </Text>
+                </View>
+
                 <FlatList
                     data={orderdetail}
                     style={{ marginTop: 10, flexGrow: 0 }}
@@ -100,12 +133,13 @@ const MyOrderProductDetail = ({ navigation, route }) => {
                                 <Image style={{ width: 80, height: 80, borderRadius: 5, resizeMode: 'contain' }}
                                     source={{ uri: item?.image }} />
                                 <View>
-                                    <Text numberOfLines={2}
+                                    <Text numberOfLines={3}
                                         style={{
                                             fontSize: 13,
                                             fontFamily: 'AvenirLTStd-Heavy',
                                             color: '#333333',
                                             marginLeft: 10,
+                                            lineHeight: 18,
                                             width: window.width - 150,
                                         }}>
                                         {item?.product_name}

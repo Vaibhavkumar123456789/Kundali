@@ -537,7 +537,8 @@ const ProductDetail = ({ navigation, route }) => {
   };
 
   const handleQualityChange = (item, search) => {
-
+    // alert(JSON.stringify({ item, search: search }, null, 2))
+    // return
     setShould1(item);
     toggleLoading(true);
 

@@ -188,10 +188,11 @@ const Cart = ({ navigation }) => {
         elevation: 5,
         borderRadius: 6,
       }}>
-        <Image source={{ uri: item.cover_image_url }} style={{
+        <Image source={{ uri: item?.cover_image_url }} style={{
           width: 60,
           height: 60,
           marginRight: 16,
+          borderRadius: 35,
         }} />
         <View style={{
           flex: 1,
@@ -204,7 +205,7 @@ const Cart = ({ navigation }) => {
                 fontFamily: 'AvenirLTStd-Medium',
                 color: '#333333',
                 marginRight: 18,
-                width:window.width-180,
+                width: window.width - 180,
               }}>
               {item?.product?.name}
             </Text>
@@ -306,20 +307,21 @@ const Cart = ({ navigation }) => {
             <Image
               source={require('../assets/backtoback.png')}
               style={{
-                height: 24,
-                width: 24,
+                height: 22,
+                width: 12,
                 resizeMode: 'contain',
                 marginLeft: 18,
+                marginTop: 1,
               }}
             />
           </TouchableOpacity>
           <Text
             style={{
-              fontSize: 18,
+              fontSize: 17,
               color: '#333333',
               fontFamily: 'AvenirLTStd-Heavy',
-              marginTop: 7,
-              marginLeft: 10,
+              marginTop: 8,
+              marginLeft: 15,
             }}>
             Cart
           </Text>
@@ -328,8 +330,8 @@ const Cart = ({ navigation }) => {
 
           <TouchableOpacity activeOpacity={0.9} onPress={() => { navigation.navigate('Wallet') }} style={{
             flexDirection: 'row', borderColor: '#333333', borderWidth: 1,
-            paddingHorizontal: 5, paddingVertical: 5, borderRadius: 4,
-            alignSelf: 'center', marginRight: 18
+            paddingHorizontal: 5, paddingVertical: 4, borderRadius: 4,
+            alignSelf: 'center', marginRight: 18, marginTop: 1
           }}>
             <Image
               source={require('../assets/wallet.png')}
@@ -347,7 +349,7 @@ const Cart = ({ navigation }) => {
                 marginLeft: 10,
                 letterSpacing: -0.22,
               }}>
-              ₹{walletBalance}
+              ₹{`${parseFloat(walletBalance).toFixed(2)}`}
             </Text>
           </TouchableOpacity>
 
@@ -554,257 +556,3 @@ const styles = StyleSheet.create({
 export default Cart;
 
 
-
-
-
-// import React from 'react';
-// import { View, Text, FlatList, StyleSheet, ScrollView } from 'react-native';
-
-// const Cart = ({ navigation }) => {
-
-//   const planetData = [
-//     {
-//       "id": 0,
-//       "name": "Sun",
-//       "fullDegree": Math.floor(Math.random() * 361),
-//       "normDegree": 12.189540792464342,
-//       "speed": 0.9537797443255392,
-//       "isRetro": "false",
-//       "sign": "Gemini",
-//       "signLord": "Mercury",
-//       "nakshatra": "Ardra",
-//       "nakshatraLord": "Rahu",
-//       "nakshatra_pad": 2,
-//       "house": 9,
-//       "is_planet_set": false,
-//       "planet_awastha": "Yuva"
-//     },
-//     {
-//       "id": 1,
-//       "name": "Moon",
-//       "fullDegree": Math.floor(Math.random() * 361),
-//       "normDegree": 11.72351598586304,
-//       "speed": 13.920316198066743,
-//       "isRetro": "false",
-//       "sign": "Aries",
-//       "signLord": "Mars",
-//       "nakshatra": "Ashwini",
-//       "nakshatraLord": "Ketu",
-//       "nakshatra_pad": 4,
-//       "house": 7,
-//       "is_planet_set": false,
-//       "planet_awastha": "Kumara"
-//     },
-//     {
-//       "id": 2,
-//       "name": "Mars",
-//       "fullDegree": Math.floor(Math.random() * 361),
-//       "normDegree": 13.41992352157277,
-//       "speed": 0.6649777633290916,
-//       "isRetro": "false",
-//       "sign": "Gemini",
-//       "signLord": "Mercury",
-//       "nakshatra": "Ardra",
-//       "nakshatraLord": "Rahu",
-//       "nakshatra_pad": 3,
-//       "house": 9,
-//       "is_planet_set": true,
-//       "planet_awastha": "Yuva"
-//     },
-//     {
-//       "id": 3,
-//       "name": "Mercury",
-//       "fullDegree": Math.floor(Math.random() * 361),
-//       "normDegree": 25.491713014068253,
-//       "speed": -0.29467903633858694,
-//       "isRetro": "true",
-//       "sign": "Gemini",
-//       "signLord": "Mercury",
-//       "nakshatra": "Punarvasu",
-//       "nakshatraLord": "Jupiter",
-//       "nakshatra_pad": 2,
-//       "house": 9,
-//       "is_planet_set": false,
-//       "planet_awastha": "Mrit"
-//     },
-//     {
-//       "id": 4,
-//       "name": "Jupiter",
-//       "fullDegree": Math.floor(Math.random() * 361),
-//       "normDegree": 5.5300964666809875,
-//       "speed": 0.2119922731034037,
-//       "isRetro": "false",
-//       "sign": "Taurus",
-//       "signLord": "Venus",
-//       "nakshatra": "Krittika",
-//       "nakshatraLord": "Sun",
-//       "nakshatra_pad": 3,
-//       "house": 8,
-//       "is_planet_set": false,
-//       "planet_awastha": "Mrit"
-//     },
-//     {
-//       "id": 5,
-//       "name": "Venus",
-//       "fullDegree": Math.floor(Math.random() * 361),
-//       "normDegree": 16.57181911264793,
-//       "speed": 1.2289765385390012,
-//       "isRetro": "false",
-//       "sign": "Gemini",
-//       "signLord": "Mercury",
-//       "nakshatra": "Ardra",
-//       "nakshatraLord": "Rahu",
-//       "nakshatra_pad": 3,
-//       "house": 9,
-//       "is_planet_set": true,
-//       "planet_awastha": "Yuva"
-//     },
-//     {
-//       "id": 6,
-//       "name": "Saturn",
-//       "fullDegree": Math.floor(Math.random() * 361),
-//       "normDegree": 2.3970734633440216,
-//       "speed": 0.10910000257030411,
-//       "isRetro": "false",
-//       "sign": "Taurus",
-//       "signLord": "Venus",
-//       "nakshatra": "Krittika",
-//       "nakshatraLord": "Sun",
-//       "nakshatra_pad": 2,
-//       "house": 8,
-//       "is_planet_set": false,
-//       "planet_awastha": "Mrit"
-//     },
-//     {
-//       "id": 7,
-//       "name": "Rahu",
-//       "fullDegree": Math.floor(Math.random() * 361),
-//       "normDegree": 1.7592615626991943,
-//       "speed": -0.05299201968813196,
-//       "isRetro": "true",
-//       "sign": "Cancer",
-//       "signLord": "Moon",
-//       "nakshatra": "Punarvasu",
-//       "nakshatraLord": "Jupiter",
-//       "nakshatra_pad": 4,
-//       "house": 10,
-//       "is_planet_set": false,
-//       "planet_awastha": "Mrit"
-//     },
-//     {
-//       "id": 8,
-//       "name": "Ketu",
-//       "fullDegree": Math.floor(Math.random() * 361),
-//       "normDegree": 1.75926156269918,
-//       "speed": -0.05299201968813196,
-//       "isRetro": "true",
-//       "sign": "Capricorn",
-//       "signLord": "Saturn",
-//       "nakshatra": "Uttra Shadha",
-//       "nakshatraLord": "Sun",
-//       "nakshatra_pad": 2,
-//       "house": 4,
-//       "is_planet_set": false,
-//       "planet_awastha": "Mrit"
-//     },
-//     {
-//       "id": 9,
-//       "name": "Ascendant",
-//       "fullDegree": Math.floor(Math.random() * 361),
-//       "normDegree": 27.928685871204436,
-//       "speed": 0,
-//       "isRetro": false,
-//       "sign": "Libra",
-//       "signLord": "Venus",
-//       "nakshatra": "Vishakha",
-//       "nakshatraLord": "Jupiter",
-//       "nakshatra_pad": 3,
-//       "house": 1,
-//       "is_planet_set": false,
-//       "planet_awastha": "--"
-//     }
-//   ];
-
-//   return (
-//     <ScrollView>
-//       <View style={styles.container}>
-//         <View style={styles.headerRow}>
-
-//           <Text style={styles.headerText}>Name</Text>
-
-//           <Text style={styles.headerText}>Degree</Text>
-//           <Text style={styles.headerText}>Nakshatra</Text>
-//           <Text style={styles.headerText}>Rashi</Text>
-//         </View>
-
-//         {planetData.map((item, index) => (
-//           <View key={item.id}>
-//             <View style={styles.dataRow}>
-
-//               <Text style={styles.dataText}>{item.name}</Text>
-//               <Text style={styles.dataText}>{item.fullDegree}</Text>
-//               <Text style={styles.dataText}>{item.nakshatra}</Text>
-//               <Text style={styles.dataText}>{item.nakshatraLord}</Text>
-//             </View>
-
-//             {index !== planetData.length - 1 && (
-//               <View style={styles.separator}></View>
-//             )}
-//           </View>
-//         ))}
-//       </View>
-//     </ScrollView>
-//   );
-// };
-
-// const styles = StyleSheet.create({
-//   container: {
-//     marginHorizontal: 18,
-//     paddingVertical: 13,
-//     backgroundColor: '#FFFFFF',
-//     marginTop: 25,
-//     borderRadius: 5,
-//     elevation: 5,
-//   },
-//   headerRow: {
-//     flex: 1,
-//     backgroundColor: '#EBF3F3',
-//     marginTop: -13,
-//     borderTopLeftRadius: 5,
-//     borderTopRightRadius: 5,
-//     height: 50,
-//     flexDirection: 'row',
-//     justifyContent: 'space-between',
-//   },
-//   headerText: {
-//     flex: 1,
-//     textAlign: 'center',
-//     fontSize: 14,
-//     color: '#323232',
-//     fontFamily: 'Montserrat-Medium',
-//     fontWeight: '600',
-//     marginTop: 15,
-//   },
-//   dataRow: {
-//     flex: 1,
-//     flexDirection: 'row',
-//     justifyContent: 'space-between',
-//     marginTop: 15,
-//   },
-//   dataText: {
-//     flex: 1,
-//     textAlign: 'center',
-//     fontSize: 12,
-//     color: '#323232',
-//     fontFamily: 'Montserrat-Regular',
-//     fontWeight: '400',
-//   },
-//   separator: {
-//     borderBottomWidth: 1,
-//     borderBottomColor: '#E5E5E5',
-//     marginTop: 10,
-//   },
-
-// });
-
-// export default Cart;

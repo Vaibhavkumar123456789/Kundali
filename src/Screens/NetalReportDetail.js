@@ -104,10 +104,10 @@ const NetalReportDetail = ({ navigation, route }) => {
                         marginHorizontal: 10,
                         textAlign: 'center',
                     }}>
-                    {_setting.netal}
+                    {route.params?.astrodetail?.report_name}
                 </Text>
 
-                <Pressable onPress={() => { navigation.navigate('ViewSample', { item: `${route.params?.maindetail?.report}`, title: "Kundali" }) }}>
+                <Pressable onPress={() => { navigation.navigate('KundliGenerate', { item: `${route.params?.maindetail?.report}`, title: route.params?.maindetail?.email }) }}>
                     <Image style={{ width: 240, height: 160, resizeMode: 'contain', alignSelf: 'center', marginTop: 20 }}
                         source={require('../assets/reportimage.png')} />
                     <Text

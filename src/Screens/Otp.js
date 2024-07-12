@@ -68,7 +68,7 @@ const Otp = ({ navigation, route }) => {
             return;
         }
         else if (otp) {
-            navigation.replace("Package")
+            navigation.navigate("Package")
         }
 
     };

@@ -129,7 +129,7 @@ const WalletTransaction = ({ navigation }) => {
                                                 textAlign: 'right',
                                                 width: window.width - 290,
                                             }}>
-                                            {item.type === "credit" ? `+ ₹${item?.amount}` : `- ₹${item?.amount}`}
+                                            {item.type === "credit" ? `+ ₹${item?.price}` : `- ₹${item?.price}`}
                                         </Text>
 
                                     </View>
@@ -149,7 +149,7 @@ const WalletTransaction = ({ navigation }) => {
                                                 textAlign: 'right',
                                                 width: window.width - 290,
                                             }}>
-                                            ₹{`${item?.amount}`}
+                                            ₹{`${item?.price}`}
                                         </Text>
                                         <Text numberOfLines={1}
                                             style={{

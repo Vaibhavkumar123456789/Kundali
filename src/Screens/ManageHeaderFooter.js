@@ -61,9 +61,9 @@ const ManageHeaderFooter = ({ navigation }) => {
     }])
 
     useEffect(() => {
-        Countrysearch()
+        headercolorapi()
     }, [])
-    const Countrysearch = () => {
+    const headercolorapi = () => {
         HeaderColor()
             .then(data => {
                 if (data.status) {
@@ -103,6 +103,10 @@ const ManageHeaderFooter = ({ navigation }) => {
     }
 
     const deleteAchivement = (index) => {
+        if (acCount.length <= 1) {
+            Toast.show('You can exist one details');
+            return;
+        }
         setKey(key + 1)
         acCount.pop(index);
         console.log(acCount)
@@ -124,7 +128,7 @@ const ManageHeaderFooter = ({ navigation }) => {
             else if (caddress == '') {
                 Toast.show('Please enter Company Address');
             }
-            else if (acCount[0] === '' || acCount[0].length !== 10) {
+            else if (acCount[0] === '' || acCount[0]?.length !== 10) {
                 Toast.show('Please enter your valid Mobile number');
             }
             else if (acCount.some((input) => input === '' || input.length !== 10)) {
@@ -182,7 +186,7 @@ const ManageHeaderFooter = ({ navigation }) => {
                     )
                     .then(response => {
                         toggleLoading(false);
-                        navigation.goBack()
+                        navigation.navigate("HeaderFooterPreview")
                         console.log('Manage Header Footer', response.data)
                     })
                     .catch(error => {
@@ -201,7 +205,7 @@ const ManageHeaderFooter = ({ navigation }) => {
                             )
                             .then(response => {
                                 toggleLoading(false);
-                                navigation.goBack()
+                                navigation.navigate("HeaderFooterPreview")
                                 console.log('Manage Header Footer', response.data)
                             })
                             .catch(error => {
@@ -790,8 +794,7 @@ const ManageHeaderFooter = ({ navigation }) => {
                             fontSize: 16,
                             color: '#323232',
                             fontFamily: 'AvenirLTStd-Medium',
-                            fontWeight: '700',
-                            lineHeight: 18,
+                            lineHeight: 20,
                             textAlign: 'center',
                             marginHorizontal: 15,
                             marginTop: 15,

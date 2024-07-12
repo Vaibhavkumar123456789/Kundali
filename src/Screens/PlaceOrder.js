@@ -127,6 +127,7 @@ const PlaceOrder = ({ navigation, route }) => {
                     width: 60,
                     height: 60,
                     marginRight: 16,
+                    borderRadius: 35,
                 }} />
                 <View style={{
                     flex: 1,

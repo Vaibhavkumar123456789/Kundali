@@ -47,7 +47,7 @@ let stringsoflanguages = new LocalizedStrings({
             onlineJyotish: 'Online Jyotish',
             myOrder: "My Orders",
             myorderTab1: "Kundali Report",
-            myorderTab2: "Total Products",
+            myorderTab2: "Products",
 
         },
         _member: {
@@ -323,7 +323,7 @@ let stringsoflanguages = new LocalizedStrings({
             viewsample: 'नमूना देखें',
             myOrder: "मेरे आदेश",
             myorderTab1: "कुंडली रिपोर्ट",
-            myorderTab2: "कुल उत्पाद",
+            myorderTab2: "Products",
         },
         _member: {
             freemember: 'निःशुल्क सदस्य सूची',

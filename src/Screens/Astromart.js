@@ -49,7 +49,7 @@ const Astromart = ({ navigation }) => {
     toggleLoading(true)
     productdatalist()
       .then(data => {
-        // alert(JSON.stringify(data, null, 2))
+        // console.log(JSON.stringify(data, null, 2))
         toggleLoading(false)
         if (data.status) {
           const mentorRoutes = data?.data.map((item, index) => ({
@@ -104,28 +104,35 @@ const Astromart = ({ navigation }) => {
               }}>
 
                 <View style={{ flexDirection: 'row' }}>
-                  <FastImage style={{ width: 30, height: 30, marginLeft: 7, }}
+                  {/* <Image
+                    source={require('../assets/panna.png')}
+                    style={{
+                      width: 39, height: 39, marginLeft: 9, alignSelf: 'center', resizeMode: 'contain'
+                    }}
+                  /> */}
+                  <FastImage style={{ width: 39, height: 39, marginLeft: 9, borderRadius: 25, alignSelf: 'center' }}
 
                     source={{
                       uri: item?.image,
                       headers: { Authorization: 'someAuthToken' },
                       priority: FastImage.priority.normal,
                     }}
-                    resizeMode={FastImage.resizeMode.contain}
+                    resizeMode={FastImage.resizeMode.stretch}
                   />
                   <Text
-                    numberOfLines={2}
+                    numberOfLines={3}
                     style={{
                       color: '#1E1F20', marginTop: 2,
-                      fontFamily: 'AvenirLTStd-Heavy', fontSize: 15,
-                      marginLeft: 7, width: window.width - 175
+                      fontFamily: 'AvenirLTStd-Medium', fontSize: 13,
+                      marginLeft: 8, width: window.width - 180,
+                      lineHeight: 22,
                     }}>
                     {item?.name}
                   </Text>
                 </View>
                 <View style={{ alignSelf: 'center' }}>
                   <Text
-                    style={{ color: '#F44336', fontSize: 14, fontFamily: 'AvenirLTStd-Medium', marginRight: 7, }}
+                    style={{ color: '#F44336', fontSize: 12, fontFamily: 'AvenirLTStd-Medium', lineHeight: 18, marginRight: 7, }}
                   >
                     View More
                   </Text>
@@ -159,20 +166,21 @@ const Astromart = ({ navigation }) => {
             <Image
               source={require('../assets/backtoback.png')}
               style={{
-                height: 24,
-                width: 24,
+                height: 22,
+                width: 12,
                 resizeMode: 'contain',
                 marginLeft: 18,
+                marginTop: 1,
               }}
             />
           </TouchableOpacity>
-          <Text
+          <Text numberOfLines={1}
             style={{
-              fontSize: 18,
+              fontSize: 17,
               color: '#333333',
               fontFamily: 'AvenirLTStd-Heavy',
-              marginTop: 7,
-              marginLeft: 10,
+              marginTop: 8,
+              marginLeft: 15,
             }}>
             Product List
           </Text>
@@ -181,8 +189,8 @@ const Astromart = ({ navigation }) => {
 
           <TouchableOpacity activeOpacity={0.9} onPress={() => { navigation.navigate('Wallet') }} style={{
             flexDirection: 'row', borderColor: '#333333', borderWidth: 1,
-            paddingHorizontal: 5, paddingVertical: 5, borderRadius: 4,
-            alignSelf: 'center', marginRight: 12
+            paddingHorizontal: 5, paddingVertical: 4, borderRadius: 4,
+            alignSelf: 'center', marginRight: 12, marginTop: 1
           }}>
             <Image
               source={require('../assets/wallet.png')}
@@ -200,7 +208,7 @@ const Astromart = ({ navigation }) => {
                 marginLeft: 10,
                 letterSpacing: -0.22,
               }}>
-              ₹{walletBalance}
+              ₹{`${parseFloat(walletBalance).toFixed(2)}`}
             </Text>
           </TouchableOpacity>
 
@@ -228,15 +236,24 @@ const Astromart = ({ navigation }) => {
           onIndexChange={setIndex}
           renderTabBar={props => (
             <TabBar
-              style={styles.style}
-              labelStyle={styles.labelStyle}
+              style={{ backgroundColor: '#FFFFFF', }}
+              labelStyle={{
+                fontSize: 16,
+                fontFamily: 'AvenirLTStd-Heavy',
+                color: '#333333',
+                textTransform: 'capitalize',
+                marginHorizontal: 10,
+              }}
               scrollEnabled={true}
               tabStyle={{ height: 50, width: 'auto' }}
               activeColor={'#FFCC80'}
               inactiveColor={'#333333'}
               inactiveOpacity={0.5}
               {...props}
-              indicatorStyle={styles.indicatorStyle}
+              indicatorStyle={{
+                backgroundColor: '#FFCC80',
+                height: 3,
+              }}
             />
           )}
         />
@@ -252,21 +269,6 @@ const Astromart = ({ navigation }) => {
 export default Astromart
 
 const styles = StyleSheet.create({
-  style: {
-    backgroundColor: '#FFFFFF',
-  },
-  labelStyle: {
-    fontSize: 16,
-    fontFamily: 'AvenirLTStd-Heavy',
-    color: '#333333',
-    textTransform: 'capitalize',
-    marginHorizontal: 10,
-  },
-  indicatorStyle: {
-    backgroundColor: '#FFCC80',
-    height: 3,
-  },
-
 
 })
 

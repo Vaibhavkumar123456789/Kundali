@@ -28,10 +28,13 @@ const TabNavigator = () => {
     return (
         <Tab.Navigator
             initialRouteName="Home"
+            screenOptions={{
+                tabBarStyle: { height: 60 }, // Increase the height here
+            }}
             tabBarOptions={{
                 keyboardHidesTabBar: true,
                 labelStyle: {
-                    paddingBottom: 2,
+                    paddingBottom: 7,
                     fontSize: 12,
                     fontFamily: 'AvenirLTStd-Medium',
                 },

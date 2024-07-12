@@ -52,7 +52,11 @@ const AstrologerLogin = ({ navigation }) => {
                         actions.Token(data?.token);
                         AsyncStorageSettoken(data?.token);
                         AsyncStorageSetUser(data?.user_detail);
-                        navigation.replace('DrawerNavigator')
+                        // navigation.replace('DrawerNavigator')
+                        navigation.reset({
+                            index: 0,
+                            routes: [{ name: 'DrawerNavigator' }],
+                        });
                     } else {
                         Toast.show(data?.msg);
                     }
@@ -177,7 +181,7 @@ const AstrologerLogin = ({ navigation }) => {
                         )}
                     </TouchableOpacity>
                 </View>
-                <Pressable onPress={() => { navigation.replace('ForgotPassword') }}>
+                <Pressable onPress={() => { navigation.navigate('ForgotPassword') }}>
                     <Text
                         style={{
                             fontFamily: 'AvenirLTStd-Medium',
@@ -214,7 +218,7 @@ const AstrologerLogin = ({ navigation }) => {
                 {_astrologerForm.signin}
             </Button>
 
-            <Pressable onPress={() => { navigation.replace('AstrologerForm') }}
+            <Pressable onPress={() => { navigation.navigate('AstrologerForm') }}
                 style={{ flexDirection: 'row', justifyContent: 'center', marginHorizontal: 18, bottom: 15, }}>
                 <Text
                     style={{
