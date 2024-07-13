@@ -107,7 +107,7 @@ const NetalReportDetail = ({ navigation, route }) => {
                     {route.params?.astrodetail?.report_name}
                 </Text>
 
-                <Pressable onPress={() => { navigation.navigate('KundliGenerate', { item: `${route.params?.maindetail?.report}`, title: route.params?.maindetail?.email }) }}>
+                <Pressable onPress={() => { navigation.navigate('KundliGenerate', { item: `${route.params?.maindetail?.report}`, title: route.params?.maindetail?.email, number: "1" }) }}>
                     <Image style={{ width: 240, height: 160, resizeMode: 'contain', alignSelf: 'center', marginTop: 20 }}
                         source={require('../assets/reportimage.png')} />
                     <Text

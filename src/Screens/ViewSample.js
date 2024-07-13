@@ -28,8 +28,11 @@ const MyOrders = ({ navigation, route }) => {
             />
 
             <WebView
-                source={{ uri: `https://docs.google.com/viewer?url=${encodeURIComponent(route.params?.item)}` }}
+                // source={{ uri: `https://docs.google.com/viewer?url=${encodeURIComponent(route.params?.item)}` }}
+                source={{ uri: `https://docs.google.com/gview?embedded=true&url=${encodeURIComponent(route.params?.item)}` }}
                 style={{ flex: 1 }}
+                originWhitelist={['*']}
+                onError={(error) => console.log('Cannot render PDF', error)}
                 renderLoading={() => (
                     <View style={{
                         flex: 1,

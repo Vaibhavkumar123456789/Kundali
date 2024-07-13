@@ -119,16 +119,18 @@ const Astromart = ({ navigation }) => {
                     }}
                     resizeMode={FastImage.resizeMode.stretch}
                   />
-                  <Text
-                    numberOfLines={3}
-                    style={{
-                      color: '#1E1F20', marginTop: 2,
-                      fontFamily: 'AvenirLTStd-Medium', fontSize: 13,
-                      marginLeft: 8, width: window.width - 180,
-                      lineHeight: 22,
-                    }}>
-                    {item?.name}
-                  </Text>
+                  <View style={{ alignSelf: 'center' }}>
+                    <Text
+                      numberOfLines={3}
+                      style={{
+                        color: '#1E1F20', marginTop: 2,
+                        fontFamily: 'AvenirLTStd-Medium', fontSize: 13,
+                        marginLeft: 8, width: window.width - 180,
+                        lineHeight: 22,
+                      }}>
+                      {item?.name}
+                    </Text>
+                  </View>
                 </View>
                 <View style={{ alignSelf: 'center' }}>
                   <Text

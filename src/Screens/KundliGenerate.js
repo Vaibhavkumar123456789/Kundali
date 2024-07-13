@@ -1,4 +1,4 @@
-import { View, Text, Image, StyleSheet, Modal, ActivityIndicator, Dimensions, FlatList, TextInput, StatusBar, SafeAreaView, ImageBackground, Pressable, ScrollView, TouchableOpacity, } from 'react-native'
+import { View, Text, Image, StyleSheet, Modal, BackHandler, ActivityIndicator, Dimensions, FlatList, TextInput, StatusBar, SafeAreaView, ImageBackground, Pressable, ScrollView, TouchableOpacity, } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import stringsoflanguages from '../language/Language'
 import { useIsFocused } from '@react-navigation/native';
@@ -108,18 +108,62 @@ const KundliGenerate = ({ navigation, route }) => {
         }
     }
 
+    useEffect(() => {
+        if (route.params?.number == "1") {
+            const backAction = () => {
+                navigation.goBack();
+                return true;
+            };
+            const backHandler = BackHandler.addEventListener(
+                'hardwareBackPress',
+                backAction
+            );
+            return () => backHandler.remove();
+        }
+
+        else if (route.params?.number == "2") {
+
+            const backAction = () => {
+                navigation.reset({
+                    index: 0,
+                    routes: [{ name: 'DrawerNavigator' }],
+                });
+                return true;
+            };
+            const backHandler = BackHandler.addEventListener(
+                'hardwareBackPress',
+                backAction
+            );
+            return () => backHandler.remove();
+        }
+    }, [navigation]);
+
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
             <StatusBar barStyle="dark-content" backgroundColor="#FFCC80" />
             <Header
-                menuOption={() => navigation.goBack()}
+                menuOption={() => {
+                    if (route.params?.number == "1") {
+                        navigation.goBack()
+                    }
+                    else if (route.params?.number == "2") {
+                        navigation.reset({
+                            index: 0,
+                            routes: [{ name: 'DrawerNavigator' }],
+                        });
+                    }
+                }}
                 leftIcon={require('../assets/backtoback.png')}
                 title={"kundli"}
             />
             <View style={{ width: window.width, height: window.height - 150 }}>
                 <WebView
-                    source={{ uri: `https://docs.google.com/viewer?url=${encodeURIComponent(route.params?.item)}` }}
-                    style={{ flex: 1, }}
+                    // source={{ uri: `https://docs.google.com/viewer?url=${encodeURIComponent(route.params?.item)}` }}
+                    // style={{ flex: 1, }}
+                    source={{ uri: `https://docs.google.com/gview?embedded=true&url=${encodeURIComponent(route.params?.item)}` }}
+                    style={{ flex: 1 }}
+                    originWhitelist={['*']}
+                    onError={(error) => console.log('Cannot render PDF', error)}
                     renderLoading={() => (
                         <View style={{
                             flex: 1,
