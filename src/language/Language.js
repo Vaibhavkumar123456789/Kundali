@@ -26,6 +26,7 @@ let stringsoflanguages = new LocalizedStrings({
             submit: 'Submit',
         },
         _tab: {
+            home: 'Home',
             report: 'Reports',
             astromart: 'Astromart',
             member: 'Members',
@@ -271,7 +272,7 @@ let stringsoflanguages = new LocalizedStrings({
             balance: 'AVAILABLE BALANCE',
             recharge: 'Recharge Wallet',
             proceed: 'Proceed',
-            gst:'Gst Charges',
+            gst: 'Gst Charges',
         }
 
 
@@ -303,6 +304,7 @@ let stringsoflanguages = new LocalizedStrings({
             version: 'एप्लिकेशन वेरीज़न',
         },
         _tab: {
+            home: 'घर',
             report: 'रिपोर्टों',
             astromart: 'एस्ट्रोमार्ट',
             member: 'सदस्यों',
@@ -535,7 +537,7 @@ let stringsoflanguages = new LocalizedStrings({
             balance: 'उपलब्ध शेष राशि',
             recharge: 'रिचार्ज वॉलेट',
             proceed: 'आगे बढ़ना',
-            gst:'जीएसटी शुल्क',
+            gst: 'जीएसटी शुल्क',
         }
 
     },

@@ -19,7 +19,7 @@ const KundliGenerate = ({ navigation, route }) => {
     });
     const toggleLoading = bol => setState({ ...state, loading: bol });
 
-    const downloadAndSharePDF = async () => {
+    const downloadAndSharePDF = async () => {                             //whatsapp
         const pdfUrl = route.params?.item || 'https://www.example.com/sample.pdf'; // Fallback URL
         const fileName = pdfUrl.substring(pdfUrl.lastIndexOf('/') + 1);
         const localFile = `${RNFS.DocumentDirectoryPath}/${fileName}`;

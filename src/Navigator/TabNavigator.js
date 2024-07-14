@@ -46,7 +46,7 @@ const TabNavigator = () => {
                 name="Home"
                 component={Home}
                 options={{
-                    tabBarLabel: _drawer.home,
+                    tabBarLabel: _tab.home,
                     tabBarIcon: ({ focused }) =>
                         TabIcon(focused ? iconPath.ha : iconPath.h),
                     headerShown: false,
