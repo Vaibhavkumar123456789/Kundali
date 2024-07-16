@@ -505,7 +505,8 @@ const AstrologerRegister = ({ navigation, route }) => {
                         ?
                         (route.params?.user_profile?.getdocs?.aadharcard_frontimage == null
                             ? ""
-                            : `${route.params?.docpath}/${route.params?.user_profile?.getdocs?.aadharcard_frontimage}`
+                            // : `${route.params?.docpath}/${route.params?.user_profile?.getdocs?.aadharcard_frontimage}`
+                            : ""
                         )
                         :
                         {
@@ -519,7 +520,8 @@ const AstrologerRegister = ({ navigation, route }) => {
                         ?
                         (route.params?.user_profile?.getdocs?.aadharcard_backimage == null
                             ? ""
-                            : `${route.params?.docpath}/${route.params?.user_profile?.getdocs?.aadharcard_backimage}`
+                            // : `${route.params?.docpath}/${route.params?.user_profile?.getdocs?.aadharcard_backimage}`
+                            : ""
                         )
                         :
                         {
@@ -533,7 +535,8 @@ const AstrologerRegister = ({ navigation, route }) => {
                         ?
                         (route.params?.user_profile?.getdocs?.pancard_image == null
                             ? ""
-                            : `${route.params?.docpath}/${route.params?.user_profile?.getdocs?.pancard_image}`
+                            // : `${route.params?.docpath}/${route.params?.user_profile?.getdocs?.pancard_image}`
+                            : ""
                         )
                         :
                         {
@@ -610,12 +613,13 @@ const AstrologerRegister = ({ navigation, route }) => {
                 formData.append('qualification', academicqual)
                 formData.append('astrologer_qualification', astroqualification)
 
-                formData.append('file',
+                formData.append('academic_certificate',
                     acadmic === ""
                         ?
                         (route.params?.user_profile?.getdocs?.academic_certificate == null
                             ? ""
-                            : `${route.params?.docpath}/${route.params?.user_profile?.getdocs?.academic_certificate}`
+                            // : `${route.params?.docpath}/${route.params?.user_profile?.getdocs?.academic_certificate}`
+                            : ""
                         )
                         :
                         {
@@ -624,12 +628,13 @@ const AstrologerRegister = ({ navigation, route }) => {
                             name: acadmic[0].name,
                         }
                 );
-                formData.append('file',
+                formData.append('astrologer_certificate',
                     astrological === ""
                         ?
                         (route.params?.user_profile?.getdocs?.astrologer_certificate == null
                             ? ""
-                            : `${route.params?.docpath}/${route.params?.user_profile?.getdocs?.astrologer_certificate}`
+                            // : `${route.params?.docpath}/${route.params?.user_profile?.getdocs?.astrologer_certificate}`
+                            : ""
                         )
                         :
                         {
@@ -638,12 +643,13 @@ const AstrologerRegister = ({ navigation, route }) => {
                             name: astrological[0].name,
                         }
                 );
-                formData.append('file',
+                formData.append('profile_picture',
                     picture === ""
                         ?
                         (route.params?.user_profile?.image == null
                             ? ""
-                            : `${route.params?.path}/${route.params?.user_profile?.image}`
+                            // : `${route.params?.path}/${route.params?.user_profile?.image}`
+                            : ""
                         )
                         :
                         {
@@ -671,7 +677,7 @@ const AstrologerRegister = ({ navigation, route }) => {
                     body: formData,
                 });
                 const response1 = await res.json()
-                alert(JSON.stringify(response1, null, 2))
+                // alert(JSON.stringify(response1, null, 2))
                 console.log('Step6', response1)
                 toggleLoading(false)
                 if (response1.status) {
