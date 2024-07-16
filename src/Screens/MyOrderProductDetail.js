@@ -5,6 +5,7 @@ import stringsoflanguages from '../language/Language'
 import Loader from '../utils/Loader';
 import { useIsFocused } from '@react-navigation/native';
 import { Kundlireporthistory, getorderhistory, postorderhistory } from '../backend/Api';
+import GLobal from './GLobal';
 import moment from 'moment';
 
 const MyOrderProductDetail = ({ navigation, route }) => {
@@ -306,6 +307,28 @@ const MyOrderProductDetail = ({ navigation, route }) => {
                         </Text>
                     </View>
                 </View>
+                {route.params?.status === "completed" ?
+                    <></> :
+                    <View style={{
+                        paddingVertical: 15,
+                        backgroundColor: '#FFFFFF',
+                        marginTop: 15,
+                        marginHorizontal: 18,
+                        borderRadius: 10,
+                        elevation: 5,
+                        bottom: 8,
+                    }}>
+                        <Text style={{
+                            marginHorizontal: 10,
+                            color: '#333333',
+                            fontSize: 14,
+                            textAlign: 'center',
+                            fontFamily: 'AvenirLTStd-Heavy',
+                        }}>
+                            Your order will be delivered in {GLobal.deliveryday} days
+                        </Text>
+                    </View>
+                }
 
                 {(address &&
                     <View style={{

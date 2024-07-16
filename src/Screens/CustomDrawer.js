@@ -88,7 +88,7 @@ const CustomDrawer = ({ navigation }) => {
                 navigation.closeDrawer();
                 break;
             case "Complete Profile":
-                navigation.navigate('AstrologerRegister');
+                navigation.navigate('AstrologerRegister', pathurl);
                 break;
             // case "My Subscriptions":
             //     navigation.navigate('MySubscriptions');

@@ -43,7 +43,7 @@ const Home = ({ navigation }) => {
                     setReport(data?.astro_report_detail)
                     setMessage(data?.message_center)
                     setAstro(data)
-
+                    GLobal.deliveryday = data?.settings?.delivery_day
                 } else {
                     alert(data?.msg);
                 }

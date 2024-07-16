@@ -58,7 +58,10 @@ export const PATH_URL = {
   activepackage: "astrologer/active-packge",
   wallet: 'astrologer/wallet-history',
   support: 'astrologer/addcontact',
-
+  steponeedit: 'astrologer/edit-profile-one',
+  stepsecond: 'astrologer/edit-profile-two',
+  thirdstep: 'astrologer/edit-profile-three',
+  fourthstep: 'astrologer/edit-profile-four',
 
 
 

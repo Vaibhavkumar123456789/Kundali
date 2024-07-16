@@ -164,7 +164,7 @@ export const Astrologersignup = json => request(PATH_URL.astrologersignup, json)
 export const AstrologerCheckMobile = json => request(PATH_URL.checkmobile, json);
 export const Consultant = json => request(PATH_URL.consultant1, json);
 export const Skill = json => request(PATH_URL.skill1, json);
-export const Specialization = json => request(PATH_URL.specialization, json);
+export const Specialization = json => requestGet(PATH_URL.specialization, json);
 export const Language = json => request(PATH_URL.language, json);
 export const Country = json => requestGet(PATH_URL.country1, json);
 export const State1 = json => requestGet(PATH_URL.state1, json);
@@ -210,6 +210,10 @@ export const postorderhistory = json => requesth(PATH_URL.orderdetail, json);
 export const activepackageapi = json => requesth(PATH_URL.activepackage, json);
 export const wallethistory = json => requesth(PATH_URL.wallet, json);
 export const contactsupportapi = json => requesth(PATH_URL.support, json);
+export const StepOneditprofile = json => requesth(PATH_URL.steponeedit, json);
+export const StepSecondeditprofile = json => requesth(PATH_URL.stepsecond, json);
+export const StepThirdeditprofile = json => requesth(PATH_URL.thirdstep, json);
+export const StepFourtheditprofile = json => requesth(PATH_URL.fourthstep, json);
 
 // third party api
 export const LalkitabForm = json => requestExternal(PATH_URL.lalkitab, json);

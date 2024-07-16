@@ -22,6 +22,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import moment from 'moment';
 import DatePicker from 'react-native-date-picker'
 import axios from 'axios';
+import { useIsFocused } from '@react-navigation/native';
 import { RadioButton } from 'react-native-paper';
 import Button from 'react-native-button';
 import Header from '../Custom/Header';
@@ -30,32 +31,36 @@ import Loader from '../utils/Loader';
 import { Dropdown } from 'react-native-element-dropdown';
 import DocumentPicker, { types } from 'react-native-document-picker';
 import {
-    AstrologerCheckMobile,
     AsyncStorageGettoken,
     City1,
     Consultant,
     Country,
-    GetProfile,
     Language,
     Skill,
     Specialization,
     State1,
+    StepFourtheditprofile,
+    StepOneditprofile,
+    StepSecondeditprofile,
+    StepThirdeditprofile,
 } from '../backend/Api';
 var validator = require('email-validator');
 import { BASE_URL } from '../backend/Config';
 import { validateEmail } from '../utils/utils';
-import GLobal from './GLobal';
 
-const AstrologerRegister = ({ navigation }) => {
+const AstrologerRegister = ({ navigation, route }) => {
+    // alert(JSON.stringify(route.params, null, 2))
     const { _kundali, _astrologerForm, _customlang } = stringsoflanguages
-    const [VisiblePass, setVisiblePass] = useState(false)
-    const makePassVisible = () => {
-        setVisiblePass(prevState => !prevState);
-    };
-    const [checked, setChecked] = React.useState(false);
+
+    const isFocused = useIsFocused();
+    const [checked, setChecked] = React.useState(route.params?.user_profile?.gender === null
+        ? false
+        : route.params?.user_profile?.gender === "Male"
+            ? 0
+            : route.params?.user_profile?.gender === "Female" ? 1 : null);
     const gender = [_kundali.male, _kundali.female]
     const [type, setType] = useState(false)
-    const [date, setDate] = useState('')
+    const [date, setDate] = useState(route.params?.user_profile?.dob === null ? "" : route.params?.user_profile?.dob)
     const [pdate, setPDate] = useState('')
     const [open, setOpen] = useState(false)
     const [currentPosition, setCurrentPosition] = React.useState(0);
@@ -66,43 +71,41 @@ const AstrologerRegister = ({ navigation }) => {
     const [should5, setShould5] = useState('')
     const [should6, setShould6] = useState('')
     const [should7, setShould7] = useState('')
+    const [banktype, setBankType] = useState('')
     const [state, setState] = useState({
         loading: false,
     });
     const toggleLoading = bol => setState({ ...state, loading: bol });
-    const [exist, setExist] = useState({})
-    const [name, setName] = React.useState('');
-    const [email, setEmail] = React.useState('');
-    const [mobile, setMobile] = useState('')
-    const [password, setPassword] = useState('')
-    const [experience, setExperience] = useState('')
-    const [hour, setHour] = useState('')
-    const [bankname, setBankName] = useState('')
-    const [accountnumber, setAccountNumber] = useState('')
-    const [ifsc, setIFSC] = useState('')
+    const [name, setName] = React.useState(route.params?.user_profile?.name);
+    const [email, setEmail] = React.useState(route.params?.user_profile?.email);
+    const [mobile, setMobile] = useState(route.params?.user_profile?.mobile)
+    const [experience, setExperience] = useState(route.params?.user_profile?.experience.toString())
+    const [hour, setHour] = useState(route.params?.user_profile?.contribute_daily == null ? "" : route.params?.user_profile?.contribute_daily.toString())
+    const [bankname, setBankName] = useState(route.params?.user_profile?.getdocs == null ? "" : route.params?.user_profile?.getdocs?.bank_name)
+    const [accountnumber, setAccountNumber] = useState(route.params?.user_profile?.getdocs == null ? "" : route.params?.user_profile?.getdocs?.bank_account_number.toString())
+    const [ifsc, setIFSC] = useState(route.params?.user_profile?.getdocs == null ? "" : route.params?.user_profile?.getdocs?.ifsc_code)
+    const [holdername, setHolderName] = useState(route.params?.user_profile?.getdocs == null ? "" : route.params?.user_profile?.getdocs?.account_holder_name)
     const [input, setInput] = useState([])
     const [skill, setSkill] = useState([])
     const [specilization, setSpecilization] = useState([])
     const [languagelisted, setLanguageListed] = useState([])
-    const [modalVisible, setModalVisible] = useState(false);
     const [passport1Full, setPassport1Full] = useState('')
     const [passport2Full, setPassport2Full] = useState('')
     const [resumeFull, setResumeFull] = useState('')
-    const [pancard, setPanCard] = useState('')
-    const [aadharcard, setAadhar] = useState('')
-    const [academicqual, setAcademicQual] = useState('')
-    const [astroqualification, setAstroQualification] = useState('')
+    const [pancard, setPanCard] = useState(route.params?.user_profile?.getdocs?.pancard == null ? "" : route.params?.user_profile?.getdocs?.pancard)
+    const [aadharcard, setAadhar] = useState(route.params?.user_profile?.getdocs?.aadhar_number == null ? "" : route.params?.user_profile?.getdocs?.aadhar_number.toString())
+    const [academicqual, setAcademicQual] = useState(route.params?.user_profile?.getdocs?.qualification == null ? "" : route.params?.user_profile?.getdocs?.qualification)
+    const [astroqualification, setAstroQualification] = useState(route.params?.user_profile?.getdocs?.astrologer_qualification == null ? "" : route.params?.user_profile?.getdocs?.astrologer_qualification)
     const [acadmic, setAcadmic] = useState('')
     const [astrological, setAstrological] = useState('')
     const [picture, setPicture] = useState('')
-    const [biography, setBiography] = useState('')
+    const [biography, setBiography] = useState(route.params?.user_profile?.getdocs?.biography == null ? "" : route.params?.user_profile?.getdocs?.biography)
     const [clist, setCList] = useState([])
     const [statelist1, setStateList] = useState([])
     const [cityname, setCityName] = useState([])
-    const [address, setAddress] = useState('')
-    const [centrename, setCentreName] = useState('')
-    const [field, setField] = useState(GLobal.user)
-    const [pincode, setPincode] = useState('')
+    const [address, setAddress] = useState(route.params?.user_profile?.address == null ? "" : route.params?.user_profile?.address)
+    const [centrename, setCentreName] = useState(route.params?.user_profile?.institute_centre_name)
+    const [pincode, setPincode] = useState(route.params?.user_profile?.pincode == null ? "" : route.params?.user_profile?.pincode.toString())
     const labels = [
         '',
         '',
@@ -143,21 +146,24 @@ const AstrologerRegister = ({ navigation }) => {
         mainset()
         languagelist()
         Countrysearch()
-    }, [])
+    }, [isFocused])
     const custom = () => {
+        toggleLoading(true);
         Consultant()
             .then(data => {
+                // alert(JSON.stringify(data, null, 2))
+                toggleLoading(false);
                 if (data.status) {
                     let tempCArr = []
                     data?.data.map((i) => {
                         tempCArr.push({
                             label: i.name,
-                            value: i.id,
+                            value: i.name,
                         })
                         setInput(tempCArr)
                     })
                 } else {
-                    alert(data.msg);
+                    alert(data?.msg);
                 }
             })
             .catch(error => {
@@ -166,20 +172,22 @@ const AstrologerRegister = ({ navigation }) => {
             });
     }
     const Skillset = () => {
+        toggleLoading(true);
         Skill()
             .then(data => {
-
+                // alert(JSON.stringify(data, null, 2))
+                toggleLoading(false);
                 if (data.status) {
                     let tempCArr = []
                     data?.data.map((i) => {
                         tempCArr.push({
                             label: i.name,
-                            value: i.id,
+                            value: i.name,
                         })
                         setSkill(tempCArr)
                     })
                 } else {
-                    alert(data.msg);
+                    alert(data?.msg);
                 }
             })
             .catch(error => {
@@ -188,16 +196,17 @@ const AstrologerRegister = ({ navigation }) => {
             });
     }
     const mainset = () => {
+        toggleLoading(true);
         Specialization()
             .then(data => {
                 // alert(JSON.stringify(data,null,2))
-
+                toggleLoading(false);
                 if (data.status) {
                     let tempCArr = []
                     data?.data.map((i) => {
                         tempCArr.push({
                             label: i.name,
-                            value: i.id,
+                            value: i.name,
                         })
                         setSpecilization(tempCArr)
                     })
@@ -212,19 +221,22 @@ const AstrologerRegister = ({ navigation }) => {
     }
 
     const languagelist = () => {
+        toggleLoading(true);
         Language()
             .then(data => {
+                toggleLoading(false);
+                // alert(JSON.stringify(data,null,2))
                 if (data.status) {
                     let tempCArr = []
                     data?.data.map((i) => {
                         tempCArr.push({
                             label: i.name,
-                            value: i.id,
+                            value: i.name,
                         })
                         setLanguageListed(tempCArr)
                     })
                 } else {
-                    alert(data.msg);
+                    alert(data?.msg);
                 }
             })
             .catch(error => {
@@ -234,8 +246,10 @@ const AstrologerRegister = ({ navigation }) => {
     }
 
     const Countrysearch = () => {
+        toggleLoading(true);
         Country()
             .then(data => {
+                toggleLoading(false);
                 if (data.status) {
                     let tempCArr = []
                     data?.data.map((i) => {
@@ -312,7 +326,7 @@ const AstrologerRegister = ({ navigation }) => {
     const getPassport = async (item) => {
         try {
             const response = await DocumentPicker.pick({
-                type: [DocumentPicker.types.pdf, DocumentPicker.types.doc, DocumentPicker.types.docx, DocumentPicker.types.images],
+                type: [DocumentPicker.types.images],
             })
             if (response) {
                 console.log("document picker response ==", response)
@@ -339,211 +353,227 @@ const AstrologerRegister = ({ navigation }) => {
         }
     }
 
-    useEffect(() => {
-        GetProfile()
-            .then(data => {
-                // alert(JSON.stringify(data, null, 2))
-                if (data.status) {
-                    setName(data?.user_profile?.name)
-                    setMobile(data?.user_profile?.mobile)
-                    setEmail(data?.user_profile?.email)
-                } else {
-                    alert(data.msg);
-                }
-            })
-            .catch(error => {
-                console.log('error', error);
-            });
-    }, [])
 
-    const Freepackage = async () => {
-        try {
-            let formData = new FormData();
-            formData.append('newsignup', 1)
-            formData.append('user_type', field.type)             //astrologer == 2 , user == 1
-            formData.append('name', name)
-            formData.append('email', email)
-            formData.append('mobile', mobile)
-            formData.append('status', 1)
-            formData.append('password', password)
-            formData.append('gender', checked === 0 ? "male" : checked === 1 ? "female" : null)
-            formData.append('dob', date == '' ? '' : moment(date).format('YYYY-MM-DD'))
-            formData.append('create_profile ', 1)
-            formData.append('consultation_id', should1)
-            formData.append('skill_id', should2)
-            formData.append('specialization_id', should3)
-            formData.append('langugae_id', should4)
-            formData.append('experience', experience)
-            formData.append('contribute_daily', hour)
-            formData.append('bank_account_number', accountnumber)
-            formData.append('bank_name', bankname)
-            formData.append('ifsc_code', ifsc)
-            formData.append('address', address)
-            formData.append('country', should5)
-            formData.append('state', should6)
-            formData.append('city', should7)
-            formData.append('pincode', pincode)
-            formData.append('pancard', pancard)
-            formData.append('aadhar_number', aadharcard)
-            formData.append('aadharcard_image', {
-                uri: passport1Full[0].uri,
-                type: passport1Full[0].type,
-                name: passport1Full[0].name,
-            });
-            formData.append('aadharcard_back_image', {
-                uri: passport2Full[0].uri,
-                type: passport2Full[0].type,
-                name: passport2Full[0].name,
-            })
-            formData.append('pancard_image', {
-                uri: resumeFull[0].uri,
-                type: resumeFull[0].type,
-                name: resumeFull[0].name,
-            })
-            formData.append('academic_qualification', academicqual)
-            formData.append('astrologer_qualification', astroqualification)
-            formData.append('academic_certificate', {
-                uri: acadmic[0].uri,
-                type: acadmic[0].type,
-                name: acadmic[0].name,
-            });
-
-            formData.append('astrologer_certificate', {
-                uri: astrological[0].uri,
-                type: astrological[0].type,
-                name: astrological[0].name,
-            })
-
-            formData.append('profile_picture', {
-                uri: picture[0].uri,
-                type: picture[0].type,
-                name: picture[0].name,
-            })
-            formData.append('biography', biography)
-
-            console.log('complete astrologer profile', formData)
-            toggleLoading(true);
-            axios
-                .post(
-                    `${BASE_URL}astrologer/signup`,
-                    formData,
-                    {
-                        headers: {
-                            'Content-Type': 'multipart/form-data',
-                            // Add any additional headers as needed
-                        },
-                    },
-                )
-                .then(response => {
-                    toggleLoading(false);
-                    // alert(JSON.stringify(response.data, null, 2))
-                    navigation.goBack()
-                })
-                .catch(error => {
-                    toggleLoading(true);
-                    axios
-                        .post(
-                            `${BASE_URL}astrologer/signup`,
-                            formData,
-                            {
-                                headers: {
-                                    'Content-Type': 'multipart/form-data',
-                                    // Add any additional headers as needed
-                                },
-                            },
-                        )
-                        .then(response => {
-                            toggleLoading(false);
-                            navigation.goBack()
-
-                        })
-                        .catch(error => {
-                            // Handle errors
-                            toggleLoading(false);
-                            console.error('Error uploading files', error);
-                        });
-                    // Handle errors
-                    toggleLoading(false);
-                    console.error('Error uploading files1', error);
-                });
-
-        } catch (error) {
-            toggleLoading(false)
-            console.log(error)
-        }
-    }
-
-    // const setsubmit = async () => {
+    // const Freepackage = async () => {
     //     try {
-    //         if (pancard == '') {
-    //             Toast.show('Please enter your Pan Card No.');
-    //         }
-    //         else if (pancard.length !== 10) {
-    //             Toast.show('Please enter your valid Pan Card No.');
-    //         }
-    //         else if (aadharcard == '') {
-    //             Toast.show('Please enter your Aadhar Card No.');
-    //         }
-    //         else if (aadharcard.length !== 12) {
-    //             Toast.show('Please enter your valid Aadhar Card No.');
-    //         }
-    //         else if (passport1Full == '') {
-    //             Toast.show('Please upload your Aadhar card');
-    //         }
-    //         else if (passport2Full == '') {
-    //             Toast.show('Please upload your Aadhar card');
-    //         } else if (resumeFull == '') {
-    //             Toast.show('Please upload your Pan card');
-    //         }
-    //         else {
-    //             toggleLoading(true)
-    //             let formData = new FormData();
-    //             formData.append('pancard', pancard)
-    //             formData.append('aadhar_number', aadharcard)
-    //             formData.append('aadharcard_image', {
-    //                 uri: passport1Full[0].uri,
-    //                 type: passport1Full[0].type,
-    //                 name: passport1Full[0].name,
-    //             });
+    //         let formData = new FormData();
+    //         formData.append('newsignup', 1)
+    //         formData.append('user_type', field.type)             //astrologer == 2 , user == 1
+    //         formData.append('name', name)
+    //         formData.append('email', email)
+    //         formData.append('mobile', mobile)
+    //         formData.append('status', 1)
+    //         formData.append('password', password)
+    //         formData.append('gender', checked === 0 ? "male" : checked === 1 ? "female" : null)
+    //         formData.append('dob', date == '' ? '' : moment(date).format('YYYY-MM-DD'))
+    //         formData.append('create_profile ', 1)
+    //         formData.append('consultation_id', should1)
+    //         formData.append('skill_id', should2)
+    //         formData.append('specialization_id', should3)
+    //         formData.append('langugae_id', should4)
+    //         formData.append('experience', experience)
+    //         formData.append('contribute_daily', hour)
+    //         formData.append('bank_account_number', accountnumber)
+    //         formData.append('bank_name', bankname)
+    //         formData.append('ifsc_code', ifsc)
+    //         formData.append('address', address)
+    //         formData.append('country', should5)
+    //         formData.append('state', should6)
+    //         formData.append('city', should7)
+    //         formData.append('pincode', pincode)
+    //         formData.append('pancard', pancard)
+    //         formData.append('aadhar_number', aadharcard)
+    //         formData.append('aadharcard_image', {
+    //             uri: passport1Full[0].uri,
+    //             type: passport1Full[0].type,
+    //             name: passport1Full[0].name,
+    //         });
+    //         formData.append('aadharcard_back_image', {
+    //             uri: passport2Full[0].uri,
+    //             type: passport2Full[0].type,
+    //             name: passport2Full[0].name,
+    //         })
+    //         formData.append('pancard_image', {
+    //             uri: resumeFull[0].uri,
+    //             type: resumeFull[0].type,
+    //             name: resumeFull[0].name,
+    //         })
+    //         formData.append('academic_qualification', academicqual)
+    //         formData.append('astrologer_qualification', astroqualification)
+    //         formData.append('academic_certificate', {
+    //             uri: acadmic[0].uri,
+    //             type: acadmic[0].type,
+    //             name: acadmic[0].name,
+    //         });
 
-    //             formData.append('aadharcard_back_image', {
-    //                 uri: passport2Full[0].uri,
-    //                 type: passport2Full[0].type,
-    //                 name: passport2Full[0].name,
-    //             })
+    //         formData.append('astrologer_certificate', {
+    //             uri: astrological[0].uri,
+    //             type: astrological[0].type,
+    //             name: astrological[0].name,
+    //         })
 
-    //             formData.append('pancard_image', {
-    //                 uri: resumeFull[0].uri,
-    //                 type: resumeFull[0].type,
-    //                 name: resumeFull[0].name,
-    //             })
-    //             console.log(JSON.stringify(formData))
+    //         formData.append('profile_picture', {
+    //             uri: picture[0].uri,
+    //             type: picture[0].type,
+    //             name: picture[0].name,
+    //         })
+    //         formData.append('biography', biography)
 
-    //             const token = (await AsyncStorageGettoken() || '')
-    //             const btoken = `Bearer ${token}`;
-
-    //             const res = await fetch(`${BASE_URL}astrologer/add-profile-five`, {
-    //                 method: 'POST',
-    //                 headers: {
-    //                     "Accept": "application/json",
-    //                     "Authorization": btoken,
+    //         console.log('complete astrologer profile', formData)
+    //         toggleLoading(true);
+    //         axios
+    //             .post(
+    //                 `${BASE_URL}astrologer/signup`,
+    //                 formData,
+    //                 {
+    //                     headers: {
+    //                         'Content-Type': 'multipart/form-data',
+    //                         // Add any additional headers as needed
+    //                     },
     //                 },
-    //                 body: formData,
-    //             });
-    //             const response1 = await res.json()
-    //             toggleLoading(false)
+    //             )
+    //             .then(response => {
+    //                 toggleLoading(false);
+    //                 // alert(JSON.stringify(response.data, null, 2))
+    //                 navigation.goBack()
+    //             })
+    //             .catch(error => {
+    //                 toggleLoading(true);
+    //                 axios
+    //                     .post(
+    //                         `${BASE_URL}astrologer/signup`,
+    //                         formData,
+    //                         {
+    //                             headers: {
+    //                                 'Content-Type': 'multipart/form-data',
+    //                                 // Add any additional headers as needed
+    //                             },
+    //                         },
+    //                     )
+    //                     .then(response => {
+    //                         toggleLoading(false);
+    //                         navigation.goBack()
 
-    //             if (response1.status) {
-    //                 setCurrentPosition(currentPosition + 1)
-    //             } else {
-    //                 alert(response1.msg);
-    //             }
-    //         }
+    //                     })
+    //                     .catch(error => {
+    //                         // Handle errors
+    //                         toggleLoading(false);
+    //                         console.error('Error uploading files', error);
+    //                     });
+    //                 // Handle errors
+    //                 toggleLoading(false);
+    //                 console.error('Error uploading files1', error);
+    //             });
+
     //     } catch (error) {
     //         toggleLoading(false)
     //         console.log(error)
     //     }
-    // };
+    // }
+
+    const setsubmit = async () => {
+        try {
+            if (pancard == '') {
+                Toast.show('Please enter your Pan Card No.');
+            }
+            else if (pancard.length !== 10) {
+                Toast.show('Please enter your valid Pan Card No.');
+            }
+            else if (aadharcard == '') {
+                Toast.show('Please enter your Aadhar Card No.');
+            }
+            else if (aadharcard.length !== 12) {
+                Toast.show('Please enter your valid Aadhar Card No.');
+            }
+            else if (passport1Full == '' && route.params?.user_profile?.getdocs?.aadharcard_frontimage == null) {
+                Toast.show('Please upload your Aadhar card');
+            }
+            else if (passport2Full == '' && route.params?.user_profile?.getdocs?.aadharcard_backimage == null) {
+                Toast.show('Please upload your Aadhar card');
+            } else if (resumeFull == '' && route.params?.user_profile?.getdocs?.pancard_image == null) {
+                Toast.show('Please upload your Pan card');
+            }
+
+            else {
+                toggleLoading(true)
+                let formData = new FormData();
+                formData.append('pancard', pancard)
+                formData.append('aadhar_number', aadharcard)
+
+                formData.append('aadharcard_frontimage',
+                    passport1Full === ""
+                        ?
+                        (route.params?.user_profile?.getdocs?.aadharcard_frontimage == null
+                            ? ""
+                            : `${route.params?.docpath}/${route.params?.user_profile?.getdocs?.aadharcard_frontimage}`
+                        )
+                        :
+                        {
+                            uri: passport1Full[0].uri,
+                            type: passport1Full[0].type,
+                            name: passport1Full[0].name,
+                        }
+                );
+                formData.append('aadharcard_fbackimage',
+                    passport2Full === ""
+                        ?
+                        (route.params?.user_profile?.getdocs?.aadharcard_backimage == null
+                            ? ""
+                            : `${route.params?.docpath}/${route.params?.user_profile?.getdocs?.aadharcard_backimage}`
+                        )
+                        :
+                        {
+                            uri: passport2Full[0].uri,
+                            type: passport2Full[0].type,
+                            name: passport2Full[0].name,
+                        }
+                );
+                formData.append('pancard_image',
+                    resumeFull === ""
+                        ?
+                        (route.params?.user_profile?.getdocs?.pancard_image == null
+                            ? ""
+                            : `${route.params?.docpath}/${route.params?.user_profile?.getdocs?.pancard_image}`
+                        )
+                        :
+                        {
+                            uri: resumeFull[0].uri,
+                            type: resumeFull[0].type,
+                            name: resumeFull[0].name,
+                        }
+                );
+
+                // alert(JSON.stringify(formData, null, 2))
+                // return
+                console.log(JSON.stringify(formData))
+
+                const token = (await AsyncStorageGettoken() || '')
+                const btoken = `Bearer ${token}`;
+
+                const res = await fetch(`${BASE_URL}astrologer/edit-profile-five`, {
+                    method: 'POST',
+                    headers: {
+                        "Accept": "application/json",
+                        "Authorization": btoken,
+                        'Content-Type': 'multipart/form-data'
+                    },
+                    body: formData,
+                });
+                const response1 = await res.json()
+                toggleLoading(false)
+                // console.log(response1)
+                // alert(JSON.stringify(response1, null, 2))
+                if (response1.status) {
+                    setCurrentPosition(currentPosition + 1)
+                } else {
+                    alert(response1.msg);
+                }
+            }
+        } catch (error) {
+            toggleLoading(false)
+            console.log(error)
+        }
+    };
 
     const removeItem2 = () => {
         setPassport1Full('');
@@ -555,75 +585,106 @@ const AstrologerRegister = ({ navigation }) => {
         setResumeFull('');
     };
 
-    // const finalSubmit = async () => {
-    //     try {
-    //         if (academicqual == '') {
-    //             Toast.show('Please enter your Acadmic Qualification');
-    //         }
-    //         else if (astroqualification == '') {
-    //             Toast.show('Please enter your Astrological Qualifications');
-    //         }
-    //         else if (acadmic == '') {
-    //             Toast.show('Please upload your Acadmic Certificate');
-    //         }
-    //         else if (astrological == '') {
-    //             Toast.show('Please upload your Astrological Certificate');
-    //         } else if (picture == '') {
-    //             Toast.show('Please upload your Profile Picture');
-    //         }
-    //         else if (biography == '') {
-    //             Toast.show('Please enter Biography');
-    //         }
-    //         else {
-    //             toggleLoading(true)
-    //             let formData = new FormData();
-    //             formData.append('academic_qualification', academicqual)
-    //             formData.append('astrologer_qualification', astroqualification)
-    //             formData.append('academic_certificate', {
-    //                 uri: acadmic[0].uri,
-    //                 type: acadmic[0].type,
-    //                 name: acadmic[0].name,
-    //             });
+    const finalSubmit = async () => {
+        try {
+            if (academicqual == '') {
+                Toast.show('Please enter your Acadmic Qualification');
+            }
+            else if (astroqualification == '') {
+                Toast.show('Please enter your Astrological Qualifications');
+            }
+            else if (acadmic == '' && route.params?.user_profile?.getdocs?.academic_certificate == null) {
+                Toast.show('Please upload your Acadmic Certificate');
+            }
+            else if (astrological == '' && route.params?.user_profile?.getdocs?.astrologer_certificate == null) {
+                Toast.show('Please upload your Astrological Certificate');
+            } else if (picture == '' && route.params?.user_profile?.image == null) {
+                Toast.show('Please upload your Profile Picture');
+            }
+            else if (biography == '') {
+                Toast.show('Please enter Biography');
+            }
+            else {
+                // toggleLoading(true)
+                let formData = new FormData();
+                formData.append('qualification', academicqual)
+                formData.append('astrologer_qualification', astroqualification)
 
-    //             formData.append('astrologer_certificate', {
-    //                 uri: astrological[0].uri,
-    //                 type: astrological[0].type,
-    //                 name: astrological[0].name,
-    //             })
+                formData.append('file',
+                    acadmic === ""
+                        ?
+                        (route.params?.user_profile?.getdocs?.academic_certificate == null
+                            ? ""
+                            : `${route.params?.docpath}/${route.params?.user_profile?.getdocs?.academic_certificate}`
+                        )
+                        :
+                        {
+                            uri: acadmic[0].uri,
+                            type: acadmic[0].type,
+                            name: acadmic[0].name,
+                        }
+                );
+                formData.append('file',
+                    astrological === ""
+                        ?
+                        (route.params?.user_profile?.getdocs?.astrologer_certificate == null
+                            ? ""
+                            : `${route.params?.docpath}/${route.params?.user_profile?.getdocs?.astrologer_certificate}`
+                        )
+                        :
+                        {
+                            uri: astrological[0].uri,
+                            type: astrological[0].type,
+                            name: astrological[0].name,
+                        }
+                );
+                formData.append('file',
+                    picture === ""
+                        ?
+                        (route.params?.user_profile?.image == null
+                            ? ""
+                            : `${route.params?.path}/${route.params?.user_profile?.image}`
+                        )
+                        :
+                        {
+                            uri: picture[0].uri,
+                            type: picture[0].type,
+                            name: picture[0].name,
+                        }
+                );
 
-    //             formData.append('profile_picture', {
-    //                 uri: picture[0].uri,
-    //                 type: picture[0].type,
-    //                 name: picture[0].name,
-    //             })
-    //             formData.append('biography', biography)
-
-    //             console.log(JSON.stringify(formData))
-    //             const token = (await AsyncStorageGettoken() || '')
-    //             const btoken = `Bearer ${token}`;
-
-    //             const res = await fetch(`${BASE_URL}astrologer/add-profile-six`, {
-    //                 method: 'POST',
-    //                 headers: {
-    //                     "Accept": "application/json",
-    //                     "Authorization": btoken,
-    //                 },
-    //                 body: formData,
-    //             });
-    //             const response1 = await res.json()
-    //             console.log('Step6', response1)
-    //             toggleLoading(false)
-    //             if (response1.status) {
-    //                 navigation.replace('Package')
-    //             } else {
-    //                 alert(response1.msg);
-    //             }
-    //         }
-    //     } catch (error) {
-    //         toggleLoading(false)
-    //         console.log(error)
-    //     }
-    // };
+                formData.append('biography', biography)
+                // alert(JSON.stringify(formData, null, 2))
+                // return
+                console.log(JSON.stringify(formData))
+                const token = (await AsyncStorageGettoken() || '')
+                const btoken = `Bearer ${token}`;
+                // alert(JSON.stringify(btoken, null, 2))
+                // return
+                const res = await fetch(`${BASE_URL}astrologer/edit-profile-six`, {
+                    method: 'POST',
+                    headers: {
+                        "Accept": "application/json",
+                        'Content-Type': "multipart/form-data",
+                        "Authorization": btoken,
+                    },
+                    body: formData,
+                });
+                const response1 = await res.json()
+                alert(JSON.stringify(response1, null, 2))
+                console.log('Step6', response1)
+                toggleLoading(false)
+                if (response1.status) {
+                    navigation.goBack()
+                } else {
+                    // alert(response1?.msg);
+                }
+            }
+        } catch (error) {
+            toggleLoading(false)
+            console.log(error)
+        }
+    };
 
     const removeItem5 = () => {
         setAcadmic('');
@@ -754,58 +815,7 @@ const AstrologerRegister = ({ navigation }) => {
                             onChangeText={(text) => setMobile(text)}
                         />
 
-                        {/* <Text
-                            style={{
-                                fontFamily: 'AvenirLTStd-Medium',
-                                color: '#ADADAD',
-                                fontSize: 18,
-                                letterSpacing: -0.2,
-                                marginTop: 19,
-                                marginHorizontal: 18,
-                            }}>
-                            {_astrologerForm.password}
-                        </Text> */}
-                        {/* <View style={{ flexDirection: 'row', }}>
-                            <TextInput
-                                placeholderTextColor={'#333333'}
-                                placeholder={_astrologerForm.password}
-                                maxLength={20}
-                                secureTextEntry={VisiblePass ? false : true}
-                                value={password}
-                                onChangeText={(text) => setPassword(text)}
-                                style={{
-                                    fontSize: 16,
-                                    fontFamily: 'AvenirLTStd-Medium',
-                                    borderRadius: 10,
-                                    borderColor: '#00000020',
-                                    borderWidth: 1.5,
-                                    marginTop: 10,
-                                    marginHorizontal: 18,
-                                    paddingHorizontal: 15,
-                                    paddingVertical: 11,
-                                    color: '#333333',
-                                    width: "90%",
-                                }}
-                            />
-                            <TouchableOpacity
-                                activeOpacity={0.8}
-                                style={{ marginLeft: -60, padding: 5, paddingTop: 28 }}
-                                onPress={() => {
-                                    makePassVisible();
-                                }}>
-                                {VisiblePass ? (
-                                    <Image
-                                        style={{ width: 18, height: 18, resizeMode: 'contain', alignSelf: 'center', }}
-                                        source={require('../assets/eye.png')}
-                                    />
-                                ) : (
-                                    <Image
-                                        style={{ width: 18, height: 18, resizeMode: 'contain', alignSelf: 'center', }}
-                                        source={require('../assets/hide.png')}
-                                    />
-                                )}
-                            </TouchableOpacity>
-                        </View> */}
+
                         <Text
                             style={{
                                 fontFamily: 'AvenirLTStd-Medium',
@@ -906,7 +916,7 @@ const AstrologerRegister = ({ navigation }) => {
                                 }}
                                 editable={false}
                                 placeholderTextColor={'#333333'}
-                                value={date != '' ? moment(date).format('DD-MM-YYYY') : ''}
+                                value={date ? moment(date).format('DD-MM-YYYY') : ''}
                                 placeholder={_kundali.dateofbirth}
                             />
                             <Image
@@ -957,7 +967,11 @@ const AstrologerRegister = ({ navigation }) => {
                             maxHeight={150}
                             labelField="label"
                             valueField="value"
-                            placeholder={_astrologerForm.consulatant}
+                            placeholder={should1 === ''
+                                ? (route.params?.user_profile?.consultation == null
+                                    ? _astrologerForm.consulatant
+                                    : route.params?.user_profile?.consultation)
+                                : should1}
                             value={should1}
                             onChange={(item) => setShould1(item.value)}
                         />
@@ -991,7 +1005,11 @@ const AstrologerRegister = ({ navigation }) => {
                             maxHeight={150}
                             labelField="label"
                             valueField="value"
-                            placeholder={_astrologerForm.skill}
+                            placeholder={should2 === ''
+                                ? (route.params?.user_profile?.skills == null
+                                    ? _astrologerForm.skill
+                                    : route.params?.user_profile?.skills)
+                                : should2}
                             value={should2}
                             onChange={(item) => setShould2(item.value)}
                         />
@@ -1025,7 +1043,11 @@ const AstrologerRegister = ({ navigation }) => {
                             maxHeight={150}
                             labelField="label"
                             valueField="value"
-                            placeholder={_astrologerForm.main}
+                            placeholder={should3 === ''
+                                ? (route.params?.user_profile?.specialization == null
+                                    ? _astrologerForm.main
+                                    : route.params?.user_profile?.specialization)
+                                : should3}
                             value={should3}
                             onChange={(item) => setShould3(item.value)}
                         />
@@ -1059,7 +1081,11 @@ const AstrologerRegister = ({ navigation }) => {
                             maxHeight={150}
                             labelField="label"
                             valueField="value"
-                            placeholder={_astrologerForm.language}
+                            placeholder={should4 === ''
+                                ? (route.params?.user_profile?.language == null
+                                    ? _astrologerForm.language
+                                    : route.params?.user_profile?.language)
+                                : should4}
                             value={should4}
                             onChange={(item) => setShould4(item.value)}
                         />
@@ -1121,6 +1147,7 @@ const AstrologerRegister = ({ navigation }) => {
                             }}
                             placeholderTextColor={'#333333'}
                             placeholder={_astrologerForm.dailyhour}
+                            keyboardType='numeric'
                             value={hour}
                             onChangeText={(text) => setHour(text)}
                         />
@@ -1222,6 +1249,76 @@ const AstrologerRegister = ({ navigation }) => {
                             onChangeText={(text) => setIFSC(text)}
                         />
 
+                        {/* <Text
+                            style={{
+                                fontFamily: 'AvenirLTStd-Medium',
+                                color: '#ADADAD',
+                                fontSize: 18,
+                                letterSpacing: -0.2,
+                                marginTop: 19,
+                                marginHorizontal: 18,
+                            }}>
+                            Account Holder Name
+                        </Text>
+                        <TextInput
+                            style={{
+                                fontSize: 16,
+                                fontFamily: 'AvenirLTStd-Medium',
+                                borderRadius: 10,
+                                borderColor: '#00000020',
+                                borderWidth: 1.5,
+                                marginTop: 10,
+                                marginHorizontal: 18,
+                                paddingHorizontal: 15,
+                                paddingVertical: 11,
+                                color: '#333333',
+                            }}
+                            autoCapitalize='characters'
+                            placeholderTextColor={'#333333'}
+                            placeholder={'Account Holder Name'}
+                            value={holdername}
+                            onChangeText={(text) => setHolderName(text)}
+                        />
+                        <Text
+                            style={{
+                                fontFamily: 'AvenirLTStd-Medium',
+                                color: '#ADADAD',
+                                fontSize: 18,
+                                letterSpacing: -0.2,
+                                marginTop: 19,
+                                marginHorizontal: 18,
+                            }}>
+                            Account Type
+                        </Text>
+                        <Dropdown
+                            style={{
+                                height: 50,
+                                marginHorizontal: 18, marginTop: 10, borderWidth: 1.5, borderColor: '#00000020',
+                                borderRadius: 10,
+                            }}
+                            placeholderStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', paddingHorizontal: 15, }}
+                            selectedTextStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', paddingHorizontal: 15, textTransform: 'capitalize' }}
+                            iconStyle={{
+                                width: 20,
+                                height: 20,
+                                marginRight: 12,
+                            }}
+                            itemTextStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', textTransform: 'capitalize' }}
+                            data={[
+                                { label: 'Saving', value: 'Saving' },
+                                { label: 'Current', value: 'Current' }
+                            ]}
+                            maxHeight={150}
+                            labelField="label"
+                            valueField="value"
+                            placeholder={banktype === ''
+                                ? (route.params?.user_profile?.getdocs == null || route.params?.user_profile?.getdocs?.account_type == null
+                                    ? "Account Type"
+                                    : route.params?.user_profile?.getdocs?.account_type)
+                                : banktype}
+                            value={banktype}
+                            onChange={(item) => setBankType(item.value)}
+                        /> */}
 
                     </View>
                 )}
@@ -1291,9 +1388,16 @@ const AstrologerRegister = ({ navigation }) => {
                             inputSearchStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', }}
                             labelField="label"
                             valueField="value"
-                            placeholder={_astrologerForm.country}
+                            placeholder={should5 === ''
+                                ? (route.params?.user_profile?.country_name == ""
+                                    ? _astrologerForm.country
+                                    : route.params?.user_profile?.country_name)
+                                : should5}
                             value={should5}
-                            onChange={(item) => { setShould5(item.value), statelist(item.value) }}
+                            onChange={(item) => {
+                                setShould5(item.value), statelist(item.value)
+                                setShould6(""), setShould7("")
+                            }}
                         />
 
                         <Text
@@ -1322,12 +1426,19 @@ const AstrologerRegister = ({ navigation }) => {
                             }}
                             itemTextStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', textTransform: 'capitalize' }}
                             data={statelist1}
-                            maxHeight={150}
+                            search
+                            searchPlaceholder={_astrologerForm.statename}
+                            inputSearchStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', }}
+                            maxHeight={200}
                             labelField="label"
                             valueField="value"
-                            placeholder={_astrologerForm.statename}
+                            placeholder={should6 === ''
+                                ? (route.params?.user_profile?.state_name == ""
+                                    ? _astrologerForm.statename
+                                    : route.params?.user_profile?.state_name)
+                                : should6}
                             value={should6}
-                            onChange={(item) => { setShould6(item.value), citylist(item.value) }}
+                            onChange={(item) => { setShould6(item.value), citylist(item.value), setShould7("") }}
                         />
 
                         <Text
@@ -1356,10 +1467,17 @@ const AstrologerRegister = ({ navigation }) => {
                             }}
                             itemTextStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', textTransform: 'capitalize' }}
                             data={cityname}
-                            maxHeight={150}
+                            search
+                            searchPlaceholder={_astrologerForm.city}
+                            inputSearchStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', }}
+                            maxHeight={200}
                             labelField="label"
                             valueField="value"
-                            placeholder={_astrologerForm.city}
+                            placeholder={should7 === ''
+                                ? (route.params?.user_profile?.city_name == ""
+                                    ? _astrologerForm.city
+                                    : route.params?.user_profile?.city_name)
+                                : should7}
                             value={should7}
                             onChange={(item) => setShould7(item.value)}
                         />
@@ -1489,8 +1607,13 @@ const AstrologerRegister = ({ navigation }) => {
                                         marginLeft: 18,
                                         borderRadius: 8,
                                     }}
-                                    source={passport1Full ? { uri: `${passport1Full[0].uri}` } : require('../assets/upload.png')}
+                                    source={passport1Full === "" ?
+                                        route.params?.user_profile?.getdocs?.aadharcard_frontimage == null ?
+                                            require('../assets/upload.png') :
+                                            { uri: `${route.params?.docpath}/${route.params?.user_profile?.getdocs?.aadharcard_frontimage}` } :
+                                        { uri: `${passport1Full[0].uri}` }}
                                 >
+
                                     {(passport1Full &&
                                         <Pressable onPress={() => { removeItem2() }} style={{ alignSelf: 'flex-end', marginTop: 3, marginRight: 5 }}>
                                             <Image
@@ -1517,7 +1640,12 @@ const AstrologerRegister = ({ navigation }) => {
                                         marginLeft: 15,
                                         borderRadius: 8,
                                     }}
-                                    source={passport2Full ? { uri: `${passport2Full[0].uri}` } : require('../assets/upload.png')}>
+
+                                    source={passport2Full === "" ?
+                                        route.params?.user_profile?.getdocs?.aadharcard_backimage == null ?
+                                            require('../assets/upload.png') :
+                                            { uri: `${route.params?.docpath}/${route.params?.user_profile?.getdocs?.aadharcard_backimage}` } :
+                                        { uri: `${passport2Full[0].uri}` }}>
 
                                     {(passport2Full &&
                                         <Pressable onPress={() => { removeItem3() }} style={{ alignSelf: 'flex-end', marginTop: 3, marginRight: 5 }}>
@@ -1556,7 +1684,11 @@ const AstrologerRegister = ({ navigation }) => {
                                     overflow: 'hidden',
                                     borderRadius: 8,
                                 }}
-                                source={resumeFull ? { uri: `${resumeFull[0].uri}` } : require('../assets/upload.png')}>
+                                source={resumeFull === "" ?
+                                    route.params?.user_profile?.getdocs?.pancard_image == null ?
+                                        require('../assets/upload.png') :
+                                        { uri: `${route.params?.docpath}/${route.params?.user_profile?.getdocs?.pancard_image}` } :
+                                    { uri: `${resumeFull[0].uri}` }}>
 
                                 {(resumeFull &&
                                     <Pressable onPress={() => { removeItem4() }} style={{ alignSelf: 'flex-end', marginTop: 3, marginRight: 5 }}>
@@ -1659,8 +1791,12 @@ const AstrologerRegister = ({ navigation }) => {
                                     overflow: 'hidden',
                                     borderRadius: 8,
                                 }}
-                                source={acadmic ? { uri: `${acadmic[0].uri}` } : require('../assets/upload.png')}>
-
+                                // source={acadmic ? { uri: `${acadmic[0].uri}` } : require('../assets/upload.png')}>
+                                source={acadmic === "" ?
+                                    route.params?.user_profile?.getdocs?.academic_certificate == null ?
+                                        require('../assets/upload.png') :
+                                        { uri: `${route.params?.docpath}/${route.params?.user_profile?.getdocs?.academic_certificate}` } :
+                                    { uri: `${acadmic[0].uri}` }}>
                                 {(acadmic &&
                                     <Pressable onPress={() => { removeItem5() }} style={{ alignSelf: 'flex-end', marginTop: 3, marginRight: 5 }}>
                                         <Image
@@ -1697,8 +1833,12 @@ const AstrologerRegister = ({ navigation }) => {
                                     overflow: 'hidden',
                                     borderRadius: 8,
                                 }}
-                                source={astrological ? { uri: `${astrological[0].uri}` } : require('../assets/upload.png')}>
-
+                                // source={astrological ? { uri: `${astrological[0].uri}` } : require('../assets/upload.png')}>
+                                source={astrological === "" ?
+                                    route.params?.user_profile?.getdocs?.astrologer_certificate == null ?
+                                        require('../assets/upload.png') :
+                                        { uri: `${route.params?.docpath}/${route.params?.user_profile?.getdocs?.astrologer_certificate}` } :
+                                    { uri: `${astrological[0].uri}` }}>
                                 {(astrological &&
                                     <Pressable onPress={() => { removeItem6() }} style={{ alignSelf: 'flex-end', marginTop: 3, marginRight: 5 }}>
                                         <Image
@@ -1735,8 +1875,12 @@ const AstrologerRegister = ({ navigation }) => {
                                     overflow: 'hidden',
                                     borderRadius: 8,
                                 }}
-                                source={picture ? { uri: `${picture[0].uri}` } : require('../assets/upload.png')}>
-
+                                // source={picture ? { uri: `${picture[0].uri}` } : require('../assets/upload.png')}>
+                                source={picture === "" ?
+                                    route.params?.user_profile?.image == null ?
+                                        require('../assets/upload.png') :
+                                        { uri: `${route.params?.path}/${route.params?.user_profile?.image}` } :
+                                    { uri: `${picture[0].uri}` }}>
                                 {(picture &&
                                     <Pressable onPress={() => { removeItem7() }} style={{ alignSelf: 'flex-end', marginTop: 3, marginRight: 5 }}>
                                         <Image
@@ -1831,8 +1975,32 @@ const AstrologerRegister = ({ navigation }) => {
                                 Toast.show('Please Select Date');
                             }
                             else {
-                                setCurrentPosition(currentPosition + 1)
 
+                                let e = {
+                                    "name": name,
+                                    "email": email,
+                                    "mobile": mobile,
+                                    "gender": checked === 0 ? "Male" : checked === 1 ? "Female" : null,
+                                    "institute_centre_name": centrename,
+                                    "dob": date == '' ? '' : moment(date).format('YYYY-MM-DD')
+                                };
+                                // alert(JSON.stringify(e, null, 2))
+                                // return
+                                toggleLoading(true);
+                                StepOneditprofile(e)
+                                    .then(data => {
+                                        // alert(JSON.stringify(data, null, 2))
+                                        toggleLoading(false);
+                                        if (data.status) {
+                                            setCurrentPosition(currentPosition + 1)
+                                        } else {
+                                            alert(data?.msg);
+                                        }
+                                    })
+                                    .catch(error => {
+                                        toggleLoading(false);
+                                        console.log('error', error);
+                                    });
                             }
 
                         }}>
@@ -1862,13 +2030,13 @@ const AstrologerRegister = ({ navigation }) => {
                         }}
 
                         onPress={() => {
-                            if (should1 == '') {
+                            if (should1 == '' && route.params?.user_profile?.consultation == null) {
                                 Toast.show('Please select consultant');
-                            } else if (should2 == '') {
+                            } else if (should2 == '' && route.params?.user_profile?.skills == null) {
                                 Toast.show('Please select skill');
-                            } else if (should3 == '') {
+                            } else if (should3 == '' && route.params?.user_profile?.specialization == null) {
                                 Toast.show('Please selct Main Specialization');
-                            } else if (should4 == '') {
+                            } else if (should4 == '' && route.params?.user_profile?.language == null) {
                                 Toast.show('Please select Language');
                             }
                             else if (experience == '') {
@@ -1878,8 +2046,48 @@ const AstrologerRegister = ({ navigation }) => {
                                 Toast.show('Please enter Contribute daily hour');
                             }
                             else {
-                                setCurrentPosition(currentPosition + 1)
 
+                                let e = {
+                                    "experience": experience,
+                                    "language": should4 === ''
+                                        ? (route.params?.user_profile?.language == null
+                                            ? ""
+                                            : route.params?.user_profile?.language)
+                                        : should4,
+                                    "skills": should2 === ''
+                                        ? (route.params?.user_profile?.skills == null
+                                            ? ""
+                                            : route.params?.user_profile?.skills)
+                                        : should2,
+                                    "consultation": should1 === ''
+                                        ? (route.params?.user_profile?.consultation == null
+                                            ? ""
+                                            : route.params?.user_profile?.consultation)
+                                        : should1,
+                                    "contribute_daily": hour,
+                                    "specialization": should3 === ''
+                                        ? (route.params?.user_profile?.specialization == null
+                                            ? ""
+                                            : route.params?.user_profile?.specialization)
+                                        : should3
+                                };
+                                // alert(JSON.stringify(e, null, 2))
+                                // return
+                                toggleLoading(true);
+                                StepSecondeditprofile(e)
+                                    .then(data => {
+                                        // alert(JSON.stringify(data, null, 2))
+                                        toggleLoading(false);
+                                        if (data.status) {
+                                            setCurrentPosition(currentPosition + 1)
+                                        } else {
+                                            alert(data?.msg);
+                                        }
+                                    })
+                                    .catch(error => {
+                                        toggleLoading(false);
+                                        console.log('error', error);
+                                    });
                             }
 
                         }}>
@@ -1909,27 +2117,8 @@ const AstrologerRegister = ({ navigation }) => {
                         }}
 
                         onPress={() => {
+                            finalSubmit()
 
-                            if (academicqual == '') {
-                                Toast.show('Please enter your Acadmic Qualification');
-                            }
-                            else if (astroqualification == '') {
-                                Toast.show('Please enter your Astrological Qualifications');
-                            }
-                            else if (acadmic == '') {
-                                Toast.show('Please upload your Acadmic Certificate');
-                            }
-                            else if (astrological == '') {
-                                Toast.show('Please upload your Astrological Certificate');
-                            } else if (picture == '') {
-                                Toast.show('Please upload your Profile Picture');
-                            }
-                            else if (biography == '') {
-                                Toast.show('Please enter Biography');
-                            }
-                            else {
-                                Freepackage()
-                            }
                         }}>
                         {_customlang.button}
                     </Button>
@@ -1967,8 +2156,40 @@ const AstrologerRegister = ({ navigation }) => {
                             } else if (ifsc == '') {
                                 Toast.show('Please enter IFSC Code');
                             }
+                            // else if (holdername == '') {
+                            //     Toast.show('Please enter account Holder Name');
+                            // } else if (banktype == '' && route.params?.user_profile?.getdocs == null) {
+                            //     Toast.show('Please Select Accont Type');
+                            // }
                             else {
-                                setCurrentPosition(currentPosition + 1)
+                                let e = {
+                                    "bank_account_number": accountnumber,
+                                    "ifsc_code": ifsc,
+                                    "bank_name": bankname,
+                                    // "account_holder_name": holdername,
+                                    // "account_type": banktype === ''
+                                    //     ? (route.params?.user_profile?.getdocs == null
+                                    //         ? ""
+                                    //         : route.params?.user_profile?.getdocs?.account_type)
+                                    //     : banktype,
+                                };
+                                // alert(JSON.stringify(e, null, 2))
+                                // return
+                                toggleLoading(true);
+                                StepThirdeditprofile(e)
+                                    .then(data => {
+                                        // alert(JSON.stringify(data, null, 2))
+                                        toggleLoading(false);
+                                        if (data.status) {
+                                            setCurrentPosition(currentPosition + 1)
+                                        } else {
+                                            alert(data?.msg);
+                                        }
+                                    })
+                                    .catch(error => {
+                                        toggleLoading(false);
+                                        console.log('error', error);
+                                    });
                             }
                         }}>
                         {_customlang.button}
@@ -2000,11 +2221,11 @@ const AstrologerRegister = ({ navigation }) => {
                         onPress={() => {
                             if (address == '') {
                                 Toast.show('Please enter your address');
-                            } else if (should5 == '') {
+                            } else if (should5 == '' && route.params?.user_profile?.country_name == "") {
                                 Toast.show('Please select your country');
-                            } else if (should6 == '') {
+                            } else if (should6 == '' && route.params?.user_profile?.state_name == "") {
                                 Toast.show('Please select your state');
-                            } else if (should7 == '') {
+                            } else if (should7 == '' && route.params?.user_profile?.city_name == "") {
                                 Toast.show('Please select your city');
                             } else if (pincode == '') {
                                 Toast.show('Please enter your pincode');
@@ -2012,7 +2233,42 @@ const AstrologerRegister = ({ navigation }) => {
                                 Toast.show('Please enter valid pincode');
                             }
                             else {
-                                setCurrentPosition(currentPosition + 1)
+                                let e = {
+                                    "address": address,
+                                    "country_id": should5 === ''
+                                        ? (route.params?.user_profile?.country_name == ""
+                                            ? ""
+                                            : route.params?.user_profile?.country_id)
+                                        : should5,
+                                    "state_id": should6 === ''
+                                        ? (route.params?.user_profile?.state_name == ""
+                                            ? ""
+                                            : route.params?.user_profile?.state_id)
+                                        : should6,
+                                    "city_id": should7 === ''
+                                        ? (route.params?.user_profile?.city_name == ""
+                                            ? ""
+                                            : route.params?.user_profile?.city_id)
+                                        : should7,
+                                    "pincode": pincode
+                                };
+                                // alert(JSON.stringify(e, null, 2))
+                                // return
+                                toggleLoading(true);
+                                StepFourtheditprofile(e)
+                                    .then(data => {
+                                        // alert(JSON.stringify(data, null, 2))
+                                        toggleLoading(false);
+                                        if (data.status) {
+                                            setCurrentPosition(currentPosition + 1)
+                                        } else {
+                                            alert(data?.msg);
+                                        }
+                                    })
+                                    .catch(error => {
+                                        toggleLoading(false);
+                                        console.log('error', error);
+                                    });
                             }
                         }}>
                         {_customlang.button}
@@ -2042,31 +2298,8 @@ const AstrologerRegister = ({ navigation }) => {
                         }}
 
                         onPress={() => {
-                            if (pancard == '') {
-                                Toast.show('Please enter your Pan Card No.');
-                            }
-                            else if (pancard.length !== 10) {
-                                Toast.show('Please enter your valid Pan Card No.');
-                            }
-                            else if (aadharcard == '') {
-                                Toast.show('Please enter your Aadhar Card No.');
-                            }
-                            else if (aadharcard.length !== 12) {
-                                Toast.show('Please enter your valid Aadhar Card No.');
-                            }
-                            else if (passport1Full == '') {
-                                Toast.show('Please upload your Aadhar card');
-                            }
-                            else if (passport2Full == '') {
-                                Toast.show('Please upload your Aadhar card');
-                            } else if (resumeFull == '') {
-                                Toast.show('Please upload your Pan card');
-                            }
-                            else {
 
-                                setCurrentPosition(currentPosition + 1)
-                            }
-
+                            setsubmit()
                         }}>
                         {_customlang.button}
                     </Button>
@@ -2078,10 +2311,11 @@ const AstrologerRegister = ({ navigation }) => {
                 modal
                 open={open}
                 mode={'date'}
-                date={date == '' ? new Date() : date}
+                maximumDate={new Date()}
+                date={date ? new Date(date) : new Date()}
                 onConfirm={date => {
                     setOpen(false);
-                    type == false ? setDate(date) : setPDate(date);
+                    type === false ? setDate(date) : setPDate(date);
                 }}
                 onCancel={() => {
                     setOpen(false);

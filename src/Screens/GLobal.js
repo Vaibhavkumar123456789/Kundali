@@ -21,6 +21,7 @@ module.exports = {
     newin: {},
     isfroma: '0',
     kundliformdetail: {},
+    deliveryday: '',
 
     loginmobile: '',
     loginOTP: '',
