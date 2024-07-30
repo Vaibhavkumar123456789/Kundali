@@ -18,12 +18,46 @@ import {
 } from 'react-native';
 import Header from '../Custom/Header';
 import stringsoflanguages from '../language/Language'
+import Loader from '../utils/Loader';
+import { HeaderPreviewApi } from '../backend/Api';
+import { useIsFocused } from '@react-navigation/native';
 
 const MessageCenterDetail = ({ navigation }) => {
     const window = Dimensions.get('window');
     const { width, height } = Dimensions.get('window');
     const { _member } = stringsoflanguages
+    const isFocused = useIsFocused();
     const [modalVisible, setModalVisible] = useState(false);
+    const [state, setState] = useState({
+        loading: false,
+    });
+    const toggleLoading = bol => setState({ ...state, loading: bol });
+    const [profile, setProfile] = useState()
+    const [imagePath, setImagePath] = useState("")
+
+    useEffect(() => {
+        headerapi()
+    }, [isFocused == true])
+
+    const headerapi = () => {
+
+        toggleLoading(true)
+        HeaderPreviewApi()
+            .then(data => {
+                toggleLoading(false);
+                // alert(JSON.stringify(data, null, 2))
+                if (data.status) {
+                    setProfile(data?.data[0])
+                    setImagePath(data?.path)
+                } else {
+                    alert(data?.msg);
+                }
+            })
+            .catch(error => {
+                toggleLoading(false);
+                console.log('error', error);
+            });
+    }
 
 
     return (
@@ -32,10 +66,26 @@ const MessageCenterDetail = ({ navigation }) => {
             <Header
                 menuOption={() => navigation.goBack()}
                 leftIcon={require('../assets/backtoback.png')}
-                title={'#12'}
+                title={'#5914'}
             />
-            <ScrollView>
 
+
+            <View style={{ flexDirection: 'row', alignItems: 'center', paddingTop: 15, paddingLeft: 20, backgroundColor: '#F7F7F7', paddingBottom: 15 }}>
+                <Image style={{ height: 32, width: 32, resizeMode: "contain", borderRadius: 25 }} source={{ uri: `${imagePath}/${profile?.image}` }} />
+                {(profile &&
+                    <Text numberOfLines={1}
+                        style={{
+                            color: profile?.company_color == null ? "#000" : profile?.company_color,
+                            textAlign: 'center',
+                            fontSize: 16,
+                            fontFamily: 'AvenirLTStd-Heavy',
+                            width: window.width - 85,
+                        }}>
+                        {profile?.company_name}
+                    </Text>
+                )}
+            </View>
+            <ScrollView >
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 15 }}>
 
                     <Text style={{
@@ -57,7 +107,7 @@ const MessageCenterDetail = ({ navigation }) => {
                     </Text>
                 </View>
 
-                <Text style={{
+                <Text numberOfLines={2} style={{
                     fontSize: 14,
                     color: '#333333',
                     marginTop: 3,
@@ -66,18 +116,58 @@ const MessageCenterDetail = ({ navigation }) => {
                 }}>
                     Deepak Kumar
                 </Text>
-                <View style={{ borderBottomColor: '#36363610', borderBottomWidth: 1, marginTop: 10, }}></View>
+
+                <View style={{
+                    flexDirection: 'row',
+                    marginTop: 6,
+                    marginHorizontal: 18,
+                }}>
+                    <Text style={{
+                        fontSize: 14,
+                        color: '#333333',
+                        marginTop: 10,
+                        fontFamily: 'AvenirLTStd-Heavy',
+                    }}>
+                        Remedy :&nbsp;
+                        <Text
+                            style={{
+                                fontSize: 14,
+                                color: '#33333350',
+                                marginTop: 10,
+                                fontFamily: 'AvenirLTStd-Medium',
+                                lineHeight: 20,
+                            }}>
+                            Venus (in Uttara Ashada) - Remove a block from your relationship.&nbsp;
+
+                        </Text>
+                    </Text>
+                </View>
 
                 <Text style={{
-                    fontSize: 18,
+                    fontSize: 14,
                     color: '#33333350',
                     marginTop: 10,
                     fontFamily: 'AvenirLTStd-Medium',
                     marginHorizontal: 18,
+                    lineHeight: 20,
                 }}>
                     Venus (in Uttara Ashada) - Remove a block from your relationship.
                 </Text>
             </ScrollView>
+
+            <View style={{ borderTopWidth: 1, borderTopColor: '#97979780', marginBottom: 10, width: "100%" }}>
+
+                <View style={{ alignItems: 'center', alignSelf: 'center', marginVertical: 13 }}>
+                    {(profile &&
+                        <>
+                            <Text style={{ color: profile?.astrologer_color == null ? "#000" : profile?.astrologer_color, fontSize: 13, fontFamily: 'AvenirLTStd-Heavy', marginTop: 3 }}>{profile?.astrologer_name}</Text>
+                            <Text style={{ color: profile?.header_color == null ? "#000" : profile?.header_color, fontSize: 13, fontFamily: 'AvenirLTStd-Heavy', marginTop: 3 }}>{profile?.mobile}, {profile?.email}</Text>
+                            <Text style={{ color: profile?.header_color == null ? "#000" : profile?.header_color, fontSize: 13, fontFamily: 'AvenirLTStd-Heavy', marginTop: 3 }}>{profile?.company_address}</Text>
+                            <Text style={{ color: profile?.header_color == null ? "#000" : profile?.header_color, fontSize: 13, fontFamily: 'AvenirLTStd-Heavy', marginTop: 3 }}>{profile?.website}</Text>
+                        </>
+                    )}
+                </View>
+            </View>
 
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 20 }}>
 

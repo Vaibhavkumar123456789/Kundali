@@ -94,7 +94,7 @@ const WalletTransaction = ({ navigation }) => {
                                             fontSize: 14,
                                             marginLeft: 10,
                                             marginTop: 0,
-                                            width: Dimensions.get('window').width - 190,
+                                            width: Dimensions.get('window').width - 215,
                                         }}>
                                         {item?.txn_name}
                                     </Text>
@@ -105,7 +105,7 @@ const WalletTransaction = ({ navigation }) => {
                                             fontFamily: 'AvenirLTStd-Medium',
                                             fontSize: 12,
                                             marginLeft: 10,
-                                            width: Dimensions.get('window').width - 190,
+                                            width: Dimensions.get('window').width - 215,
                                             marginTop: 3,
                                         }}>
                                         {moment(item.created_at).format('DD MMM YYYY hh:mm:a')}
@@ -119,18 +119,32 @@ const WalletTransaction = ({ navigation }) => {
                                             alignSelf: 'center',
                                             // marginTop: 25,
                                         }}>
-                                        <Text numberOfLines={1}
-                                            style={{
-                                                color: item.type == "credit" ? '#17302C' : 'red',
-                                                fontFamily: 'AvenirLTStd-Heavy',
-                                                fontSize: 16,
-                                                marginLeft: 10,
-                                                marginTop: 0,
-                                                textAlign: 'right',
-                                                width: window.width - 290,
-                                            }}>
-                                            {item.type === "credit" ? `+ ₹${item?.price}` : `- ₹${item?.price}`}
-                                        </Text>
+                                        {item.txn_type == "5" ?        //only ecommerce part
+                                            <Text numberOfLines={1}
+                                                style={{
+                                                    color: 'red',
+                                                    fontFamily: 'AvenirLTStd-Heavy',
+                                                    fontSize: 16,
+                                                    marginLeft: 10,
+                                                    marginTop: 0,
+                                                    textAlign: 'right',
+                                                    width: window.width - 265,
+                                                }}>
+                                                - ₹{item?.amount}
+                                            </Text> :
+                                            <Text numberOfLines={1}
+                                                style={{
+                                                    color: item.type == "credit" ? '#17302C' : 'red',
+                                                    fontFamily: 'AvenirLTStd-Heavy',
+                                                    fontSize: 16,
+                                                    marginLeft: 10,
+                                                    marginTop: 0,
+                                                    textAlign: 'right',
+                                                    width: window.width - 265,
+                                                }}>
+                                                {item.type === "credit" ? `+ ₹${item?.price}` : `- ₹${item?.price}`}
+                                            </Text>}
+
 
                                     </View>
                                     :
@@ -147,7 +161,7 @@ const WalletTransaction = ({ navigation }) => {
                                                 marginLeft: 10,
                                                 marginTop: 0,
                                                 textAlign: 'right',
-                                                width: window.width - 290,
+                                                width: window.width - 265,
                                             }}>
                                             ₹{`${item?.price}`}
                                         </Text>
@@ -159,7 +173,7 @@ const WalletTransaction = ({ navigation }) => {
                                                 marginLeft: 10,
                                                 marginTop: 1,
                                                 textAlign: 'right',
-                                                width: window.width - 290,
+                                                width: window.width - 265,
                                             }}>
                                             Failed
                                         </Text>

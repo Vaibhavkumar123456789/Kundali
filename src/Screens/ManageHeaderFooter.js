@@ -39,6 +39,8 @@ const ManageHeaderFooter = ({ navigation }) => {
     const [modalVisible, setModalVisible] = useState(false);
     const [modalVisible4, setModalVisible4] = useState(false);
     const [should1, setShould1] = useState('')
+    const [should2, setShould2] = useState('')
+    const [should3, setShould3] = useState('')
     const [key, setKey] = useState(0)
     const [cname, setCName] = useState('')
     const [aname, setAName] = useState('')
@@ -145,6 +147,12 @@ const ManageHeaderFooter = ({ navigation }) => {
             } else if (should1 == '') {
                 Toast.show('Please select Color');
             }
+            else if (should2 == '') {
+                Toast.show('Please select  Company Color');
+            }
+            else if (should3 == '') {
+                Toast.show('Please select Astrologer Color');
+            }
             else {
                 var array = []
                 for (let user of acCount) {
@@ -162,6 +170,8 @@ const ManageHeaderFooter = ({ navigation }) => {
                 formData.append('alternate_mobile', acCount[1])
                 formData.append('website', website)
                 formData.append('header_color', should1)
+                formData.append('company_color', should2)
+                formData.append('astrologer_color', should3)
                 formData.append('image', {
                     uri: state.image == '' ? '' : state.image.uri,
                     type: 'image/jpeg',
@@ -705,6 +715,75 @@ const ManageHeaderFooter = ({ navigation }) => {
                             placeholder={"Color"}
                             value={should1}
                             onChange={(item) => setShould1(item.value)}
+                        />
+
+                        <Text
+                            style={{
+                                fontFamily: 'AvenirLTStd-Medium',
+                                color: '#ADADAD',
+                                fontSize: 18,
+                                letterSpacing: -0.2,
+                                marginTop: 19,
+                                marginHorizontal: 18,
+                            }}>
+                            Select Company Color Name
+                        </Text>
+
+                        <Dropdown
+                            style={{
+                                height: 50,
+                                marginHorizontal: 18, marginTop: 10, borderWidth: 1.5, borderColor: '#00000020',
+                                borderRadius: 10,
+                            }}
+                            placeholderStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', paddingHorizontal: 15, }}
+                            selectedTextStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', paddingHorizontal: 15, textTransform: 'capitalize' }}
+                            iconStyle={{
+                                width: 20,
+                                height: 20,
+                                marginRight: 12,
+                            }}
+                            itemTextStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', textTransform: 'capitalize' }}
+                            data={colorList}
+                            maxHeight={150}
+                            labelField="label"
+                            valueField="value"
+                            placeholder={"Select Company Color Name"}
+                            value={should2}
+                            onChange={(item) => setShould2(item.value)}
+                        />
+                        <Text
+                            style={{
+                                fontFamily: 'AvenirLTStd-Medium',
+                                color: '#ADADAD',
+                                fontSize: 18,
+                                letterSpacing: -0.2,
+                                marginTop: 19,
+                                marginHorizontal: 18,
+                            }}>
+                            Select Astrologer Color Name
+                        </Text>
+
+                        <Dropdown
+                            style={{
+                                height: 50,
+                                marginHorizontal: 18, marginTop: 10, borderWidth: 1.5, borderColor: '#00000020',
+                                borderRadius: 10,
+                            }}
+                            placeholderStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', paddingHorizontal: 15, }}
+                            selectedTextStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', paddingHorizontal: 15, textTransform: 'capitalize' }}
+                            iconStyle={{
+                                width: 20,
+                                height: 20,
+                                marginRight: 12,
+                            }}
+                            itemTextStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', textTransform: 'capitalize' }}
+                            data={colorList}
+                            maxHeight={150}
+                            labelField="label"
+                            valueField="value"
+                            placeholder={"Select Astrologer Color Name"}
+                            value={should3}
+                            onChange={(item) => setShould3(item.value)}
                         />
                         <Button
                             containerStyle={{

@@ -3,7 +3,6 @@ import {
     Image,
     StyleSheet,
     View,
-    ImageBackground,
     Text,
     Platform,
     TouchableOpacity,
@@ -14,7 +13,7 @@ import {
     FlatList,
     SafeAreaView,
     ScrollView,
-    StatusBar,
+    StatusBar, Modal
 } from 'react-native';
 import StepIndicator from 'react-native-step-indicator';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
@@ -29,10 +28,14 @@ import { useIsFocused } from '@react-navigation/native';
 import stringsoflanguages from '../language/Language'
 import { Dropdown } from 'react-native-element-dropdown';
 import { validateEmail } from '../utils/utils';
-import { consultancylist, updatememberlist } from '../backend/Api';
+import LocationIQ from 'react-native-locationiq';
+import { consultancylist, Country, updatememberlist } from '../backend/Api';
+import { BASE_URL_EXTERNAL } from '../backend/Config';
+
 const UpdateMember = ({ navigation, route }) => {
     // alert(JSON.stringify(route.params, null, 2))
     console.log(JSON.stringify(route.params?.maindetailuser?.consultancy_for, null, 2))
+    const [modalVisible, setModalVisible] = useState(false);
     const { _kundali, _customlang } = stringsoflanguages
     const window = Dimensions.get('window');
     const isFocused = useIsFocused();
@@ -62,7 +65,6 @@ const UpdateMember = ({ navigation, route }) => {
     const [number, setNumber] = useState(route.params?.maindetailuser?.mobile)
     const [email, setEmail] = useState(route.params?.maindetailuser?.email)
     const [address, setAddress] = useState(route.params?.maindetailuser?.address)
-    const [placebitrh, setPlaceBirth] = useState(route.params?.maindetailuser?.pob)
     const [caste, setCaste] = useState(route.params?.maindetailuser?.caste)
     const [gotra, setGotra] = useState(route.params?.maindetailuser?.gotra)
     const [fathername, setFatherName] = useState(route.params?.maindetailuser?.father_name)
@@ -72,6 +74,15 @@ const UpdateMember = ({ navigation, route }) => {
     const [filedbusiness, setFiledBusiness] = useState(route.params?.maindetailuser?.filled_of_business)
     const [key2, setKey2] = useState(0)
     const [other, setOther] = useState(route.params?.maindetailuser?.others)
+    const [location, setLocation] = useState([]);
+    const [searchQuery, setSearchQuery] = useState(route.params?.maindetailuser?.pob);
+    const [showDropdown, setShowDropdown] = useState(false);
+    const [mainDetailUser, setMainDetailUser] = useState(route.params?.maindetailuser)
+    const [search, setSearch] = useState('')
+    const [cityList, setCityList] = useState([])
+    const [selectedcity, setSelectedCity] = useState('')
+    const [should1, setShould1] = useState('')
+    const [clist, setCList] = useState([])
     const [state, setState] = useState({
         loading: false,
     });
@@ -79,7 +90,56 @@ const UpdateMember = ({ navigation, route }) => {
 
     useEffect(() => {
         listconsultancy()
+        Countrysearch()
     }, [isFocused == true])
+
+    const Countrysearch = () => {
+        Country()
+            .then(data => {
+                // alert(JSON.stringify(data, null, 2))
+                if (data.status) {
+                    let tempCArr = []
+                    data?.data.map((i) => {
+                        tempCArr.push({
+                            label: i.name,
+                            value: i.iso2,
+                        })
+                        setCList(tempCArr)
+                    })
+                } else {
+                    alert(data?.msg);
+                }
+            })
+            .catch(error => {
+                console.log('error', error);
+            });
+    }
+
+    useEffect(() => {
+        console.log(`${BASE_URL_EXTERNAL}Place/GetCity?CountryCode=${should1}&SearchText=${search}&Limit=50`)
+        const timeOut = setTimeout(async () => {
+            const res = await fetch(`${BASE_URL_EXTERNAL}Place/GetCity?CountryCode=${should1}&SearchText=${search}&Limit=50`, {
+                method: 'GET',
+                headers: {
+                    "Accept": "application/json",
+                    "Content-Type": "application/json"
+                },
+            });
+            const response1 = await res.json()
+            // alert(JSON.stringify(response1, null, 2))
+            setCityList(response1?.responseData?.data)
+        }, 1500)
+
+        return () => {
+            clearTimeout(timeOut)
+        }
+    }, [search])
+
+    const searchCity = async (value) => {
+        setSearch(value)
+    }
+
+
 
     const proficiencies = [
         { label: 'Male', value: 'Male' },
@@ -191,7 +251,12 @@ const UpdateMember = ({ navigation, route }) => {
             "address": address,
             "dob": date == '' ? '' : moment(date).format('YYYY-MM-DD'),
             "tob": date1 == '' ? '' : moment(date1).format('hh:mm a'),
-            "pob": placebitrh,
+            "country": should1 == "" ? route.params?.maindetailuser?.country : should1,
+            "pob": selectedcity == "" ? route.params?.maindetailuser?.pob : `${selectedcity.cityName}`,
+            "latitude": selectedcity == "" ? route.params?.maindetailuser?.latitude : selectedcity.latitude,
+            "longitude": selectedcity == "" ? route.params?.maindetailuser?.longitude : selectedcity.longitude,
+            'Timezone': selectedcity == "" ? route.params?.maindetailuser?.Timezone : selectedcity.timezone,
+            'cityid': selectedcity == "" ? route.params?.maindetailuser?.cityid : selectedcity.cityId,
             "caste": caste,
             "gotra": gotra,
             "father_name": fathername,
@@ -206,7 +271,8 @@ const UpdateMember = ({ navigation, route }) => {
             "consultancy_for": jj[0] == undefined || null ? selected.join('|') : jj.join('|'),
             "others": other,
         };
-        //  alert(JSON.stringify(e,null,2))
+        // alert(JSON.stringify(e, null, 2))
+        // return
         toggleLoading(true);
         updatememberlist(e)
             .then(data => {
@@ -553,7 +619,8 @@ const UpdateMember = ({ navigation, route }) => {
 
                         </TouchableOpacity>
 
-                        <Text
+
+                        {/* <Text
                             style={{
                                 fontFamily: 'AvenirLTStd-Medium',
                                 color: '#ADADAD',
@@ -564,6 +631,7 @@ const UpdateMember = ({ navigation, route }) => {
                             }}>
                             {_kundali.placeofbirth}
                         </Text>
+
                         <TextInput
                             style={{
                                 fontSize: 16,
@@ -579,9 +647,114 @@ const UpdateMember = ({ navigation, route }) => {
                             }}
                             placeholderTextColor={'#333333'}
                             placeholder={_kundali.placeofbirth}
-                            value={placebitrh}
-                            onChangeText={(text) => setPlaceBirth(text)}
+                            value={searchQuery}
+                            onChangeText={text => setSearchQuery(text)}
+                            onFocus={() => setShowDropdown(true)}
                         />
+
+                        {showDropdown && location?.length > 0 && searchQuery?.length > 1 && (
+                            <View style={{
+                                marginHorizontal: 18,
+                                paddingHorizontal: 8,
+                                borderRadius: 10,
+                                marginTop: 5,
+                                backgroundColor: 'white',
+                                elevation: 5,
+                            }}>
+                                <ScrollView >
+                                    {location.map((item, index) => (
+                                        <Pressable style={{
+
+                                        }} onPress={() => { setSelectedCity(item), setShowDropdown(false), setSearchQuery(item.display_name); }}>
+                                            <View style={{
+                                                margin: 10,
+                                            }}>
+                                                <Text style={{ color: '#000', fontFamily: 'AvenirLTStd-Medium', }}>
+                                                    {item.display_name}
+                                                </Text>
+                                                <Text style={{ color: '#000', fontFamily: 'AvenirLTStd-Medium', }}>
+                                                    Lat:{item.lat} , Lon:{item.lon}
+                                                </Text>
+                                            </View>
+                                        </Pressable>
+                                    ))}
+                                </ScrollView>
+                            </View>
+                        )} */}
+
+                        <Text
+                            style={{
+                                fontFamily: 'AvenirLTStd-Medium',
+                                color: '#ADADAD',
+                                fontSize: 18,
+                                letterSpacing: -0.2,
+                                marginTop: 19,
+                                marginHorizontal: 18,
+                            }}>
+                            {_kundali.country}
+                        </Text>
+                        <Dropdown
+                            style={{
+                                height: 50,
+                                marginHorizontal: 18, marginTop: 10, borderWidth: 1.5, borderColor: '#00000020',
+                                borderRadius: 10,
+                            }}
+                            placeholderStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', paddingHorizontal: 15, }}
+                            selectedTextStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', paddingHorizontal: 15, textTransform: 'capitalize' }}
+                            iconStyle={{
+                                width: 20,
+                                height: 20,
+                                marginRight: 12,
+                            }}
+                            itemTextStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', textTransform: 'capitalize' }}
+                            data={clist
+                            }
+                            maxHeight={200}
+                            search
+                            searchPlaceholder={_kundali.country}
+                            inputSearchStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333' }}
+                            labelField="label"
+                            valueField="value"
+                            placeholder={route.params?.maindetailuser?.country == "" || null ? _kundali.country : route.params?.maindetailuser?.country}
+                            value={should1}
+                            onChange={(item) => {
+                                setShould1(item.value),
+                                    setMainDetailUser({
+                                        ...mainDetailUser,
+                                        pob: '', // Clear the place of birth
+                                    });
+                            }}
+                        />
+
+                        <Text
+                            style={{
+                                fontFamily: 'AvenirLTStd-Medium',
+                                color: '#ADADAD',
+                                fontSize: 18,
+                                letterSpacing: -0.2,
+                                marginTop: 19,
+                                marginHorizontal: 18,
+                            }}>
+                            {_kundali.placeofbirth}
+                        </Text>
+                        <Pressable onPress={() => setModalVisible(true)}>
+                            <Text
+                                style={{
+                                    fontSize: 16,
+                                    fontFamily: 'AvenirLTStd-Medium',
+                                    borderRadius: 10,
+                                    borderColor: '#00000020',
+                                    borderWidth: 1.5,
+                                    marginTop: 10,
+                                    marginHorizontal: 18,
+                                    paddingHorizontal: 15,
+                                    paddingVertical: 14,
+                                    color: '#333333',
+                                }}>
+                                {selectedcity == '' ? (should1 === '' ? mainDetailUser?.pob : _kundali.placeofbirth) : `${selectedcity.cityName},${selectedcity.state},${selectedcity.countryCode}`}
+                            </Text>
+
+                        </Pressable>
 
                         <Text
                             style={{
@@ -1198,7 +1371,10 @@ const UpdateMember = ({ navigation, route }) => {
                             }}
 
                             onPress={() => {
-                                if (placebitrh === '') {
+                                if (should1 === '') {
+                                    Toast.show('Please Select Country');
+                                }
+                                else if (selectedcity === '') {
                                     Toast.show('Please enter place of birth');
                                 }
                                 else if (caste === '') {
@@ -1369,6 +1545,76 @@ const UpdateMember = ({ navigation, route }) => {
                     setOpen1(false)
                 }}
             />
+
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose={() => {
+                    setModalVisible(!modalVisible);
+                }}
+            >
+                <TouchableOpacity
+                    activeOpacity={0.8}
+                    onPress={() => {
+                        setModalVisible(false);
+                    }}
+                    style={{
+                        flex: 1,
+                        backgroundColor: '#00000099',
+                        justifyContent: 'center',
+                    }}>
+                    <View style={{
+                        margin: 15,
+                        padding: 20,
+                        backgroundColor: 'white',
+                        borderRadius: 10,
+                    }}>
+                        <TouchableOpacity
+                            activeOpacity={0.8}
+                            onPress={() => {
+
+                            }}>
+                            <View style={{ alignSelf: 'center' }}>
+
+                            </View>
+                            <TextInput
+                                style={{
+                                    fontSize: 16,
+                                    fontFamily: 'AvenirLTStd-Medium',
+                                    borderRadius: 10,
+                                    borderColor: '#00000020',
+                                    borderWidth: 1.5,
+                                    paddingHorizontal: 15,
+                                    color: '#333333',
+                                }}
+                                placeholderTextColor={'#333333'}
+                                placeholder={_kundali.placeofbirth}
+                                onChangeText={(text) => { searchCity(text) }}
+                            />
+                            {cityList?.length > 0 && (
+                                <FlatList
+                                    data={cityList}
+                                    renderItem={({ item, index }) => (
+                                        <Pressable style={{}} onPress={() => { setSelectedCity(item), setModalVisible(false) }}>
+                                            <View style={{ width: '100%', margin: 10 }}>
+                                                <Text style={{ color: '#000', fontFamily: 'AvenirLTStd-Medium', }}>
+                                                    {item.cityName} ,{item.state} ,{item.countryCode},
+                                                </Text>
+                                                <Text style={{ color: '#000', fontFamily: 'AvenirLTStd-Medium', }}>
+                                                    Lat:{item.latitude} , Lon:{item.longitude}
+                                                </Text>
+                                            </View>
+                                        </Pressable>
+                                    )}
+                                />
+
+                            )}
+
+                        </TouchableOpacity>
+                    </View>
+                </TouchableOpacity>
+            </Modal>
         </SafeAreaView>
     );
 };

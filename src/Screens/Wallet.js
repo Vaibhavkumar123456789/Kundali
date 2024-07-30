@@ -398,7 +398,7 @@ const Wallet = ({ navigation }) => {
           renderItem={({ item, index }) => (
             <TouchableOpacity
               activeOpacity={0.8}
-              style={{ width: window.width / 3 - 27, marginLeft: 18, }}
+              style={{ width: window.width / 3 - 25, marginLeft: 18, }}
               onPress={() => {
                 setSelect(index)
                 handledata(item)
@@ -417,7 +417,7 @@ const Wallet = ({ navigation }) => {
                     textAlign: 'center',
                     fontSize: 18,
                     fontFamily: 'AvenirLTStd-Heavy',
-                    color: '#6F6F7B',
+                    // color: '#6F6F7B',
                     color: index == select ? '#1E1F20' : '#6F6F7B',
                   }}>
                   ₹{parseFloat(item.recharge).toFixed(0)}

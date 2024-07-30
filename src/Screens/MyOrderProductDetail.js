@@ -131,7 +131,7 @@ const MyOrderProductDetail = ({ navigation, route }) => {
                             </View>
 
                             <View style={{ flexDirection: 'row', marginHorizontal: 10, marginTop: 10, }}>
-                                <Image style={{ width: 80, height: 80, borderRadius: 5, resizeMode: 'contain' }}
+                                <Image style={{ width: 80, height: 80, borderRadius: 50, resizeMode: 'contain' }}
                                     source={{ uri: item?.image }} />
                                 <View>
                                     <Text numberOfLines={3}
@@ -175,7 +175,7 @@ const MyOrderProductDetail = ({ navigation, route }) => {
                                                 marginTop: 5,
                                                 width: window.width - 150,
                                             }}>
-                                            ₹{item?.total_price}
+                                             {`₹ ${(item?.price - (item?.total_tax / item?.qty)).toFixed(2)}`}
                                         </Text>
                                     </View>
                                 </View>

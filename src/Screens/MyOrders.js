@@ -6,7 +6,7 @@ import { TabView, TabBar, SceneMap } from 'react-native-tab-view';
 import Loader from '../utils/Loader';
 import { useIsFocused } from '@react-navigation/native';
 import { RadioButton } from 'react-native-paper';
-import { Kundlireporthistory, getorderhistory } from '../backend/Api';
+import { Kundlireporthistory, getorderhistory, prashnalaganapi } from '../backend/Api';
 import moment from 'moment';
 
 const MyOrders = ({ navigation }) => {
@@ -22,16 +22,20 @@ const MyOrders = ({ navigation }) => {
     const [checked, setChecked] = useState('all');
     const [reportdetail, setReportDetail] = useState([])
     const [orderdetail, setOrderDetail] = useState([])
+    const [prashna, setPrashna] = useState([])
+    const [data, setData] = useState()
 
     useEffect(() => {
         banner()
         OrderHistory()
+        prashankundli()
     }, [isFocused == true])
 
     const banner = (filter = 'all') => {
+
         let e = {
 
-            "condition": filter,  // all , lastmonth ,lastmonth
+            "condition": filter,  // all , lastweek ,lastmonth
         };
 
         toggleLoading(true);
@@ -73,6 +77,26 @@ const MyOrders = ({ navigation }) => {
             });
     }
 
+    const prashankundli = () => {
+        toggleLoading(true);
+
+        prashnalaganapi()
+            .then(data => {
+                // alert(JSON.stringify(data, null, 2))
+                toggleLoading(false);
+                if (data.status) {
+                    setPrashna(data?.list)
+                    setData(data)
+                } else {
+                    alert(data?.msg);
+                }
+            })
+            .catch(error => {
+                toggleLoading(false);
+                console.log('error', error);
+            });
+    }
+
 
     const renderScene = ({ route }) => {
         switch (route.key) {
@@ -96,7 +120,7 @@ const MyOrders = ({ navigation }) => {
                                                     </Text>
                                                 </View>
                                                 <View style={{ flexDirection: 'row', alignSelf: 'flex-end', marginRight: 12, marginTop: 20 }}>
-                                                    <Text style={{ color: '#FFCC80', textDecorationLine: 'underline', }} onPress={() => navigation.navigate('NetalReportDetail', item)}>{_order.view}</Text>
+                                                    <Text style={{ color: '#FFCC80', fontFamily: 'AvenirLTStd-Medium', fontSize: 14, textDecorationLine: 'underline', }} onPress={() => navigation.navigate('NetalReportDetail', item)}>{_order.view}</Text>
                                                 </View>
                                             </View>
                                             <View style={styles.dt_view_1}>
@@ -219,7 +243,7 @@ const MyOrders = ({ navigation }) => {
                                                                         marginTop: 5,
                                                                         width: window.width - 150,
                                                                     }}>
-                                                                    ₹{item?.total_price}
+                                                                     {`₹ ${(item?.price - (item?.total_tax / item?.qty)).toFixed(2)}`}
                                                                 </Text>
                                                             </View>
                                                         </View>
@@ -258,6 +282,62 @@ const MyOrders = ({ navigation }) => {
                             </View>}
                     </View>
                 )
+
+            case 'third':
+                return (
+                    <View style={{ flex: 1, }}>
+                        {prashna && prashna.length > 0 ?
+                            <FlatList
+                                data={prashna}
+                                style={{ marginTop: 10, flexGrow: 0 }}
+                                renderItem={({ item, index }) => (
+
+                                    <View style={styles.ex_view}>
+
+                                        <View style={styles.dt_view}>
+                                            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginLeft: 2, marginTop: 4 }}>
+                                                <View style={{ flexDirection: 'row' }}>
+
+                                                    <Text numberOfLines={1} style={{ color: '#1E1F20', fontFamily: 'AvenirLTStd-Heavy', fontSize: 16, marginLeft: 7, marginTop: 0, width: window.width - 210 }}>
+                                                        {item?.name}
+                                                    </Text>
+                                                </View>
+                                                <View style={{ flexDirection: 'row', alignSelf: 'flex-end', marginRight: 12, marginTop: 20 }}>
+                                                    <Text style={{ color: '#FFCC80', fontFamily: 'AvenirLTStd-Medium', fontSize: 14, textDecorationLine: 'underline', }} onPress={() => navigation.navigate('PrashnaReport', { item, data1: data?.path })}>{_order.view}</Text>
+                                                </View>
+                                            </View>
+                                            <View style={styles.dt_view_1}>
+                                                <View style={styles.dt_view_11}>
+                                                    <View
+                                                        style={{
+                                                            flexDirection: 'row', marginTop: -15,
+                                                        }}>
+                                                        <Text numberOfLines={1}
+                                                            style={styles.dt_name}>{`${moment(item?.updated_at).format('YYYY-MM-DD hh:mm a')}`}</Text>
+
+                                                    </View>
+
+
+                                                </View>
+                                            </View>
+                                            <View style={styles.dt_view_2}>
+                                                <View style={styles.dt_viewOpt}>
+                                                    <Text numberOfLines={1} style={styles.dt_viewOptText}>
+                                                        {_order.amount} :
+                                                        {/* ₹ {item?.total_mrp}/- */}
+                                                    </Text>
+                                                </View>
+
+                                            </View>
+                                        </View>
+                                    </View>
+                                )}
+                            />
+                            : <View style={{ justifyContent: 'center', alignItems: 'center', flex: 0.8 }}>
+                                <Text style={{ textAlign: 'center', color: 'black', fontSize: 14, fontFamily: 'AvenirLTStd-Medium' }}>No Prashna Kundali Report</Text>
+                            </View>}
+                    </View>
+                )
         }
     }
 
@@ -265,6 +345,7 @@ const MyOrders = ({ navigation }) => {
     const [routes] = React.useState([
         { key: 'first', title: _home.myorderTab1 },
         { key: 'second', title: _home.myorderTab2 },
+        { key: 'third', title: "Prashna Lagan Report" },
     ]);
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
@@ -290,8 +371,8 @@ const MyOrders = ({ navigation }) => {
                     <TabBar
                         style={styles.style}
                         labelStyle={styles.labelStyle}
-                        // scrollEnabled={true}
-                        tabStyle={{ height: 50 }}
+                        scrollEnabled={true}
+                        tabStyle={{ height: 50, width: 'auto' }}
                         activeColor={'#FFCC80'}
                         inactiveColor={'#333333'}
                         inactiveOpacity={0.5}

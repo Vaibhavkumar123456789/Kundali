@@ -49,7 +49,7 @@ const PlaceOrder = ({ navigation, route }) => {
         toggleLoading(true);
         getcartapi()
             .then(data => {
-                // alert(JSON.stringify(data?.total, null, 2))
+                // alert(JSON.stringify(data, null, 2))
                 toggleLoading(false);
                 if (data.status) {
                     setQty(data)
@@ -111,8 +111,16 @@ const PlaceOrder = ({ navigation, route }) => {
     }
 
     const renderCartItem = ({ item, index }) => {
-
-        const qualityRating = item?.product?.quality_rati1?.find(q => q.quality.toString() === item.variant.toString());
+        let qualityRating;
+      
+        if (!item?.product?.quality_rati1 || item?.product?.quality_rati1.length === 0) {
+            qualityRating = {
+                discount_price: item?.product?.discounted_price,
+                price: item?.product?.prices,
+            };
+        } else {
+            qualityRating = item?.product?.quality_rati1?.find(q => q.quality.toString() === item.variant.toString());
+        }
 
         return (
             <View style={{

@@ -8,6 +8,7 @@ import Button from 'react-native-button';
 import Share from 'react-native-share';
 import RNFS from 'react-native-fs';
 import Mailer from 'react-native-mail';
+import RNPrint from 'react-native-print';
 
 const KundliGenerate = ({ navigation, route }) => {
     console.log(JSON.stringify(route.params, null, 2))
@@ -54,7 +55,7 @@ const KundliGenerate = ({ navigation, route }) => {
                 console.log('Failed to download file');
                 console.log('Result:', result);
             }
-        } catch (error) {
+      s  } catch (error) {
             console.log('Error downloading file', error);
         }
     };
@@ -108,6 +109,17 @@ const KundliGenerate = ({ navigation, route }) => {
         }
     }
 
+    const printFromURL = async () => {
+        try {
+            await RNPrint.print({
+                filePath: route.params?.item,
+                orientation: 'landscape',
+            });
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
     useEffect(() => {
         if (route.params?.number == "1") {
             const backAction = () => {
@@ -158,8 +170,7 @@ const KundliGenerate = ({ navigation, route }) => {
             />
             <View style={{ width: window.width, height: window.height - 150 }}>
                 <WebView
-                    // source={{ uri: `https://docs.google.com/viewer?url=${encodeURIComponent(route.params?.item)}` }}
-                    // style={{ flex: 1, }}
+
                     source={{ uri: `https://docs.google.com/gview?embedded=true&url=${encodeURIComponent(route.params?.item)}` }}
                     style={{ flex: 1 }}
                     originWhitelist={['*']}
@@ -195,7 +206,7 @@ const KundliGenerate = ({ navigation, route }) => {
                     }}
 
                     onPress={() => {
-
+                        printFromURL()
                     }}>
                     Print
                 </Button>
@@ -395,3 +406,149 @@ const styles = StyleSheet.create({
 })
 
 
+
+
+// import React from 'react';
+// import { Button, View, Platform } from 'react-native';
+// import RNPrint from 'react-native-print';
+// import RNFS from 'react-native-fs';
+
+// const KundliGenerate = (navigation) => {
+//   const printHTML = async () => {
+//     try {
+//       await RNPrint.print({
+//         html: '<h1>React Native Print Example</h1><p>This is a sample HTML content to print.</p>',
+//         orientation: 'landscape',
+//       });
+//     } catch (error) {
+//       console.error(error);
+//     }
+//   };
+
+//   const printFromURL = async () => {
+//     try {
+//       await RNPrint.print({
+//         filePath: 'http://zedcredit.zedfinance.com/Kundali/content/sample/Sample.pdf',
+//         orientation: 'landscape',
+//       });
+//     } catch (error) {
+//       console.error(error);
+//     }
+//   };
+
+//   const printLocalFile = async () => {
+//     const filePath = Platform.OS === 'ios' ? `${RNFS.MainBundlePath}/sample.pdf` : `${RNFS.DocumentDirectoryPath}/sample.pdf`;
+
+//     try {
+//       await RNPrint.print({ filePath });
+//     } catch (error) {
+//       console.error(error);
+//     }
+//   };
+
+//   return (
+//     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+//       <Button title="Print HTML" onPress={printHTML} />
+//       <Button title="Print from URL" onPress={printFromURL} />
+//       <Button title="Print Local File" onPress={printLocalFile} />
+//     </View>
+//   );
+// };
+
+// export default KundliGenerate;
+
+
+
+// import React, { useState, useEffect } from 'react';
+// import { View, StyleSheet, ActivityIndicator, Text } from 'react-native';
+// // import Pdf from 'react-native-pdf';
+// import FlipPage from 'react-native-flip-page';
+// import { WebView } from 'react-native-webview';
+
+// const KundliGenerate = ({ route }) => {
+//     const [pages, setPages] = useState([]);
+//     const [loading, setLoading] = useState(true);
+
+    
+
+//     useEffect(() => {
+//         const loadPdfPages = async () => {
+//             try {
+//                 const pdfPages = await getPdfPageImages(route.params?.item);
+             
+//                 setPages(pdfPages);
+//             } catch (error) {
+//                 console.error('Error loading PDF pages:', error);
+//             } finally {
+//                 setLoading(false);
+//             }
+//         };
+
+//         loadPdfPages();
+//     }, []);
+
+//     if (loading) {
+//         return <ActivityIndicator size="large" color="#0000ff" />;
+//     }
+  
+
+//     return (
+//         <View style={{ flex: 1 }}>
+//             {pages.length > 0 ? (
+//                 <FlipPage>
+//                     {pages.map((pageUri, index) => (
+//                         <FlipPage.Page key={index}>
+//                             <View style={styles.pageContainer}>
+//                                 <View style={{ width: window.width, height: window.height - 150 }}>
+//                                     <WebView
+
+//                                         source={{ uri: `https://docs.google.com/gview?embedded=true&url=${encodeURIComponent(pageUri)}` }}
+//                                         style={{ flex: 1 }}
+//                                         originWhitelist={['*']}
+//                                         onError={(error) => console.log('Cannot render PDF', error)}
+//                                     // renderLoading={() => (
+//                                     //     <View style={{
+//                                     //         flex: 1,
+//                                     //         justifyContent: 'center',
+//                                     //         alignItems: 'center',
+//                                     //     }}>
+//                                     //         <ActivityIndicator size="large" color="#FFCC80" />
+//                                     //     </View>
+//                                     // )}
+//                                     // startInLoadingState={true}
+//                                     />
+//                                 </View>
+//                                 {/* <Pdf
+//                                     source={{ uri: pageUri, cache: true }}
+//                                     onLoadComplete={(numberOfPages) => {
+//                                         console.log(`number of pages: ${numberOfPages}`);
+//                                     }}
+//                                     onError={(error) => {
+//                                         console.log(error);
+//                                     }}
+//                                     style={styles.pdf}
+//                                 /> */}
+//                             </View>
+//                         </FlipPage.Page>
+//                     ))}
+//                 </FlipPage>
+//             ) : (
+//                 <Text>No pages to display</Text>
+//             )}
+//         </View>
+//     );
+// };
+
+// const styles = StyleSheet.create({
+//     pageContainer: {
+//         flex: 1,
+//         justifyContent: 'center',
+//         alignItems: 'center',
+//     },
+//     pdf: {
+//         flex: 1,
+//         width: '100%',
+//     },
+// });
+
+// export default KundliGenerate;

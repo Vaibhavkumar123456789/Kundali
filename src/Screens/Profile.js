@@ -244,60 +244,60 @@ const Profile = ({ navigation }) => {
                 const token = (await AsyncStorageGettoken() || '')
                 const btoken = `Bearer ${token}`;
 
-                setTimeout(() => {
+                // setTimeout(() => {
 
-                    axios
-                        .post(
-                            `${BASE_URL}astrologer/update-profile`,
-                            formData,
-                            {
-                                headers: {
-                                    'Content-Type': 'multipart/form-data',
-                                    // Add any additional headers as needed
-                                    Authorization: btoken,
-                                },
+                axios
+                    .post(
+                        `${BASE_URL}astrologer/update-profile`,
+                        formData,
+                        {
+                            headers: {
+                                'Content-Type': 'multipart/form-data',
+                                // Add any additional headers as needed
+                                Authorization: btoken,
                             },
-                        )
-                        .then(response => {
-                            toggleLoading(false);
-                            // alert(JSON.stringify(response.data, null, 2))
-                            Toast.show('Profile Updated')
-                            navigation.goBack()
+                        },
+                    )
+                    .then(response => {
+                        toggleLoading(false);
+                        // alert(JSON.stringify(response.data, null, 2))
+                        Toast.show('Profile Updated')
+                        navigation.goBack()
 
-                            console.log('Profile Updated', response.data)
-                        })
-                        .catch(error => {
-                            toggleLoading(true);
-                            axios
-                                .post(
-                                    `${BASE_URL}astrologer/update-profile`,
-                                    formData,
-                                    {
-                                        headers: {
-                                            'Content-Type': 'multipart/form-data',
-                                            // Add any additional headers as needed
-                                            Authorization: btoken,
-                                        },
+                        console.log('Profile Updated', response.data)
+                    })
+                    .catch(error => {
+                        toggleLoading(true);
+                        axios
+                            .post(
+                                `${BASE_URL}astrologer/update-profile`,
+                                formData,
+                                {
+                                    headers: {
+                                        'Content-Type': 'multipart/form-data',
+                                        // Add any additional headers as needed
+                                        Authorization: btoken,
                                     },
-                                )
-                                .then(response => {
-                                    toggleLoading(false);
-                                    // alert(JSON.stringify(response.data, null, 2))
-                                    Toast.show('Profile Updated')
-                                    navigation.goBack()
+                                },
+                            )
+                            .then(response => {
+                                toggleLoading(false);
+                                // alert(JSON.stringify(response.data, null, 2))
+                                Toast.show('Profile Updated')
+                                navigation.goBack()
 
-                                    console.log('Profile Updated', response.data)
-                                })
-                                .catch(error => {
-                                    // Handle errors
-                                    toggleLoading(false);
-                                    console.error('Error uploading files', error);
-                                });
-                            // Handle errors
-                            toggleLoading(false);
-                            console.error('Error uploading files1', error);
-                        });
-                }, 2000);
+                                console.log('Profile Updated', response.data)
+                            })
+                            .catch(error => {
+                                // Handle errors
+                                toggleLoading(false);
+                                console.error('Error uploading files', error);
+                            });
+                        // Handle errors
+                        toggleLoading(false);
+                        console.error('Error uploading files1', error);
+                    });
+                // }, 2000);
             }
         } catch (error) {
             toggleLoading(false)

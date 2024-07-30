@@ -19,7 +19,7 @@ import {
 import Header from '../Custom/Header';
 import stringsoflanguages from '../language/Language'
 
-const NetalReportDetail = ({ navigation, route }) => {
+const PrashnaReport = ({ navigation, route }) => {
     // alert(JSON.stringify(route.params, null, 2))
     const window = Dimensions.get('window');
     const { width, height } = Dimensions.get('window');
@@ -32,7 +32,7 @@ const NetalReportDetail = ({ navigation, route }) => {
             <Header
                 menuOption={() => navigation.goBack()}
                 leftIcon={require('../assets/backtoback.png')}
-                title={_setting.reportdetail}
+                title={"Prashna Report Detail"}
             />
             <ScrollView>
 
@@ -47,7 +47,7 @@ const NetalReportDetail = ({ navigation, route }) => {
                             <View style={{ flexDirection: 'row' }}>
 
                                 <Text numberOfLines={1} style={{ color: '#1E1F20', fontFamily: 'AvenirLTStd-Heavy', fontSize: 16, marginLeft: 7, marginTop: 0, width: window.width - 210 }}>
-                                    {route.params?.maindetail?.name}
+                                    {route.params?.item?.name}
                                 </Text>
                             </View>
 
@@ -59,7 +59,7 @@ const NetalReportDetail = ({ navigation, route }) => {
                                         flexDirection: 'row', marginTop: 2,
                                     }}>
                                     <Text numberOfLines={1}
-                                        style={styles.dt_name}>{route.params?.maindetail?.gender}</Text>
+                                        style={styles.dt_name}>{route.params?.item?.gender}</Text>
 
                                 </View>
 
@@ -72,7 +72,7 @@ const NetalReportDetail = ({ navigation, route }) => {
                                             marginTop: 2,
                                             marginLeft: 9,
                                         }}>
-                                        {_member.tob} :{route.params?.maindetail?.tob}
+                                        {_member.tob} :{route.params?.item?.tob}
                                     </Text>
 
                                 </View>
@@ -81,12 +81,13 @@ const NetalReportDetail = ({ navigation, route }) => {
                         <View style={styles.dt_view_2}>
                             <View style={styles.dt_viewOpt}>
                                 <Text numberOfLines={2} style={styles.dt_viewOptText}>
-                                    {_member.pob} :{route.params?.maindetail?.pob}
+                                    {_member.pob} :{route.params?.item?.pob}
                                 </Text>
                             </View>
                             <View style={styles.dt_viewOpt}>
                                 <Text numberOfLines={1} style={styles.dt_viewOptText}>
-                                    {_member.whatsapp}:{route.params?.maindetail?.mobile}
+                                    {_member.whatsapp}:
+                                    {route.params?.item?.mobile}
                                 </Text>
                             </View>
 
@@ -104,10 +105,10 @@ const NetalReportDetail = ({ navigation, route }) => {
                         marginHorizontal: 10,
                         textAlign: 'center',
                     }}>
-                    {route.params?.astrodetail?.report_name}
+                    {route.params?.item?.what_u_want_see}
                 </Text>
 
-                <Pressable onPress={() => { navigation.navigate('KundliGenerate', { item: `${route.params?.maindetail?.report}`, title: route.params?.maindetail?.email, number: "1" }) }}>
+                <Pressable onPress={() => { navigation.navigate('KundliGenerate', { item: `${route.params?.data1}${route.params?.item?.image}`, title: route.params?.item?.email, number: "1" }) }}>
                     <Image style={{ width: 240, height: 160, resizeMode: 'contain', alignSelf: 'center', marginTop: 20 }}
                         source={require('../assets/reportimage.png')} />
                     <Text
@@ -133,7 +134,7 @@ const NetalReportDetail = ({ navigation, route }) => {
     )
 }
 
-export default NetalReportDetail
+export default PrashnaReport
 
 const styles = StyleSheet.create({
     style: {

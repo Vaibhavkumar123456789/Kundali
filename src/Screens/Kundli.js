@@ -974,7 +974,7 @@ const Kundli = ({ navigation }) => {
             case 'eight':
                 return (
                     <View style={{ flex: 1, }}>
-                        <SadheSati />
+
 
                     </View>
                 )

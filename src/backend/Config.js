@@ -62,6 +62,7 @@ export const PATH_URL = {
   stepsecond: 'astrologer/edit-profile-two',
   thirdstep: 'astrologer/edit-profile-three',
   fourthstep: 'astrologer/edit-profile-four',
+  prashnalagan: 'astrologer/prashan-lagan-list',
 
 
 

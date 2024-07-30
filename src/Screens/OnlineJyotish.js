@@ -91,7 +91,7 @@ const OnlineJyotish = ({ navigation }) => {
       case _onlinejyotish.varsh:
         navigation.navigate('VarshKundli')
         break;
-        case _onlinejyotish.lal:
+      case _onlinejyotish.lal:
         navigation.navigate('LalKitab')
         break;
 
@@ -140,7 +140,7 @@ const OnlineJyotish = ({ navigation }) => {
                 }}
                 source={item.source}
               />
-              <Text
+              <Text numberOfLines={2}
                 style={{
                   textAlign: 'center',
                   marginTop: 5,

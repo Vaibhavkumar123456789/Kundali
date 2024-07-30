@@ -429,6 +429,7 @@ const ProductDetail = ({ navigation, route }) => {
   const { width, height } = Dimensions.get('window');
   const { _customlang, _product } = stringsoflanguages
   const [should1, setShould1] = useState('')
+  const [number, setNumber] = useState('1')
   const [quality, setQuality] = useState([])
   const [astrologercutprice, setAstrologerCutPrice] = useState()
   const [astrologerprice, setAstrologerPrice] = useState()
@@ -451,7 +452,7 @@ const ProductDetail = ({ navigation, route }) => {
     toggleLoading(true);
     let e = {
 
-      "id": route.params?.id
+      "id": route.params?.item?.id
     };
     productlist(e)
       .then(data => {
@@ -461,26 +462,28 @@ const ProductDetail = ({ navigation, route }) => {
           setNewList(data?.data)
 
           const ratti = JSON.parse(data?.data?.quality_rati)
-          let tempCArr = []
-          ratti?.map((item) => {
-            tempCArr.push({
+
+          if (ratti) {
+            let tempCArr = []
+            ratti?.map((item) => {
+              tempCArr.push({
+                label: item?.quality,
+                value: item,
+              })
+              setQuality(tempCArr)
+            })
+
+            const tempQualityArray = ratti.map((item, index) => ({
               label: item?.quality,
               value: item,
-            })
-            setQuality(tempCArr)
-          })
-
-          const tempQualityArray = ratti.map((item, index) => ({
-            label: item?.quality,
-            value: item,
-            _index: index,
-          }));
-          if (tempCArr.length > 0) {
-            setShould1(tempCArr[0]);
-            taxdetail(tempCArr[0])
-
+              _index: index,
+            }));
+            if (tempCArr.length > 0) {
+              setShould1(tempCArr[0]);
+              taxdetail(tempCArr[0])
+            }
+            productlistapi1(tempQualityArray, data?.data?.id);
           }
-          productlistapi1(tempQualityArray, data?.data?.id);
         } else {
           alert(data?.msg);
         }
@@ -591,6 +594,12 @@ const ProductDetail = ({ navigation, route }) => {
 
   }
 
+  const handleChange = (text) => {
+    // Allow only numbers and a single decimal point
+    const numericValue = text.replace(/[^0-9]/g, '');
+    setNumber(numericValue);
+  };
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
       <ScrollView>
@@ -666,131 +675,303 @@ const ProductDetail = ({ navigation, route }) => {
             </View>
           )}
 
-          <Text
-            style={{
-              marginTop: 8,
-              fontSize: 16,
-              fontFamily: 'AvenirLTStd-Medium',
-              color: '#000521',
-              marginLeft: 2,
+          {route.params?.tabName == "Ratan" && list?.quality_rati?.length > 0 ?
+
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+              <View>
+                <Text
+                  style={{
+                    marginTop: 8,
+                    fontSize: 16,
+                    fontFamily: 'AvenirLTStd-Medium',
+                    color: '#000521',
+                    marginLeft: 2,
+                  }}>
+                  {_product.quality}
+                </Text>
+
+                <Dropdown
+                  style={{
+                    height: 50,
+                    marginTop: 10, borderWidth: 1.5, borderColor: '#00000020',
+                    borderRadius: 10, marginLeft: 5, width: width - 220,
+                  }}
+                  placeholderStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', paddingHorizontal: 15, }}
+                  selectedTextStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', paddingHorizontal: 15, textTransform: 'capitalize' }}
+                  iconStyle={{
+                    width: 20,
+                    height: 20,
+                    marginRight: 12,
+                  }}
+                  itemTextStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', textTransform: 'capitalize' }}
+                  data={quality}
+                  search
+                  searchPlaceholder={_product.quality}
+                  inputSearchStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', }}
+                  maxHeight={200}
+                  labelField="label"
+                  valueField="value"
+                  placeholder={_product.quality}
+                  value={should1}
+                  onChange={(item) => { setShould1(item), taxdetail(item), handleQualityChange(item, list?.id) }}
+                />
+              </View>
+              <View>
+                <Text
+                  style={{
+                    marginTop: 8,
+                    fontSize: 16,
+                    fontFamily: 'AvenirLTStd-Medium',
+                    color: '#000521',
+                  }}>
+                  Price
+                </Text>
+
+                <Dropdown
+                  style={{
+                    height: 50,
+                    marginTop: 10, borderWidth: 1.5, borderColor: '#00000020',
+                    borderRadius: 10, marginRight: 5, width: width - 220,
+                  }}
+                  placeholderStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', paddingHorizontal: 15, }}
+                  selectedTextStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', paddingHorizontal: 15, textTransform: 'capitalize' }}
+                  iconStyle={{
+                    width: 20,
+                    height: 20,
+                    marginRight: 12,
+                  }}
+                  itemTextStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', textTransform: 'capitalize' }}
+                  data={quality}
+                  search
+                  searchPlaceholder={'Price'}
+                  inputSearchStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', }}
+                  maxHeight={200}
+                  labelField="label"
+                  valueField="value"
+                  placeholder={"Price"}
+                  value={should1}
+                  onChange={(item) => { setShould1(item), taxdetail(item), handleQualityChange(item, list?.id) }}
+                />
+              </View>
+
+            </View>
+            :
+            <>
+              <Text
+                style={{
+                  marginTop: 8,
+                  fontSize: 16,
+                  fontFamily: 'AvenirLTStd-Medium',
+                  color: '#000521',
+                  marginLeft: 5,
+                }}>
+                Qty
+              </Text>
+              <TextInput
+                style={{
+                  fontSize: 16,
+                  fontFamily: 'AvenirLTStd-Medium',
+                  borderRadius: 10,
+                  borderColor: '#00000020',
+                  borderWidth: 1.5,
+                  marginTop: 10,
+                  marginHorizontal: 5,
+                  paddingHorizontal: 15,
+                  paddingVertical: 11,
+                  color: '#333333',
+                }}
+                placeholderTextColor={'#333333'}
+                keyboardType='numeric'
+                placeholder={"Qty"}
+                value={number}
+                onChangeText={handleChange}
+              />
+            </>
+          }
+
+          {list?.quality_rati?.length > 0 && route.params?.tabName == "Ratan" ?
+
+            <View style={{
+              marginTop: 10,
+              flexDirection: 'row', justifyContent: 'space-between',
             }}>
-            {_product.quality}
-          </Text>
-
-          <Dropdown
-            style={{
-              height: 50,
-              marginTop: 10, borderWidth: 1.5, borderColor: '#00000020',
-              borderRadius: 10, marginHorizontal: 5,
-            }}
-            placeholderStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', paddingHorizontal: 15, }}
-            selectedTextStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', paddingHorizontal: 15, textTransform: 'capitalize' }}
-            iconStyle={{
-              width: 20,
-              height: 20,
-              marginRight: 12,
-            }}
-            itemTextStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', textTransform: 'capitalize' }}
-            data={quality}
-            search
-            searchPlaceholder={_product.quality}
-            inputSearchStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', }}
-            maxHeight={200}
-            labelField="label"
-            valueField="value"
-            placeholder={_product.quality}
-            value={should1}
-            onChange={(item) => { setShould1(item), taxdetail(item), handleQualityChange(item, list?.id) }}
-          />
-          <View style={{
-            marginTop: 10,
-            flexDirection: 'row', justifyContent: 'space-between',
-          }}>
-            <View>
-              <Text
-                numberOfLines={1}
-                style={{
-                  color: '#1E1F20',
-                  fontSize: 16,
-                  fontFamily: 'AvenirLTStd-Medium',
-                  marginLeft: 7,
-                  marginTop: 0,
-                }}>
-                General Price
-              </Text>
-              <View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
-                {(generalprice &&
-                  <Text
-                    style={{
-                      color: '#1E1F20',
-                      fontFamily: 'AvenirLTStd-Heavy',
-                      fontSize: 18,
-                      marginLeft: 7,
-                      marginTop: 3,
-                    }}>
-                    ₹ {generalprice}
-                  </Text>
-                )}
-                {generalcutprice && generalcutprice > 0 ?
-                  <Text
-                    style={{
-                      color: '#1E1F2090',
-                      fontFamily: 'AvenirLTStd-Heavy',
-                      fontSize: 14,
-                      marginLeft: 3,
-                      marginTop: 6,
-                      textDecorationLine: 'line-through',
-                    }}>
-                    ₹ {generalcutprice}
-                  </Text>
-                  : null}
+              <View>
+                <Text
+                  numberOfLines={1}
+                  style={{
+                    color: '#1E1F20',
+                    fontSize: 16,
+                    fontFamily: 'AvenirLTStd-Medium',
+                    marginLeft: 7,
+                    marginTop: 0,
+                  }}>
+                  General Price
+                </Text>
+                <View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
+                  {(generalprice &&
+                    <Text
+                      style={{
+                        color: '#1E1F20',
+                        fontFamily: 'AvenirLTStd-Heavy',
+                        fontSize: 18,
+                        marginLeft: 7,
+                        marginTop: 3,
+                      }}>
+                      ₹ {generalprice}
+                    </Text>
+                  )}
+                  {generalcutprice && generalcutprice > 0 ?
+                    <Text
+                      style={{
+                        color: '#1E1F2090',
+                        fontFamily: 'AvenirLTStd-Heavy',
+                        fontSize: 14,
+                        marginLeft: 3,
+                        marginTop: 6,
+                        textDecorationLine: 'line-through',
+                      }}>
+                      ₹ {generalcutprice}
+                    </Text>
+                    : null}
+                </View>
               </View>
-            </View>
 
-            <View>
-              <Text
-                numberOfLines={1}
-                style={{
-                  color: '#1E1F20',
-                  fontSize: 16,
-                  fontFamily: 'AvenirLTStd-Medium',
-                  marginRight: 7,
-                  marginTop: 0,
-                }}>
-                Astrologer Price
-              </Text>
-              <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
-                {(astrologerprice &&
-                  <Text
-                    style={{
-                      color: '#1E1F20',
-                      fontFamily: 'AvenirLTStd-Heavy',
-                      fontSize: 18,
-                      marginRight: 3,
-                      marginTop: 3,
-                      textAlign: 'right',
-                    }}>
-                    ₹ {astrologerprice}
-                  </Text>
-                )}
-                {astrologercutprice && astrologercutprice > 0 ?
-                  < Text
-                    style={{
-                      color: '#1E1F2090',
-                      fontFamily: 'AvenirLTStd-Heavy',
-                      fontSize: 14,
-                      marginRight: 7,
-                      marginTop: 6,
-                      textAlign: 'right',
-                      textDecorationLine: 'line-through'
-                    }}>
-                    ₹ {astrologercutprice}
-                  </Text>
-                  : null}
+              <View>
+                <Text
+                  numberOfLines={1}
+                  style={{
+                    color: '#1E1F20',
+                    fontSize: 16,
+                    fontFamily: 'AvenirLTStd-Medium',
+                    marginRight: 7,
+                    marginTop: 0,
+                  }}>
+                  Astrologer Price
+                </Text>
+                <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
+                  {(astrologerprice &&
+                    <Text
+                      style={{
+                        color: '#1E1F20',
+                        fontFamily: 'AvenirLTStd-Heavy',
+                        fontSize: 18,
+                        marginRight: 3,
+                        marginTop: 3,
+                        textAlign: 'right',
+                      }}>
+                      ₹ {astrologerprice}
+                    </Text>
+                  )}
+                  {astrologercutprice && astrologercutprice > 0 ?
+                    < Text
+                      style={{
+                        color: '#1E1F2090',
+                        fontFamily: 'AvenirLTStd-Heavy',
+                        fontSize: 14,
+                        marginRight: 7,
+                        marginTop: 6,
+                        textAlign: 'right',
+                        textDecorationLine: 'line-through'
+                      }}>
+                      ₹ {astrologercutprice}
+                    </Text>
+                    : null}
+                </View>
               </View>
-            </View>
 
-          </View>
+            </View>
+            :
+            <View style={{
+              marginTop: 10,
+              flexDirection: 'row', justifyContent: 'space-between',
+            }}>
+              <View>
+                <Text
+                  numberOfLines={1}
+                  style={{
+                    color: '#1E1F20',
+                    fontSize: 16,
+                    fontFamily: 'AvenirLTStd-Medium',
+                    marginLeft: 7,
+                    marginTop: 0,
+                  }}>
+                  General Price
+                </Text>
+                <View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
+                  {(list &&
+                    <Text
+                      style={{
+                        color: '#1E1F20',
+                        fontFamily: 'AvenirLTStd-Heavy',
+                        fontSize: 18,
+                        marginLeft: 7,
+                        marginTop: 3,
+                      }}>
+                      ₹ {list?.discounted_price > 0 ? list?.discounted_price * number : list?.prices * number}
+                    </Text>
+                  )}
+                  {list && list?.discounted_price > 0 ?
+                    <Text
+                      style={{
+                        color: '#1E1F2090',
+                        fontFamily: 'AvenirLTStd-Heavy',
+                        fontSize: 14,
+                        marginLeft: 3,
+                        marginTop: 6,
+                        textDecorationLine: 'line-through',
+                      }}>
+
+                      ₹ {list?.discounted_price == 0 ? list?.discounted_price * number : list?.prices * number}
+                    </Text>
+                    : null}
+                </View>
+              </View>
+
+              <View>
+                <Text
+                  numberOfLines={1}
+                  style={{
+                    color: '#1E1F20',
+                    fontSize: 16,
+                    fontFamily: 'AvenirLTStd-Medium',
+                    marginRight: 7,
+                    marginTop: 0,
+                  }}>
+                  Astrologer Price
+                </Text>
+                <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
+                  {(list &&
+                    <Text
+                      style={{
+                        color: '#1E1F20',
+                        fontFamily: 'AvenirLTStd-Heavy',
+                        fontSize: 18,
+                        marginRight: 3,
+                        marginTop: 3,
+                        textAlign: 'right',
+                      }}>
+                      ₹ {list?.discounted_price > 0 ? list?.discounted_price * number : list?.prices * number}
+                    </Text>
+                  )}
+                  {list && list?.discounted_price > 0 ?
+                    < Text
+                      style={{
+                        color: '#1E1F2090',
+                        fontFamily: 'AvenirLTStd-Heavy',
+                        fontSize: 14,
+                        marginRight: 7,
+                        marginTop: 6,
+                        textAlign: 'right',
+                        textDecorationLine: 'line-through'
+                      }}>
+                      ₹ {list?.discounted_price == 0 ? list?.discounted_price * number : list?.prices * number}
+                    </Text>
+                    : null}
+                </View>
+              </View>
+
+            </View>
+          }
 
         </View>
 
@@ -818,8 +999,8 @@ const ProductDetail = ({ navigation, route }) => {
             let e = {
               "type": "1",
               "product_id": list?.id,
-              "qty": quantity,
-              "variant": should1?.value?.quality
+              "qty": list?.quality_rati?.length > 0 && route.params?.tabName == "Ratan" ? quantity : number,
+              "variant": list?.quality_rati?.length > 0 && route.params?.tabName == "Ratan" ? should1?.value?.quality : "0",
             };
             // alert(JSON.stringify(e, null, 2))
             // return

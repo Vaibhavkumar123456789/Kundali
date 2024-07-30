@@ -22,6 +22,7 @@ module.exports = {
     isfroma: '0',
     kundliformdetail: {},
     deliveryday: '',
+    locationiq:'pk.8cce6ae4b2bc74fce6f52aa4903ac084',
 
     loginmobile: '',
     loginOTP: '',

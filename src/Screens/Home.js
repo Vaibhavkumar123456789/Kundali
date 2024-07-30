@@ -1,4 +1,4 @@
-import { View, Text, Image, StyleSheet, Dimensions, FlatList, Modal, TextInput, StatusBar, SafeAreaView, ImageBackground, Pressable, ScrollView, TouchableOpacity, Platform, } from 'react-native'
+import { View, Text, Image, StyleSheet, Dimensions, FlatList, Modal, TextInput, StatusBar, SafeAreaView, ImageBackground, Pressable, ScrollView, TouchableOpacity, Platform, BackHandler, Alert, } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import Carousel from 'react-native-banner-carousel';
 import stringsoflanguages from '../language/Language'
@@ -9,6 +9,7 @@ import Loader from '../utils/Loader';
 import store from '../redux/store';
 import GLobal from './GLobal';
 import AstroReportList from './component/AstroReportList';
+import NoInterner from './NoInterner';
 const Home = ({ navigation }) => {
     const window = Dimensions.get('window');
 
@@ -23,8 +24,56 @@ const Home = ({ navigation }) => {
         loading: false,
     });
     const toggleLoading = bol => setState({ ...state, loading: bol });
+
     useEffect(() => {
-        banner()
+        navigation.addListener('focus', () => {
+            BackHandler.addEventListener('hardwareBackPress', handler);
+        });
+        navigation.addListener('blur', () => {
+            BackHandler.removeEventListener('hardwareBackPress', handler);
+        });
+    }, []);
+
+    const handler = () => {
+        Alert.alert('Kundali', 'Are you sure you want to close this App?', [
+            {
+                text: 'Cancel',
+                onPress: () => {
+                    return true;
+                },
+                style: 'cancel',
+            },
+            {
+                text: 'OK',
+                onPress: () => {
+                    BackHandler.exitApp();
+                    return false;
+                },
+            },
+        ]);
+        return true;
+    };
+
+
+    useEffect(() => {
+        let timer;
+
+        const callback = async () => {
+            let ms = 5000;
+            banner()
+            timer = setTimeout(callback, ms);
+        };
+        if (isFocused == true) {
+            console.log('focused');
+            callback();
+        } else {
+            console.log('unfocused');
+            clearTimeout(timer);
+        }
+        return () => {
+            console.log('unmount main component');
+            clearTimeout(timer);
+        };
     }, [isFocused == true])
 
     const banner = () => {
@@ -199,7 +248,7 @@ const Home = ({ navigation }) => {
                                     marginLeft: 10,
                                     letterSpacing: -0.22,
                                 }}>
-                                {astro !== undefined ? `₹${parseFloat(astro.data.wallet).toFixed(2)}` : '₹0.00'}
+                                {astro !== undefined ? `₹${parseFloat(astro?.data?.wallet).toFixed(2)}` : '₹0.00'}
                             </Text>
                         )}
                     </Pressable>
@@ -219,14 +268,14 @@ const Home = ({ navigation }) => {
                     </TouchableOpacity>
                 </View>
             </View>
-            {state.loading && <Loader />}
-            <ScrollView >
+            {/* {state.loading && <Loader />} */}
+            <NoInterner />
+            <ScrollView showsVerticalScrollIndicator={false}>
                 <View style={{ justifyContent: 'center', marginTop: 15 }}>
                     <Carousel autoplay autoplayTimeout={5000} loop={true} index={0}>
                         {bannerimage.map((image, index) => renderPage(image, index))}
                     </Carousel>
                 </View>
-
 
                 <FlatList
                     numColumns={3}

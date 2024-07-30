@@ -175,9 +175,17 @@ const Cart = ({ navigation }) => {
 
 
   const renderCartItem = ({ item, index }) => {
-
-    const qualityRating = item?.product?.quality_rati1?.find(q => q.quality.toString() === item.variant.toString());
-
+    let qualityRating;
+    if (!item?.product?.quality_rati1 || item?.product?.quality_rati1.length === 0) {
+      qualityRating = {
+        discount_price: item?.product?.discounted_price,
+        price: item?.product?.prices,
+      };
+    } else {
+      qualityRating = item?.product?.quality_rati1?.find(q => q.quality.toString() === item.variant.toString());
+    }
+    
+    //   const qualityRating = item?.product?.quality_rati1?.find(q => q.quality.toString() === item.variant.toString());
     return (
       <View style={{
         flexDirection: 'row',

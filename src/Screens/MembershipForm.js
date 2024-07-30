@@ -13,7 +13,7 @@ import {
     Alert,
     FlatList,
     SafeAreaView,
-    ScrollView,
+    ScrollView, Modal,
     StatusBar,
 } from 'react-native';
 import StepIndicator from 'react-native-step-indicator';
@@ -29,18 +29,23 @@ import { useIsFocused } from '@react-navigation/native';
 import stringsoflanguages from '../language/Language'
 import { Dropdown } from 'react-native-element-dropdown';
 import { validateEmail } from '../utils/utils';
+import GLobal from './GLobal';
 import RenderHtml, { defaultSystemFonts } from 'react-native-render-html';
 const systemFonts = [
     ...defaultSystemFonts,
     'AvenirLTStd-Medium',
     'AvenirLTStd-Heavy',
 ];
-import { astrologeraddmembership, consultancylist, membershipplans } from '../backend/Api';
+import { astrologeraddmembership, consultancylist, Country, membershipplans } from '../backend/Api';
+import LocationIQ from 'react-native-locationiq';
+import { BASE_URL_EXTERNAL } from '../backend/Config';
+
 const MembershipForm = ({ navigation }) => {
     const { _kundali, _customlang } = stringsoflanguages
     const window = Dimensions.get('window');
     const isFocused = useIsFocused();
     const { width, height } = Dimensions.get('window');
+    const [modalVisible, setModalVisible] = useState(false);
     const [checked, setChecked] = React.useState(false);
     const [checked1, setChecked1] = React.useState(false);
     const gender = [_kundali.male, _kundali.female]
@@ -52,12 +57,10 @@ const MembershipForm = ({ navigation }) => {
     const [checked4, setChecked4] = React.useState(false);
     const [type, setType] = useState(false)
     const [date, setDate] = useState('')
+    const [clist, setCList] = useState([])
     const [pdate, setPDate] = useState('')
     const [open, setOpen] = useState(false)
     const [currentPosition, setCurrentPosition] = React.useState(0);
-    const [should1, setShould1] = useState('')
-    const [should2, setShould2] = useState('')
-    const [should3, setShould3] = useState('')
     const [planlist, setPlanList] = useState([])
     const [consultlist, setConsultancyList] = useState([])
     const [select, setSelect] = useState(null)
@@ -82,6 +85,10 @@ const MembershipForm = ({ navigation }) => {
     const [filedbusiness, setFiledBusiness] = useState('')
     const [key2, setKey2] = useState(0)
     const [other, setOther] = useState('')
+    const [search, setSearch] = useState('')
+    const [cityList, setCityList] = useState([])
+    const [selectedcity, setSelectedCity] = useState('')
+    const [should1, setShould1] = useState('')
     const [state, setState] = useState({
         loading: false,
     });
@@ -90,7 +97,56 @@ const MembershipForm = ({ navigation }) => {
     useEffect(() => {
         plan()
         listconsultancy()
+        Countrysearch()
     }, [isFocused == true])
+
+
+    const Countrysearch = () => {
+        Country()
+            .then(data => {
+                // alert(JSON.stringify(data, null, 2))
+                if (data.status) {
+                    let tempCArr = []
+                    data?.data.map((i) => {
+                        tempCArr.push({
+                            label: i.name,
+                            value: i.iso2,
+                        })
+                        setCList(tempCArr)
+                    })
+                } else {
+                    alert(data?.msg);
+                }
+            })
+            .catch(error => {
+                console.log('error', error);
+            });
+    }
+
+    useEffect(() => {
+        console.log(`${BASE_URL_EXTERNAL}Place/GetCity?CountryCode=${should1}&SearchText=${search}&Limit=50`)
+        const timeOut = setTimeout(async () => {
+            const res = await fetch(`${BASE_URL_EXTERNAL}Place/GetCity?CountryCode=${should1}&SearchText=${search}&Limit=50`, {
+                method: 'GET',
+                headers: {
+                    "Accept": "application/json",
+                    "Content-Type": "application/json"
+                },
+            });
+            const response1 = await res.json()
+            // alert(JSON.stringify(response1, null, 2))
+            setCityList(response1?.responseData?.data)
+        }, 1500)
+
+        return () => {
+            clearTimeout(timeOut)
+        }
+    }, [search])
+
+    const searchCity = async (value) => {
+        setSearch(value)
+    }
+
 
     const limitHtmlContent = (htmlContent, maxLength) => {
         const textContent = htmlContent.replace(/<[^>]+>/g, ''); // Remove HTML tags
@@ -236,7 +292,12 @@ const MembershipForm = ({ navigation }) => {
             "address": address,
             "dob": date == '' ? '' : moment(date).format('YYYY-MM-DD'),
             "tob": date1 == '' ? '' : moment(date1).format('hh:mm a'),
-            "pob": placebitrh,
+            "country": should1,
+            "pob": `${selectedcity.cityName}`,
+            "latitude": selectedcity.latitude,
+            "longitude": selectedcity.longitude,
+            'Timezone': selectedcity.timezone,
+            'cityid': selectedcity.cityId,
             "caste": caste,
             "gotra": gotra,
             "father_name": fathername,
@@ -251,9 +312,9 @@ const MembershipForm = ({ navigation }) => {
             "consultancy_for": jj.join('|'),
             "others": other,
             "package_id": item?.id,
-            "tax_amt": tax_amount,
-            "net_amount": taxable_amount,
-            "total_mrp": total_amount,
+            "tax_amt": `${parseFloat(tax_amount).toFixed(2)}`,
+            "net_amount": `${parseFloat(taxable_amount).toFixed(2)}`,
+            "total_mrp": `${parseFloat(total_amount).toFixed(2)}`,
             "payment_mode": "online"
         };
         // alert(JSON.stringify(e, null, 2))
@@ -613,26 +674,62 @@ const MembershipForm = ({ navigation }) => {
                                 marginTop: 19,
                                 marginHorizontal: 18,
                             }}>
+                            {_kundali.country}
+                        </Text>
+                        <Dropdown
+                            style={{
+                                height: 50,
+                                marginHorizontal: 18, marginTop: 10, borderWidth: 1.5, borderColor: '#00000020',
+                                borderRadius: 10,
+                            }}
+                            placeholderStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', paddingHorizontal: 15, }}
+                            selectedTextStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', paddingHorizontal: 15, textTransform: 'capitalize' }}
+                            iconStyle={{
+                                width: 20,
+                                height: 20,
+                                marginRight: 12,
+                            }}
+                            itemTextStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', textTransform: 'capitalize' }}
+                            data={clist
+                            }
+                            maxHeight={200}
+                            search
+                            searchPlaceholder={_kundali.country}
+                            inputSearchStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333' }}
+                            labelField="label"
+                            valueField="value"
+                            placeholder={_kundali.country}
+                            value={should1}
+                            onChange={(item) => setShould1(item.value)}
+                        />
+                        <Text
+                            style={{
+                                fontFamily: 'AvenirLTStd-Medium',
+                                color: '#ADADAD',
+                                fontSize: 18,
+                                letterSpacing: -0.2,
+                                marginTop: 19,
+                                marginHorizontal: 18,
+                            }}>
                             {_kundali.placeofbirth}
                         </Text>
-                        <TextInput
-                            style={{
-                                fontSize: 16,
-                                fontFamily: 'AvenirLTStd-Medium',
-                                borderRadius: 10,
-                                borderColor: '#00000020',
-                                borderWidth: 1.5,
-                                marginTop: 10,
-                                marginHorizontal: 18,
-                                paddingHorizontal: 15,
-                                paddingVertical: 11,
-                                color: '#333333',
-                            }}
-                            placeholderTextColor={'#333333'}
-                            placeholder={_kundali.placeofbirth}
-                            value={placebitrh}
-                            onChangeText={(text) => setPlaceBirth(text)}
-                        />
+                        <Pressable onPress={() => setModalVisible(true)}>
+                            <Text
+                                style={{
+                                    fontSize: 16,
+                                    fontFamily: 'AvenirLTStd-Medium',
+                                    borderRadius: 10,
+                                    borderColor: '#00000020',
+                                    borderWidth: 1.5,
+                                    marginTop: 10,
+                                    marginHorizontal: 18,
+                                    paddingHorizontal: 15,
+                                    paddingVertical: 14,
+                                    color: '#333333',
+                                }}>
+                                {selectedcity == '' ? _kundali.placeofbirth : `${selectedcity.cityName},${selectedcity.state},${selectedcity.countryCode}`}
+                            </Text>
+                        </Pressable>
 
                         <Text
                             style={{
@@ -857,6 +954,7 @@ const MembershipForm = ({ navigation }) => {
                             }}
                             placeholderTextColor={'#333333'}
                             placeholder={_kundali.numofchildren}
+                            keyboardType='numeric'
                             value={noofchildren}
                             onChangeText={(text) => setNoChildren(text)}
                         />
@@ -892,6 +990,7 @@ const MembershipForm = ({ navigation }) => {
                                                 }}
                                                 placeholderTextColor={'#333333'}
                                                 placeholder={_kundali.childage}
+                                                keyboardType='numeric'
                                                 value={data.age}
                                                 onChangeText={(evnt) => handleChangeForLangth(index, evnt)}
                                             />
@@ -1344,8 +1443,11 @@ const MembershipForm = ({ navigation }) => {
                                 else if (date1 === '') {
                                     Toast.show('Please Select Time of birth');
                                 }
-                                else if (placebitrh === '') {
-                                    Toast.show('Please enter place of birth');
+                                else if (should1 === '') {
+                                    Toast.show('Please Select Country');
+                                }
+                                else if (selectedcity === '') {
+                                    Toast.show('Please Select birth Place');
                                 }
                                 else if (caste === '') {
                                     Toast.show('Please enter caste');
@@ -1615,6 +1717,76 @@ const MembershipForm = ({ navigation }) => {
                     setOpen1(false)
                 }}
             />
+
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose={() => {
+                    setModalVisible(!modalVisible);
+                }}
+            >
+                <TouchableOpacity
+                    activeOpacity={0.8}
+                    onPress={() => {
+                        setModalVisible(false);
+                    }}
+                    style={{
+                        flex: 1,
+                        backgroundColor: '#00000099',
+                        justifyContent: 'center',
+                    }}>
+                    <View style={{
+                        margin: 15,
+                        padding: 20,
+                        backgroundColor: 'white',
+                        borderRadius: 10,
+                    }}>
+                        <TouchableOpacity
+                            activeOpacity={0.8}
+                            onPress={() => {
+
+                            }}>
+                            <View style={{ alignSelf: 'center' }}>
+
+                            </View>
+                            <TextInput
+                                style={{
+                                    fontSize: 16,
+                                    fontFamily: 'AvenirLTStd-Medium',
+                                    borderRadius: 10,
+                                    borderColor: '#00000020',
+                                    borderWidth: 1.5,
+                                    paddingHorizontal: 15,
+                                    color: '#333333',
+                                }}
+                                placeholderTextColor={'#333333'}
+                                placeholder={_kundali.placeofbirth}
+                                onChangeText={(text) => { searchCity(text) }}
+                            />
+                            {cityList?.length > 0 && (
+                                <FlatList
+                                    data={cityList}
+                                    renderItem={({ item, index }) => (
+                                        <Pressable style={{}} onPress={() => { setSelectedCity(item), setModalVisible(false) }}>
+                                            <View style={{ width: '100%', margin: 10 }}>
+                                                <Text style={{ color: '#000', fontFamily: 'AvenirLTStd-Medium', }}>
+                                                    {item.cityName} ,{item.state} ,{item.countryCode},
+                                                </Text>
+                                                <Text style={{ color: '#000', fontFamily: 'AvenirLTStd-Medium', }}>
+                                                    Lat:{item.latitude} , Lon:{item.longitude}
+                                                </Text>
+                                            </View>
+                                        </Pressable>
+                                    )}
+                                />
+
+                            )}
+
+                        </TouchableOpacity>
+                    </View>
+                </TouchableOpacity>
+            </Modal>
         </SafeAreaView>
     );
 };

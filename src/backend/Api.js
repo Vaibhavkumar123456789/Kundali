@@ -214,6 +214,8 @@ export const StepOneditprofile = json => requesth(PATH_URL.steponeedit, json);
 export const StepSecondeditprofile = json => requesth(PATH_URL.stepsecond, json);
 export const StepThirdeditprofile = json => requesth(PATH_URL.thirdstep, json);
 export const StepFourtheditprofile = json => requesth(PATH_URL.fourthstep, json);
+export const prashnalaganapi = json => requesth(PATH_URL.prashnalagan, json);
+
 
 // third party api
 export const LalkitabForm = json => requestExternal(PATH_URL.lalkitab, json);
