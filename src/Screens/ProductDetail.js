@@ -429,8 +429,10 @@ const ProductDetail = ({ navigation, route }) => {
   const { width, height } = Dimensions.get('window');
   const { _customlang, _product } = stringsoflanguages
   const [should1, setShould1] = useState('')
+  const [should2, setShould2] = useState('')
   const [number, setNumber] = useState('1')
   const [quality, setQuality] = useState([])
+  const [dropprice, setDropPrice] = useState([])
   const [astrologercutprice, setAstrologerCutPrice] = useState()
   const [astrologerprice, setAstrologerPrice] = useState()
   const [generalcutprice, setGeneralCutPrice] = useState()
@@ -456,7 +458,7 @@ const ProductDetail = ({ navigation, route }) => {
     };
     productlist(e)
       .then(data => {
-        // alert(JSON.stringify(data?.data, null, 2))
+        // alert(JSON.stringify(JSON.parse(data?.data?.quality_rati), null, 2))
         toggleLoading(false);
         if (data.status) {
           setNewList(data?.data)
@@ -480,10 +482,13 @@ const ProductDetail = ({ navigation, route }) => {
             }));
             if (tempCArr.length > 0) {
               setShould1(tempCArr[0]);
+
+              updatePrices(tempCArr[0]?.value);
               taxdetail(tempCArr[0])
             }
             productlistapi1(tempQualityArray, data?.data?.id);
           }
+
         } else {
           alert(data?.msg);
         }
@@ -493,6 +498,28 @@ const ProductDetail = ({ navigation, route }) => {
         console.log('error', error);
       });
   }
+
+  const updatePrices = (qualityItem) => {
+
+    let tempCArrprice = qualityItem.prices.map((price) => ({
+      label: `${price}`, // Convert number to string
+      value: price // Store the price as the value
+    }));
+    setDropPrice(tempCArrprice);
+    // Set the first price as selected by default
+    if (tempCArrprice?.length > 0) {
+      setShould2(tempCArrprice[0]);
+    }
+  };
+
+  const handleupdateprice = (priceItem) => {
+    console.log('Price item received:', priceItem);
+    if (priceItem && priceItem?.value) {
+      setShould2(priceItem);
+    } else {
+      console.error('Invalid price item:', priceItem);
+    }
+  };
 
 
   const productlistapi1 = (productlisted, field) => {
@@ -573,6 +600,7 @@ const ProductDetail = ({ navigation, route }) => {
 
 
   const taxdetail = (item) => {
+    // alert(JSON.stringify(item,null,2))
     // astrologer price
     let amount = item["value"]["price"];
     let discount = item["value"]["discount_price"];
@@ -741,7 +769,7 @@ const ProductDetail = ({ navigation, route }) => {
                     marginRight: 12,
                   }}
                   itemTextStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', textTransform: 'capitalize' }}
-                  data={quality}
+                  data={dropprice}
                   search
                   searchPlaceholder={'Price'}
                   inputSearchStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', }}
@@ -749,8 +777,8 @@ const ProductDetail = ({ navigation, route }) => {
                   labelField="label"
                   valueField="value"
                   placeholder={"Price"}
-                  value={should1}
-                  onChange={(item) => { setShould1(item), taxdetail(item), handleQualityChange(item, list?.id) }}
+                  value={should2}
+                  onChange={(item) => { setShould2(item), handleupdateprice(item) }}
                 />
               </View>
 
@@ -859,7 +887,7 @@ const ProductDetail = ({ navigation, route }) => {
                         marginTop: 3,
                         textAlign: 'right',
                       }}>
-                      ₹ {astrologerprice}
+                      ₹ {astrologerprice * `${should1?.value?.quality}` * `${should2?.value}`}
                     </Text>
                   )}
                   {astrologercutprice && astrologercutprice > 0 ?
@@ -873,7 +901,7 @@ const ProductDetail = ({ navigation, route }) => {
                         textAlign: 'right',
                         textDecorationLine: 'line-through'
                       }}>
-                      ₹ {astrologercutprice}
+                      ₹ {astrologercutprice * `${should1?.value?.quality}` * `${should2?.value}`}
                     </Text>
                     : null}
                 </View>

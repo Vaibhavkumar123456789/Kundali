@@ -38,8 +38,8 @@ const PrashnaReport = ({ navigation, route }) => {
 
                 <View style={styles.ex_view}>
                     <View style={styles.ex_proView}>
-                        <Image style={{ width: 80, height: 80, resizeMode: 'contain' }}
-                            source={require('../assets/defaultimage.png')} />
+                        <Image style={{ width: 80, height: 80, resizeMode: 'contain', borderRadius: 50 }}
+                            source={{ uri: `${route.params?.data1}${route.params?.item?.image}` }} />
 
                     </View>
                     <View style={styles.dt_view}>
@@ -108,7 +108,7 @@ const PrashnaReport = ({ navigation, route }) => {
                     {route.params?.item?.what_u_want_see}
                 </Text>
 
-                <Pressable onPress={() => { navigation.navigate('KundliGenerate', { item: `${route.params?.data1}${route.params?.item?.image}`, title: route.params?.item?.email, number: "1" }) }}>
+                <Pressable onPress={() => { navigation.navigate('KundliGenerate', { item: `${route.params?.data1}${route.params?.item?.report}`, title: route.params?.item?.email, number: "1" }) }}>
                     <Image style={{ width: 240, height: 160, resizeMode: 'contain', alignSelf: 'center', marginTop: 20 }}
                         source={require('../assets/reportimage.png')} />
                     <Text

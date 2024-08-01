@@ -59,7 +59,7 @@ const Home = ({ navigation }) => {
         let timer;
 
         const callback = async () => {
-            let ms = 5000;
+            let ms = 10000;
             banner()
             timer = setTimeout(callback, ms);
         };

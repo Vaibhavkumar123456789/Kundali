@@ -283,7 +283,6 @@ const Prashna = ({ navigation }) => {
           name: 'image.png',
         })
 
-
         toggleLoading(true)
 
         const token = (await AsyncStorageGettoken() || '')
