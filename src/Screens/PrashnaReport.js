@@ -20,7 +20,7 @@ import Header from '../Custom/Header';
 import stringsoflanguages from '../language/Language'
 
 const PrashnaReport = ({ navigation, route }) => {
-    // alert(JSON.stringify(route.params, null, 2))
+   
     const window = Dimensions.get('window');
     const { width, height } = Dimensions.get('window');
     const { _member, _invoice, _kundali, _setting, _customlang, _order } = stringsoflanguages
