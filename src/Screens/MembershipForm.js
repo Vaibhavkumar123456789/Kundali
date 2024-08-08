@@ -36,9 +36,9 @@ const systemFonts = [
     'AvenirLTStd-Medium',
     'AvenirLTStd-Heavy',
 ];
-import { astrologeraddmembership, consultancylist, Country, membershipplans } from '../backend/Api';
-import LocationIQ from 'react-native-locationiq';
+import { astrologeraddmembership, consultancylist, Country, GetProfile, membershipplans } from '../backend/Api';
 import { BASE_URL_EXTERNAL } from '../backend/Config';
+import { useDispatch, useSelector, useStore } from 'react-redux';
 
 const MembershipForm = ({ navigation }) => {
     const { _kundali, _customlang } = stringsoflanguages
@@ -89,6 +89,9 @@ const MembershipForm = ({ navigation }) => {
     const [cityList, setCityList] = useState([])
     const [selectedcity, setSelectedCity] = useState('')
     const [should1, setShould1] = useState('')
+    const { free } = useSelector(store => store);
+    const [showFreePopUp, setShowFreePopUp] = useState(false);
+    const [walletBalance, setWalletBalance] = useState(0);
     const [state, setState] = useState({
         loading: false,
     });
@@ -98,22 +101,15 @@ const MembershipForm = ({ navigation }) => {
         plan()
         listconsultancy()
         Countrysearch()
+        profile()
     }, [isFocused == true])
 
-
-    const Countrysearch = () => {
-        Country()
+    const profile = () => {
+        GetProfile()
             .then(data => {
-                // alert(JSON.stringify(data, null, 2))
+                // alert(JSON.stringify(data?.user_profile?.wallet, null, 2))
                 if (data.status) {
-                    let tempCArr = []
-                    data?.data.map((i) => {
-                        tempCArr.push({
-                            label: i.name,
-                            value: i.iso2,
-                        })
-                        setCList(tempCArr)
-                    })
+                    setWalletBalance(data?.user_profile?.wallet)
                 } else {
                     alert(data?.msg);
                 }
@@ -123,10 +119,36 @@ const MembershipForm = ({ navigation }) => {
             });
     }
 
+
+    const Countrysearch = () => {
+        toggleLoading(true);
+        Country()
+            .then(data => {
+                // alert(JSON.stringify(data, null, 2))
+                toggleLoading(false);
+                if (data.status) {
+                    let tempCArr = []
+                    data?.data.map((i) => {
+                        tempCArr.push({
+                            label: i.name,
+                            value: i,
+                        })
+                        setCList(tempCArr)
+                    })
+                } else {
+                    alert(data?.msg);
+                }
+            })
+            .catch(error => {
+                toggleLoading(false);
+                console.log('error', error);
+            });
+    }
+
     useEffect(() => {
-        console.log(`${BASE_URL_EXTERNAL}Place/GetCity?CountryCode=${should1}&SearchText=${search}&Limit=50`)
+        console.log(`${BASE_URL_EXTERNAL}Place/GetCity?CountryCode=${should1?.value?.iso2}&SearchText=${search}&Limit=50`)
         const timeOut = setTimeout(async () => {
-            const res = await fetch(`${BASE_URL_EXTERNAL}Place/GetCity?CountryCode=${should1}&SearchText=${search}&Limit=50`, {
+            const res = await fetch(`${BASE_URL_EXTERNAL}Place/GetCity?CountryCode=${should1?.value?.iso2}&SearchText=${search}&Limit=50`, {
                 method: 'GET',
                 headers: {
                     "Accept": "application/json",
@@ -255,86 +277,95 @@ const MembershipForm = ({ navigation }) => {
             Toast.show('Please Select Any One Package')
             return
         }
-        const item = planlist[select];
+        else {
 
-        let jj = selected.map(i => {
-            return i.value;
-        });
+            const item = planlist[select];
 
-        let amount = item["price"]
-        let discount = item["discount_price"]
-        let taxable_amount = discount > 0 ? discount : amount;
-
-        // alert(JSON.stringify(taxable_amount, null, 2))
-        // return
-        tax_amount = 0
-        if (item.mastertax == null || item.is_free == 1) {                //free
-            tax_percentage = 0
-            total_amount = taxable_amount
-        } else {
-            tax_percentage = item["mastertax"]["tax_percentage"]
-            tax_amount = taxable_amount * tax_percentage / 100
-            total_amount = taxable_amount + tax_amount
-        }
-
-        // alert(JSON.stringify({
-        //     "tax_amt": tax_amount,
-        //     "net_amount": taxable_amount,
-        //     "total_mrp": total_amount
-        // }), null, 2)
-        // return
-        let e = {
-            "name": name,
-            "name_hindi": hindiname,
-            "gender": checked === 0 ? "Male" : checked === 1 ? "Female" : null,
-            "mobile": number,
-            "email": email,
-            "address": address,
-            "dob": date == '' ? '' : moment(date).format('YYYY-MM-DD'),
-            "tob": date1 == '' ? '' : moment(date1).format('hh:mm a'),
-            "country": should1,
-            "pob": `${selectedcity.cityName}`,
-            "latitude": selectedcity.latitude,
-            "longitude": selectedcity.longitude,
-            'Timezone': selectedcity.timezone,
-            'cityid': selectedcity.cityId,
-            "caste": caste,
-            "gotra": gotra,
-            "father_name": fathername,
-            "mother_name": mothername,
-            "grandfather_name": grandfathername,
-            "marital_status": checked1 === 0 ? "Married" : checked1 === 1 ? "Unmarried" : "Divorce",
-            "no_of_childern": noofchildren,
-            "child_detail": languages,
-            "occupation": checked2 === 0 ? "Business" : checked2 === 1 ? "Service" : null,
-            "filled_of_business": filedbusiness,
-            "service_type": checked3 === 0 ? "Private" : checked3 === 1 ? "Government" : null,
-            "consultancy_for": jj.join('|'),
-            "others": other,
-            "package_id": item?.id,
-            "tax_amt": `${parseFloat(tax_amount).toFixed(2)}`,
-            "net_amount": `${parseFloat(taxable_amount).toFixed(2)}`,
-            "total_mrp": `${parseFloat(total_amount).toFixed(2)}`,
-            "payment_mode": "online"
-        };
-        // alert(JSON.stringify(e, null, 2))
-        // return
-        toggleLoading(true);
-        astrologeraddmembership(e)
-            .then(data => {
-                // alert(JSON.stringify(data, null, 2))
-                console.log(data)
-                toggleLoading(false);
-                if (data.status) {
-                    navigation.goBack()
-                } else {
-                    alert(data?.msg);
-                }
-            })
-            .catch(error => {
-                toggleLoading(false);
-                console.log('error', error);
+            let jj = selected.map(i => {
+                return i.value;
             });
+
+            let amount = item["price"]
+            let discount = item["discount_price"]
+            let taxable_amount = discount > 0 ? discount : amount;
+
+
+            tax_amount = 0
+            if (item.mastertax == null || item.is_free == 1) {                //free
+                tax_percentage = 0
+                total_amount = taxable_amount
+            } else {
+                tax_percentage = item["mastertax"]["tax_percentage"]
+                tax_amount = taxable_amount * tax_percentage / 100
+                total_amount = taxable_amount + tax_amount
+
+                if (walletBalance <= `${parseFloat(total_amount).toFixed(2)}`) {
+                    Toast.show("Please Add Wallet Balance")
+                    return
+                }
+            }
+
+            // alert(JSON.stringify({
+            //     "tax_amt": `${parseFloat(tax_amount).toFixed(2)}`,
+            //     "net_amount": `${parseFloat(taxable_amount).toFixed(2)}`,
+            //     "total_mrp": `${parseFloat(total_amount).toFixed(2)}`
+            // }), null, 2)
+            // return
+
+            let e = {
+                "name": name,
+                "name_hindi": hindiname,
+                "gender": checked === 0 ? "Male" : checked === 1 ? "Female" : null,
+                "mobile": number,
+                "email": email,
+                "address": address,
+                "dob": date == '' ? '' : moment(date).format('YYYY-MM-DD'),
+                "tob": date1 == '' ? '' : moment(date1).format('hh:mm a'),
+                "country": should1?.value?.name,
+                "pob": `${selectedcity.cityName}`,
+                "latitude": selectedcity.latitude,
+                "longitude": selectedcity.longitude,
+                'Timezone': selectedcity.timezone,
+                'cityid': selectedcity.cityId,
+                "caste": caste,
+                "gotra": gotra,
+                "father_name": fathername,
+                "mother_name": mothername,
+                "grandfather_name": grandfathername,
+                "marital_status": checked1 === 0 ? "Married" : checked1 === 1 ? "Unmarried" : "Divorce",
+                "no_of_childern": noofchildren,
+                "child_detail": languages,
+                "occupation": checked2 === 0 ? "Business" : checked2 === 1 ? "Service" : null,
+                "filled_of_business": filedbusiness,
+                "service_type": checked3 === 0 ? "Private" : checked3 === 1 ? "Government" : null,
+                "consultancy_for": jj.join('|'),
+                "others": other,
+                "package_id": item?.id,
+                "tax_amt": `${parseFloat(tax_amount).toFixed(2)}`,
+                "net_amount": `${parseFloat(taxable_amount).toFixed(2)}`,
+                "total_mrp": `${parseFloat(total_amount).toFixed(2)}`,
+                "payment_mode": "online"
+            };
+            console.log("...membership form body", e)
+            // alert(JSON.stringify(e, null, 2))
+            // return
+            toggleLoading(true);
+            astrologeraddmembership(e)
+                .then(data => {
+                    // alert(JSON.stringify(data, null, 2))
+                    console.log(data)
+                    toggleLoading(false);
+                    if (data.status) {
+                        navigation.goBack()
+                    } else {
+                        alert(data?.msg);
+                    }
+                })
+                .catch(error => {
+                    toggleLoading(false);
+                    console.log('error', error);
+                });
+        }
     }
 
 
@@ -389,7 +420,10 @@ const MembershipForm = ({ navigation }) => {
                     labels={labels}
                 />
             </View>
+
+
             <KeyboardAwareScrollView keyboardShouldPersistTaps="always">
+
 
                 {currentPosition == 0 && (
 
@@ -700,7 +734,7 @@ const MembershipForm = ({ navigation }) => {
                             valueField="value"
                             placeholder={_kundali.country}
                             value={should1}
-                            onChange={(item) => setShould1(item.value)}
+                            onChange={(item) => setShould1(item)}
                         />
                         <Text
                             style={{
@@ -1258,11 +1292,7 @@ const MembershipForm = ({ navigation }) => {
                                     bottom: 10,
                                     marginTop: 15,
                                 }} onPress={() => {
-                                    // if (item.is_free == 1) {           // free
-                                    //     addmembership(item)
-                                    // } else {
-                                    //     addmembership(item)
-                                    // }
+
                                     setSelect(index)
 
                                 }}>
@@ -1326,7 +1356,6 @@ const MembershipForm = ({ navigation }) => {
 
                             )}
                         />
-
                     </View>
                 )}
 
@@ -1629,65 +1658,153 @@ const MembershipForm = ({ navigation }) => {
 
 
             {currentPosition == 4 && (
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                    <Button
-                        containerStyle={{
-                            width: '42%',
-                            // position: 'absolute',
-                            marginBottom: 20,
-                            borderColor: '#333333',
-                            borderWidth: 1,
-                            marginLeft: 18,
-                            marginTop: 20,
-                            height: 52,
-                            borderRadius: 12,
-                            overflow: 'hidden',
-                            alignSelf: 'center',
-                            justifyContent: 'center',
-                            backgroundColor: 'white',
-                        }}
-                        style={{
-                            fontSize: 18,
-                            color: '#333333',
-                            alignSelf: 'center',
-                            fontFamily: 'AvenirLTStd-Medium',
-                        }}
+                <>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                        <Button
+                            containerStyle={{
+                                width: '42%',
+                                // position: 'absolute',
+                                marginBottom: 20,
+                                borderColor: '#333333',
+                                borderWidth: 1,
+                                marginLeft: 18,
+                                marginTop: 20,
+                                height: 52,
+                                borderRadius: 12,
+                                overflow: 'hidden',
+                                alignSelf: 'center',
+                                justifyContent: 'center',
+                                backgroundColor: 'white',
+                            }}
+                            style={{
+                                fontSize: 18,
+                                color: '#333333',
+                                alignSelf: 'center',
+                                fontFamily: 'AvenirLTStd-Medium',
+                            }}
 
-                        onPress={() => {
-                            setCurrentPosition(currentPosition - 1)
-                        }}>
-                        {_kundali.previous}
-                    </Button>
-                    <Button
-                        containerStyle={{
-                            width: '42%',
-                            // position: 'absolute',
-                            marginRight: 18,
-                            marginBottom: 20,
-                            marginTop: 20,
-                            height: 52,
-                            borderRadius: 12,
-                            overflow: 'hidden',
-                            alignSelf: 'center',
-                            justifyContent: 'center',
-                            backgroundColor: '#FFCC80',
-                        }}
-                        style={{
-                            fontSize: 18,
-                            color: '#333333',
-                            alignSelf: 'center',
-                            fontFamily: 'AvenirLTStd-Medium',
-                        }}
+                            onPress={() => {
+                                setCurrentPosition(currentPosition - 1)
+                            }}>
+                            {_kundali.previous}
+                        </Button>
+                        <Button
+                            containerStyle={{
+                                width: '42%',
+                                // position: 'absolute',
+                                marginRight: 18,
+                                marginBottom: 20,
+                                marginTop: 20,
+                                height: 52,
+                                borderRadius: 12,
+                                overflow: 'hidden',
+                                alignSelf: 'center',
+                                justifyContent: 'center',
+                                backgroundColor: '#FFCC80',
+                            }}
+                            style={{
+                                fontSize: 18,
+                                color: '#333333',
+                                alignSelf: 'center',
+                                fontFamily: 'AvenirLTStd-Medium',
+                            }}
 
-                        onPress={() => {
-                            // navigation.navigate('Payment')
-                            addmembership()
-                        }}>
-                        {_kundali.paynow}
-                    </Button>
-                </View>
+                            onPress={() => {
+                                if (free?.plandetail?.is_free == "1") {            //free plan
+                                    setShowFreePopUp(true);
+
+                                } else {
+                                    addmembership()
+                                }
+                            }}>
+                            {_kundali.paynow}
+                        </Button>
+                    </View>
+                </>
             )}
 
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={showFreePopUp}
+                onRequestClose={() => {
+                    setShowFreePopUp(!showFreePopUp);
+                }}
+            >
+                <TouchableOpacity
+                    activeOpacity={0.8}
+                    onPress={() => {
+                        setShowFreePopUp(false);
+                    }}
+                    style={{
+                        flex: 1,
+                        backgroundColor: '#00000099',
+                        justifyContent: 'center',
+                    }}>
+                    <View style={{
+                        margin: 15,
+                        paddingVertical: 20,
+                        backgroundColor: 'white',
+                        borderRadius: 10,
+                    }}>
+                        <View style={{ backgroundColor: '#FFCC80', width: '100%', flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 13, marginTop: -20, borderTopLeftRadius: 10, borderTopRightRadius: 10, borderBottomLeftRadius: 0, borderBottomRightRadius: 0 }}>
+                            <Text style={{
+                                fontSize: 15,
+                                color: 'black',
+                                fontFamily: 'AvenirLTStd-Medium',
+                                marginLeft: 15,
+                            }}>
+                                Become a Member Today!
+                            </Text>
+                            <Pressable onPress={() => { setShowFreePopUp(false) }}>
+                                <Image
+                                    style={{
+                                        width: 13,
+                                        height: 13,
+                                        resizeMode: 'contain',
+                                        marginRight: 15,
+                                        marginTop: 3,
+                                    }}
+                                    source={require('../assets/close.png')}
+                                />
+                            </Pressable>
+                        </View>
+                        <Text style={{
+                            fontSize: 15,
+                            color: 'black',
+                            fontFamily: 'AvenirLTStd-Medium',
+                            marginHorizontal: 15,
+                            textAlign: 'center',
+                            marginTop: 10,
+                            lineHeight: 20,
+                        }}>
+                            Become a member today and unlock exclusive benefits.Enjoy special discounts and more.
+                        </Text>
+                        <TouchableOpacity
+                            activeOpacity={0.9}
+                            style={{
+                                backgroundColor: '#FFCC80',
+                                borderRadius: 8,
+                                padding: 15,
+                                width: '25%',
+                                alignSelf: 'center',
+                                marginTop: 13,
+                            }} onPress={() => { setShowFreePopUp(false) }}>
+
+                            <Text style={{
+                                fontSize: 14,
+                                color: '#333333',
+                                fontFamily: 'AvenirLTStd-Heavy',
+                                textAlign: 'center',
+                            }}>
+
+                                OK
+                            </Text>
+                        </TouchableOpacity>
+
+                    </View>
+                </TouchableOpacity>
+            </Modal>
 
             <DatePicker
                 modal

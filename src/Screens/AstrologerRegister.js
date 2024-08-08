@@ -187,7 +187,7 @@ const AstrologerRegister = ({ navigation, route }) => {
                         setSkill(tempCArr)
                     })
                 } else {
-                    alert(data?.msg);
+                    alert(data?.msg)
                 }
             })
             .catch(error => {
@@ -608,7 +608,7 @@ const AstrologerRegister = ({ navigation, route }) => {
                 Toast.show('Please enter Biography');
             }
             else {
-                // toggleLoading(true)
+                toggleLoading(true)
                 let formData = new FormData();
                 formData.append('qualification', academicqual)
                 formData.append('astrologer_qualification', astroqualification)
@@ -681,6 +681,7 @@ const AstrologerRegister = ({ navigation, route }) => {
                 console.log('Step6', response1)
                 toggleLoading(false)
                 if (response1.status) {
+                    Toast.show('Profile Updated')
                     navigation.goBack()
                 } else {
                     // alert(response1?.msg);
@@ -708,7 +709,7 @@ const AstrologerRegister = ({ navigation, route }) => {
             <Header
                 menuOption={() => navigation.goBack()}
                 leftIcon={require('../assets/backtoback.png')}
-                title={_astrologerForm.astrologerregister}
+                title={'Your Professional Profile'}
             />
             {state.loading && <Loader />}
             <View style={{ marginHorizontal: 5, marginTop: 15 }}>

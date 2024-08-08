@@ -94,15 +94,17 @@ const UpdateMember = ({ navigation, route }) => {
     }, [isFocused == true])
 
     const Countrysearch = () => {
+        toggleLoading(true);
         Country()
             .then(data => {
                 // alert(JSON.stringify(data, null, 2))
+                toggleLoading(false);
                 if (data.status) {
                     let tempCArr = []
                     data?.data.map((i) => {
                         tempCArr.push({
                             label: i.name,
-                            value: i.iso2,
+                            value: i,
                         })
                         setCList(tempCArr)
                     })
@@ -111,14 +113,15 @@ const UpdateMember = ({ navigation, route }) => {
                 }
             })
             .catch(error => {
+                toggleLoading(false)
                 console.log('error', error);
             });
     }
 
     useEffect(() => {
-        console.log(`${BASE_URL_EXTERNAL}Place/GetCity?CountryCode=${should1}&SearchText=${search}&Limit=50`)
+        console.log(`${BASE_URL_EXTERNAL}Place/GetCity?CountryCode=${should1?.value?.iso2}&SearchText=${search}&Limit=50`)
         const timeOut = setTimeout(async () => {
-            const res = await fetch(`${BASE_URL_EXTERNAL}Place/GetCity?CountryCode=${should1}&SearchText=${search}&Limit=50`, {
+            const res = await fetch(`${BASE_URL_EXTERNAL}Place/GetCity?CountryCode=${should1?.value?.iso2}&SearchText=${search}&Limit=50`, {
                 method: 'GET',
                 headers: {
                     "Accept": "application/json",
@@ -251,11 +254,11 @@ const UpdateMember = ({ navigation, route }) => {
             "address": address,
             "dob": date == '' ? '' : moment(date).format('YYYY-MM-DD'),
             "tob": date1 == '' ? '' : moment(date1).format('hh:mm a'),
-            "country": should1 == "" ? route.params?.maindetailuser?.country : should1,
+            "country": should1 == "" ? route.params?.maindetailuser?.country : should1?.value?.name,
             "pob": selectedcity == "" ? route.params?.maindetailuser?.pob : `${selectedcity.cityName}`,
             "latitude": selectedcity == "" ? route.params?.maindetailuser?.latitude : selectedcity.latitude,
             "longitude": selectedcity == "" ? route.params?.maindetailuser?.longitude : selectedcity.longitude,
-            'Timezone': selectedcity == "" ? route.params?.maindetailuser?.Timezone : selectedcity.timezone,
+            'Timezone': selectedcity == "" ? route.params?.maindetailuser?.timezone : selectedcity.timezone,
             'cityid': selectedcity == "" ? route.params?.maindetailuser?.cityid : selectedcity.cityId,
             "caste": caste,
             "gotra": gotra,
@@ -718,7 +721,7 @@ const UpdateMember = ({ navigation, route }) => {
                             placeholder={route.params?.maindetailuser?.country == "" || null ? _kundali.country : route.params?.maindetailuser?.country}
                             value={should1}
                             onChange={(item) => {
-                                setShould1(item.value),
+                                setShould1(item),
                                     setMainDetailUser({
                                         ...mainDetailUser,
                                         pob: '', // Clear the place of birth
@@ -1371,10 +1374,10 @@ const UpdateMember = ({ navigation, route }) => {
                             }}
 
                             onPress={() => {
-                                if (should1 === '') {
-                                    Toast.show('Please Select Country');
-                                }
-                                else if (selectedcity === '') {
+                                // if (should1 === '') {
+                                //     Toast.show('Please Select Country');
+                                // }
+                                if (should1 && selectedcity === '') {
                                     Toast.show('Please enter place of birth');
                                 }
                                 else if (caste === '') {

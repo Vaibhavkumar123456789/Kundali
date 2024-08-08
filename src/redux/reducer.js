@@ -10,6 +10,7 @@ const data = {
   female: {},
   location: {},
   language: 'en',
+  free: {},
 };
 const reducer = (state = data, action) => {
   switch (action.type) {
@@ -68,6 +69,11 @@ const reducer = (state = data, action) => {
       };
     case 'language':
       return { ...state, language: action.payload };
+    case 'freePackage':
+      return {
+        ...state,
+        free: action.paylod,
+      };
     // case 'init':
     //     return {
     //         ...state,

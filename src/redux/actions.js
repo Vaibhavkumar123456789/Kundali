@@ -17,3 +17,6 @@ export const Live = user =>
   store.dispatch({ type: 'live', paylod: user ? user : '' });
 
 export const Language = payload => ({ type: 'language', payload });
+
+export const FreePackage = free =>
+  store.dispatch({ type: 'freePackage', paylod: free ? free : {} });

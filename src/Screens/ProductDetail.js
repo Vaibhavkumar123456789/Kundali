@@ -938,7 +938,7 @@ const ProductDetail = ({ navigation, route }) => {
                       ₹ {list?.discounted_price > 0 ? list?.discounted_price * number : list?.prices * number}
                     </Text>
                   )}
-                  {list && list?.discounted_price > 0 ?
+                  {list && list?.prices > 0 ?
                     <Text
                       style={{
                         color: '#1E1F2090',
@@ -981,7 +981,7 @@ const ProductDetail = ({ navigation, route }) => {
                       ₹ {list?.discounted_price > 0 ? list?.discounted_price * number : list?.prices * number}
                     </Text>
                   )}
-                  {list && list?.discounted_price > 0 ?
+                  {list && list?.prices > 0 ?
                     < Text
                       style={{
                         color: '#1E1F2090',

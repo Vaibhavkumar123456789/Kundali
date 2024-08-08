@@ -424,16 +424,17 @@ const StackNavigator = () => {
                     component={KundliGenerate}
                     options={{ headerShown: false }}
                 />
-                 <Stack.Screen
+                <Stack.Screen
                     name="NoInterner"
                     component={NoInterner}
                     options={{ headerShown: false }}
                 />
-                  <Stack.Screen
+                <Stack.Screen
                     name="PrashnaReport"
                     component={PrashnaReport}
                     options={{ headerShown: false }}
                 />
+             
 
             </Stack.Navigator>
         </NavigationContainer>

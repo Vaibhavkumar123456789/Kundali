@@ -86,7 +86,7 @@ const MyOrderProductDetail = ({ navigation, route }) => {
                         style={{
                             fontSize: 16,
                             fontFamily: 'AvenirLTStd-Heavy',
-                            color: route.params?.status === "pending" ? "red" : route.params?.status === "completed" ? "green" : 'orange',
+                            color: route.params?.mainstatus === 0 ? "red" : route.params?.mainstatus === 1 ? "green" : 'orange',
                             marginRight: 10,
                             textTransform: 'capitalize',
                             textAlign: 'right',
@@ -126,7 +126,7 @@ const MyOrderProductDetail = ({ navigation, route }) => {
                                         marginRight: 10,
                                         marginTop: 2,
                                     }}>
-                                    {`${moment(item?.created_at).format('YYYY-MM-DD-hh:mm a')}`}
+                                    {`${moment(item?.created_at).format('YYYY-MM-DD hh:mm a')}`}
                                 </Text>
                             </View>
 
@@ -175,7 +175,7 @@ const MyOrderProductDetail = ({ navigation, route }) => {
                                                 marginTop: 5,
                                                 width: window.width - 150,
                                             }}>
-                                             {`₹ ${(item?.price - (item?.total_tax / item?.qty)).toFixed(2)}`}
+                                            {`₹ ${(item?.price - (item?.total_tax / item?.qty)).toFixed(2)}`}
                                         </Text>
                                     </View>
                                 </View>
@@ -307,7 +307,7 @@ const MyOrderProductDetail = ({ navigation, route }) => {
                         </Text>
                     </View>
                 </View>
-                {route.params?.status === "completed" ?
+                {route.params?.mainstatus === 1 ?     //completed and delivered"
                     <></> :
                     <View style={{
                         paddingVertical: 15,

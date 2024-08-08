@@ -1,18 +1,20 @@
-import { View, Text, Image, StyleSheet, Dimensions, FlatList, Modal, TextInput, StatusBar, SafeAreaView, ImageBackground, Pressable, ScrollView, TouchableOpacity, Platform, BackHandler, Alert, } from 'react-native'
+import { View, Text, Image, StyleSheet, Dimensions, FlatList, Modal, Linking, TextInput, StatusBar, SafeAreaView, ImageBackground, Pressable, ScrollView, TouchableOpacity, Platform, BackHandler, Alert, } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import Carousel from 'react-native-banner-carousel';
 import stringsoflanguages from '../language/Language'
 import { TabActions } from '@react-navigation/native';
-import { Astroreport, Homebanner } from '../backend/Api';
+import { activepackageapi, Astroreport, Homebanner } from '../backend/Api';
 import { useIsFocused } from '@react-navigation/native';
-import Loader from '../utils/Loader';
+import * as actions from '../redux/actions';
 import store from '../redux/store';
+import { useDispatch, useSelector, useStore } from 'react-redux';
 import GLobal from './GLobal';
 import AstroReportList from './component/AstroReportList';
 import NoInterner from './NoInterner';
 const Home = ({ navigation }) => {
     const window = Dimensions.get('window');
-
+    const { free } = useSelector(store => store);
+    const [modalVisible, setModalVisible] = useState(false);
     const { width, height } = Dimensions.get('window');
     const isFocused = useIsFocused();
     const [bannerimage, setBannerImage] = useState([])
@@ -76,6 +78,31 @@ const Home = ({ navigation }) => {
         };
     }, [isFocused == true])
 
+    useEffect(() => {
+        Subscriptionsapi()
+
+        if (free?.plandetail?.is_free == "1" && free?.totaldays == 0 || free?.totaldays > 0) {
+            setModalVisible(true)
+        }
+    }, [isFocused == true])
+
+    const Subscriptionsapi = () => {
+
+        activepackageapi()
+            .then(data => {
+                // alert(JSON.stringify(data?.list[0], null, 2))
+                if (data.status) {
+                    actions.FreePackage(data?.list[0]);
+
+                } else {
+                    alert(data?.msg);
+                }
+            })
+            .catch(error => {
+                console.log('error', error);
+            });
+    }
+
     const banner = () => {
         toggleLoading(true);
         let e = {
@@ -90,7 +117,7 @@ const Home = ({ navigation }) => {
                 if (data.status) {
                     setBannerImage(data?.topbanners)
                     setReport(data?.astro_report_detail)
-                    setMessage(data?.message_center)
+                    setMessage(data?.message_center?.data)
                     setAstro(data)
                     GLobal.deliveryday = data?.settings?.delivery_day
                 } else {
@@ -147,7 +174,8 @@ const Home = ({ navigation }) => {
                 navigation.navigate('MyOrders')
                 break;
             case _home.online:
-                navigation.navigate('OnlineJyotish')
+                // navigation.navigate('OnlineJyotish')
+                Linking.openURL('https://play.google.com/store/apps/details?id=com.astromyntra.app&hl=en_IN')
                 break;
             default:
         }
@@ -357,7 +385,7 @@ const Home = ({ navigation }) => {
                         borderRadius: 8,
                         marginTop: 20,
                     }}>
-                    {message && message.length > 0 ?
+                    {message && message?.length > 0 ?
                         <FlatList
                             data={message?.slice(0, 5)}
                             renderItem={({ item, index }) => (
@@ -377,7 +405,7 @@ const Home = ({ navigation }) => {
                                             color: '#33333390',
                                             width: window.width - 65,
                                         }}>
-                                        {item?.description}
+                                        {item?.content}
                                     </Text>
                                 </View>
                             )}
@@ -461,6 +489,89 @@ const Home = ({ navigation }) => {
                 />
 
             </ScrollView>
+
+
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose={() => {
+                    setModalVisible(!modalVisible);
+                }}
+            >
+                <TouchableOpacity
+                    activeOpacity={0.8}
+                    onPress={() => {
+                        setModalVisible(false);
+                    }}
+                    style={{
+                        flex: 1,
+                        backgroundColor: '#00000099',
+                        justifyContent: 'center',
+                    }}>
+                    <View style={{
+                        margin: 15,
+                        paddingVertical: 20,
+                        backgroundColor: 'white',
+                        borderRadius: 10,
+                    }}>
+                        <View style={{ backgroundColor: '#FFCC80', width: '100%', flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 13, marginTop: -20, borderTopLeftRadius: 10, borderTopRightRadius: 10, borderBottomLeftRadius: 0, borderBottomRightRadius: 0 }}>
+                            <Text style={{
+                                fontSize: 15,
+                                color: 'black',
+                                fontFamily: 'AvenirLTStd-Medium',
+                                marginLeft: 15,
+                            }}>
+                                Your plan is expired
+                            </Text>
+                            <Pressable onPress={() => { setModalVisible(false) }}>
+                                <Image
+                                    style={{
+                                        width: 13,
+                                        height: 13,
+                                        resizeMode: 'contain',
+                                        marginRight: 15,
+                                        marginTop: 3,
+                                    }}
+                                    source={require('../assets/close.png')}
+                                />
+                            </Pressable>
+                        </View>
+                        <Text style={{
+                            fontSize: 15,
+                            color: 'black',
+                            fontFamily: 'AvenirLTStd-Medium',
+                            marginHorizontal: 15,
+                            textAlign: 'center',
+                            marginTop: 10,
+                            lineHeight: 20,
+                        }}>
+                            Become a member today and unlock exclusive benefits.Enjoy special discounts and more.
+                        </Text>
+                        <TouchableOpacity
+                            activeOpacity={0.9}
+                            style={{
+                                backgroundColor: '#FFCC80',
+                                borderRadius: 8,
+                                padding: 15,
+                                alignSelf: 'center',
+                                marginTop: 13,
+                            }} onPress={() => { navigation.navigate('Package'), setModalVisible(false) }}>
+
+                            <Text style={{
+                                fontSize: 14,
+                                color: '#333333',
+                                fontFamily: 'AvenirLTStd-Heavy',
+                                textAlign: 'center',
+                            }}>
+
+                                Update Plan
+                            </Text>
+                        </TouchableOpacity>
+
+                    </View>
+                </TouchableOpacity>
+            </Modal>
 
 
         </SafeAreaView>

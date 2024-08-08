@@ -1,5 +1,3 @@
-
-
 import { View, Text, Image, StyleSheet, Animated, Modal, ActivityIndicator, Dimensions, FlatList, TextInput, StatusBar, SafeAreaView, ImageBackground, Pressable, ScrollView, TouchableOpacity, } from 'react-native'
 import React, { useEffect, useState, useRef } from 'react'
 import stringsoflanguages from '../language/Language'
@@ -63,10 +61,11 @@ const ViewSample = ({ navigation, route }) => {
                 startInLoadingState={true}
             /> */}
 
-            <View style={{ width: window.width, height: window.height, flexDirection: 'row', justifyContent: 'space-between' }}>
+            <View style={{ width: Dimensions.get('window').width, height: Dimensions.get('window').height, flexDirection: 'row', justifyContent: 'space-between' }}>
 
                 <Pdf
                     ref={pdfRef}
+
                     source={{ uri: route.params?.item }}
                     onLoadComplete={(numberOfPages) => setTotalPages(numberOfPages)}
                     onPageChanged={(page) => console.log(`Current page: ${page}`)}
@@ -78,10 +77,9 @@ const ViewSample = ({ navigation, route }) => {
                     }}
                     style={{
                         flex: 1,
-                        width: window.width - 50,
-                        height: window.height,
+                        width: Dimensions.get('window').width - 50,
+                        height: Dimensions.get('window').height,
                     }}
-
                 />
                 <View  >
                     <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.pageNavigatorContainer}>
@@ -89,6 +87,9 @@ const ViewSample = ({ navigation, route }) => {
                             <TouchableOpacity
                                 key={index}
                                 onPress={() => handlePageChange(index + 1)}
+                                style={
+                                    styles.pageNumberContainer
+                                }
                             >
                                 <Animated.Text style={[
                                     styles.pageNumber,
@@ -113,25 +114,34 @@ export default ViewSample
 
 const styles = StyleSheet.create({
     pageNavigatorContainer: {
+        padding: 5,
+        backgroundColor: '#f0f0f0',
+        borderWidth: 1,
+        borderColor: '#ddd',
         alignItems: 'center',
         justifyContent: 'center',
-        paddingVertical: 5,
-        backgroundColor: 'white',
-        marginRight: 5,
+
     },
     pageNumber: {
-        paddingVertical: 5,
-        paddingHorizontal: 10,
-        textAlign: 'center',
-        color: '#000',
         fontFamily: 'AvenirLTStd-Roman',
         fontSize: 12,
+        paddingVertical: 5,
+        paddingHorizontal: 8,
+        backgroundColor: '#fff',
+        borderRadius: 5,
+        color: '#000',
+        borderWidth: 1,
+        borderColor: '#ddd',
+        marginVertical: 2,
+        alignItems: 'center',
+        marginBottom: 15,
     },
     selectedPageNumber: {
-        color: '#FFCC80',
-        fontFamily: 'AvenirLTStd-Roman',
-        fontSize: 13,
+        color: 'white',
+        fontFamily: 'AvenirLTStd-Heavy',
+        fontSize: 12,
+        backgroundColor: 'red',
+        textAlign: 'center',
     },
-
 })
 

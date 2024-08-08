@@ -190,7 +190,7 @@ const MyOrders = ({ navigation }) => {
                                                         marginRight: 10,
                                                         marginTop: 2,
                                                     }}>
-                                                    {`${moment(item?.created_at).format('YYYY-MM-DD-hh:mm a')}`}
+                                                    {`${moment(item?.created_at).format('YYYY-MM-DD hh:mm a')}`}
                                                 </Text>
                                             </View>
                                             <View style={{ marginHorizontal: 10, marginTop: 10, borderStyle: 'dashed', borderBottomColor: '#33333360', borderBottomWidth: 1 }}></View>
@@ -243,7 +243,7 @@ const MyOrders = ({ navigation }) => {
                                                                         marginTop: 5,
                                                                         width: window.width - 150,
                                                                     }}>
-                                                                     {`₹ ${(item?.price - (item?.total_tax / item?.qty)).toFixed(2)}`}
+                                                                    {`₹ ${(item?.price - (item?.total_tax / item?.qty)).toFixed(2)}`}
                                                                 </Text>
                                                             </View>
                                                         </View>
@@ -302,7 +302,7 @@ const MyOrders = ({ navigation }) => {
                                                         {item?.name}
                                                     </Text>
                                                 </View>
-                                                <View style={{ flexDirection: 'row', alignSelf: 'flex-end', marginRight: 12, marginTop: 20 }}>
+                                                <View style={{ flexDirection: 'row', alignSelf: 'flex-end', marginRight: 12, marginTop: 10 }}>
                                                     <Text style={{ color: '#FFCC80', fontFamily: 'AvenirLTStd-Medium', fontSize: 14, textDecorationLine: 'underline', }} onPress={() => navigation.navigate('PrashnaReport', { item, data1: data?.path })}>{_order.view}</Text>
                                                 </View>
                                             </View>
@@ -310,7 +310,7 @@ const MyOrders = ({ navigation }) => {
                                                 <View style={styles.dt_view_11}>
                                                     <View
                                                         style={{
-                                                            flexDirection: 'row', marginTop: -15,
+                                                            flexDirection: 'row', marginTop: -5
                                                         }}>
                                                         <Text numberOfLines={1}
                                                             style={styles.dt_name}>{`${moment(item?.updated_at).format('YYYY-MM-DD hh:mm a')}`}</Text>
@@ -320,15 +320,7 @@ const MyOrders = ({ navigation }) => {
 
                                                 </View>
                                             </View>
-                                            <View style={styles.dt_view_2}>
-                                                <View style={styles.dt_viewOpt}>
-                                                    <Text numberOfLines={1} style={styles.dt_viewOptText}>
-                                                        {_order.amount} :
-                                                        {/* ₹ {item?.total_mrp}/- */}
-                                                    </Text>
-                                                </View>
 
-                                            </View>
                                         </View>
                                     </View>
                                 )}
@@ -355,11 +347,10 @@ const MyOrders = ({ navigation }) => {
 
                 menuOption={() => navigation.goBack()}
                 leftIcon={require('../assets/backtoback.png')}
-                // secondRightIcon={require('../assets/search.png')}
-                thirdRightIcon={require('../assets/filter.png')}
 
+                thirdRightIcon={index === 0 ? require('../assets/filter.png') : null}
                 right3Option={() => {
-                    setModalOpen(true)
+                    index === 0 ? setModalOpen(true) : null
                 }}
             />
 

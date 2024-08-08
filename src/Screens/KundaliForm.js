@@ -23,7 +23,7 @@ import { RadioButton } from 'react-native-paper';
 import Toast from 'react-native-simple-toast';
 import { validateEmail } from '../utils/utils';
 import DatePicker from 'react-native-date-picker'
-import CheckBox from '@react-native-community/checkbox';
+import { useDispatch, useSelector, useStore } from 'react-redux';
 import moment from 'moment';
 import { Dropdown } from 'react-native-element-dropdown';
 import Button from 'react-native-button';
@@ -65,6 +65,8 @@ const KundaliForm = ({ navigation }) => {
     const [cityList, setCityList] = useState([])
     const [selectedcity, setSelectedCity] = useState('')
     const [report, setReport] = useState([])
+    const { plandetail } = useSelector(store => store.free);
+
     const [searchQuery, setSearchQuery] = useState('');
     const [showDropdown, setShowDropdown] = useState(true);
     const [location, setLocation] = useState([]);
@@ -173,6 +175,7 @@ const KundaliForm = ({ navigation }) => {
                 console.log('error', error);
             });
     }
+
     useEffect(() => {
         console.log(`${BASE_URL_EXTERNAL}Place/GetCity?CountryCode=${should1}&SearchText=${search}&Limit=50`)
         const timeOut = setTimeout(async () => {
@@ -198,6 +201,7 @@ const KundaliForm = ({ navigation }) => {
     }
 
     const taxdetail = (item) => {
+        // alert(JSON.stringify(item, null, 2))
         let amount = item["value"]["price"];
         let discount = item["value"]["discount_price"];
         let taxable_amount = discount > 0 ? discount : amount;
@@ -205,7 +209,7 @@ const KundaliForm = ({ navigation }) => {
         let tax_amount = 0;
         let total_amount = 0;
         let tax_percentage = 0;
-        if (item["value"]['tax'] == null) {
+        if (item["value"]["tax"] == null) {
             tax_percentage = 0
             total_amount = taxable_amount
         } else {
@@ -219,7 +223,7 @@ const KundaliForm = ({ navigation }) => {
         setTotalAmount(total_amount)
 
     }
-
+    // alert(JSON.stringify(plandetail.is_free, null, 2))
     const kundliformdata = () => {
         var txnid = new Date().getTime().toString();
 
@@ -266,7 +270,7 @@ const KundaliForm = ({ navigation }) => {
         else if (!validateEmail(email)) {
             Toast.show('Please enter your valid email address');
         }
-        else if (walletBalance <= totatamount) {
+        else if (plandetail.is_free == '0' && walletBalance <= totatamount) {          //paid membership  
             Toast.show("Please Add Wallet Balance")
         }
 
@@ -292,12 +296,12 @@ const KundaliForm = ({ navigation }) => {
                 'cityid': selectedcity.cityId,
                 "agree": "1",
                 "package_id": addtex?.value?.id,
-                "tax_amt": `${parseFloat(taxstate).toFixed(2)}`,
-                "net_amount": `${parseFloat(netamount).toFixed(2)}`,
-                "total_mrp": `${parseFloat(totatamount).toFixed(2)}`,
+                "tax_amt": plandetail.is_free == '1' ? "0.00" : `${parseFloat(taxstate).toFixed(2)}`,
+                "net_amount": plandetail.is_free == '1' ? "0.00" : `${parseFloat(netamount).toFixed(2)}`,
+                "total_mrp": plandetail.is_free == '1' ? "0.00" : `${parseFloat(totatamount).toFixed(2)}`,
                 "payment_id": txnid,
             };
-           
+
             console.log("kundli Form", e)
             toggleLoading(true);
             kundlireportgenerate(e)
@@ -859,7 +863,7 @@ const KundaliForm = ({ navigation }) => {
                                 letterSpacing: -0.2,
                                 marginLeft: 1,
                             }}>
-                            ₹ {parseFloat(totatamount).toFixed(2)}
+                            {plandetail.is_free == '1' ? "0.00" : `₹ ${parseFloat(totatamount).toFixed(2)}`}
                         </Text>
                     )}
                 </View>

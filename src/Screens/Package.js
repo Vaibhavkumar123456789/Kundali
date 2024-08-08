@@ -482,6 +482,7 @@ const Package = ({ navigation }) => {
                             <Pressable onPress={() => {
                                 if (item.is_free == 1) {
                                     Freepackage(item)
+                                   
                                     //free
 
                                 } else if (item.is_free == 0) {

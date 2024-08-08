@@ -112,7 +112,7 @@ const WalletTransaction = ({ navigation }) => {
                                     </Text>
                                 </View>
 
-                                {item.status == 1 ?
+                                {item.status == 1 ?          //success
                                     <View
                                         style={{
                                             marginLeft: 'auto',

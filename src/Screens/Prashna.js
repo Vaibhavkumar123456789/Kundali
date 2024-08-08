@@ -179,16 +179,20 @@ const Prashna = ({ navigation }) => {
   useEffect(() => {
     console.log(`${BASE_URL_EXTERNAL}Place/GetCity?CountryCode=${should1}&SearchText=${search}&Limit=50`)
     const timeOut = setTimeout(async () => {
-      const res = await fetch(`${BASE_URL_EXTERNAL}Place/GetCity?CountryCode=${should1}&SearchText=${search}&Limit=50`, {
-        method: 'GET',
-        headers: {
-          "Accept": "application/json",
-          "Content-Type": "application/json"
-        },
-      });
-      const response1 = await res.json()
-      // alert(JSON.stringify(response1, null, 2))
-      setCityList(response1?.responseData?.data)
+      try {
+        const res = await fetch(`${BASE_URL_EXTERNAL}Place/GetCity?CountryCode=${should1}&SearchText=${search}&Limit=50`, {
+          method: 'GET',
+          headers: {
+            "Accept": "application/json",
+            "Content-Type": "application/json"
+          },
+        });
+        const response1 = await res.json()
+        // alert(JSON.stringify(response1, null, 2))
+        setCityList(response1?.responseData?.data)
+      } catch (error) {
+        console.error("Error fetching city data:", error);
+      }
     }, 1500)
 
     return () => {
@@ -686,7 +690,7 @@ const Prashna = ({ navigation }) => {
               itemTextStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', textTransform: 'capitalize' }}
               data={clist
               }
-              maxHeight={200}
+              maxHeight={250}
               search
               searchPlaceholder={_kundali.country}
               inputSearchStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333' }}

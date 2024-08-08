@@ -9,9 +9,11 @@ import { useIsFocused } from '@react-navigation/native';
 import { RadioButton } from 'react-native-paper';
 import { GetProfile, addwalletapi, walletplan } from '../backend/Api';
 import PayUBizSdk from 'payu-non-seam-less-react';
+import { useDispatch, useSelector, useStore } from 'react-redux';
 import { sha512 } from 'js-sha512';
 import base64 from 'react-native-base64';
 import { livepaymentkey, merchnatsaltkey } from '../backend/Config';
+import FreePopUp from './component/FreePopUp';
 
 const Wallet = ({ navigation }) => {
   const { _member, _home, _drawer, _order } = stringsoflanguages
@@ -27,7 +29,8 @@ const Wallet = ({ navigation }) => {
   const [gst, setGST] = useState()
   const [totalamount, setTotalAmount] = useState()
   const [profile1, setProfile] = useState()
-
+  const { free } = useSelector(store => store);
+  const [showFreePopUp, setShowFreePopUp] = useState(false);
   const [productInfo, setProductInfo] = useState('wallet');
   const [environment, setEnvironment] = useState('0');
   const [android_surl, setAndroidSurl] = useState(
@@ -547,13 +550,18 @@ const Wallet = ({ navigation }) => {
             fontFamily: 'AvenirLTStd-Medium',
           }}
           onPress={() => {
-            // recharge()
-            launchPayU()
+            if (free?.plandetail?.is_free == "1") {
+              setShowFreePopUp(true);
+
+            } else {
+              launchPayU();
+            }
 
           }}>
           {_order.proceed}
         </Button>
       )}
+      {showFreePopUp && <FreePopUp setShowFreePopUp={setShowFreePopUp} />}
       <Modal
         animationType="slide"
         transparent={true}

@@ -6,6 +6,8 @@ import stringsoflanguages from '../language/Language'
 import Toast from 'react-native-simple-toast';
 import Button from 'react-native-button';
 import Loader from '../utils/Loader';
+import FreePopUp from './component/FreePopUp';
+import { useDispatch, useSelector, useStore } from 'react-redux';
 const PlaceOrder = ({ navigation, route }) => {
     // alert(JSON.stringify(route.params, null, 2))
     const isFocused = useIsFocused();
@@ -19,6 +21,8 @@ const PlaceOrder = ({ navigation, route }) => {
     const [cart, setCart] = useState([])
     const [qty, setQty] = useState()
     const [walletBalance, setWalletBalance] = useState(0);
+    const { free } = useSelector(store => store);
+    const [showFreePopUp, setShowFreePopUp] = useState(false);
     const { _member, _invoice, _kundali, _setting, _customlang } = stringsoflanguages
     const [state, setState] = useState({
         loading: false,
@@ -90,7 +94,7 @@ const PlaceOrder = ({ navigation, route }) => {
                 "currency": "inr",
                 "trxn_id": txnid,
             };
-            
+
             toggleLoading(true);
             addorderapi(e)
                 .then(data => {
@@ -112,7 +116,7 @@ const PlaceOrder = ({ navigation, route }) => {
 
     const renderCartItem = ({ item, index }) => {
         let qualityRating;
-      
+
         if (!item?.product?.quality_rati1 || item?.product?.quality_rati1.length === 0) {
             qualityRating = {
                 discount_price: item?.product?.discounted_price,
@@ -436,10 +440,17 @@ const PlaceOrder = ({ navigation, route }) => {
                     fontFamily: 'AvenirLTStd-Medium',
                 }}
                 onPress={() => {
-                    order()
+                    if (free?.plandetail?.is_free == "1") {
+                        setShowFreePopUp(true);
+
+                    } else {
+                        order()
+                    }
+
                 }}>
                 Place Order
             </Button>
+            {showFreePopUp && <FreePopUp setShowFreePopUp={setShowFreePopUp} />}
         </SafeAreaView>
     )
 }
@@ -474,38 +485,3 @@ const styles = StyleSheet.create({
     },
 })
 
-// import { StyleSheet, Text, View } from 'react-native'
-// import React, { useEffect, useState } from 'react'
-
-// const PlaceOrder = () => {
-//     const [result, setResult] = useState(null);
-
-//     const getRandomNumberWithTimestamp = () => {
-//         const randomInteger = Math.floor(Math.random() * 1001);
-//         const timestamp = Date.now();
-//         const combined = `${randomInteger}+${timestamp}`;
-//         return combined;
-//     };
-
-//     const handlePress = () => {
-//         const combined = getRandomNumberWithTimestamp();
-//         const [randomInteger, timestamp] = combined.split('+').map(Number);
-//         const sum = randomInteger + timestamp;
-//         setResult(sum);
-//         alert(JSON.stringify(sum, null, 2));
-//     };
-
-//     useEffect(() => {
-//         handlePress()
-//     }, [])
-
-//     return (
-//         <View>
-//             <Text>PlaceOrder</Text>
-//         </View>
-//     )
-// }
-
-// export default PlaceOrder
-
-// const styles = StyleSheet.create({})

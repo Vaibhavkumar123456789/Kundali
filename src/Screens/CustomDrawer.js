@@ -17,7 +17,7 @@ const CustomDrawer = ({ navigation }) => {
         },
         {
             icon: require('../assets/sidebar-history.png'),
-            input: "Complete Profile",
+            input: "Your Professional Profile",
         },
         // {
         //     icon: require('../assets/sidebar-history.png'),
@@ -87,7 +87,7 @@ const CustomDrawer = ({ navigation }) => {
             case _drawer.home:
                 navigation.closeDrawer();
                 break;
-            case "Complete Profile":
+            case "Your Professional Profile":
                 navigation.navigate('AstrologerRegister', pathurl);
                 break;
             // case "My Subscriptions":

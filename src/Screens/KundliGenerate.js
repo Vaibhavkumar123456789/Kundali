@@ -213,6 +213,9 @@ const KundliGenerate = ({ navigation, route }) => {
                             <TouchableOpacity
                                 key={index}
                                 onPress={() => handlePageChange(index + 1)}
+                                style={
+                                    styles.pageNumberContainer
+                                }
                             >
                                 <Animated.Text style={[
                                     styles.pageNumber,
@@ -298,28 +301,37 @@ const KundliGenerate = ({ navigation, route }) => {
 export default KundliGenerate
 
 const styles = StyleSheet.create({
-
     pageNavigatorContainer: {
+        padding: 5,
+        backgroundColor: '#f0f0f0',
+        borderWidth: 1,
+        borderColor: '#ddd',
         alignItems: 'center',
         justifyContent: 'center',
-        paddingVertical: 5,
-        backgroundColor: 'white',
-        marginRight: 5,
+
     },
     pageNumber: {
-        paddingVertical: 5,
-        paddingHorizontal: 10,
-        textAlign: 'center',
-        color: '#000',
         fontFamily: 'AvenirLTStd-Roman',
         fontSize: 12,
+        paddingVertical: 5,
+        paddingHorizontal: 8,
+        backgroundColor: '#fff',
+        borderRadius: 5,
+        color: '#000',
+        borderWidth: 1,
+        borderColor: '#ddd',
+        marginVertical: 4,
+        alignItems: 'center',
+        marginBottom: 5,
     },
     selectedPageNumber: {
-        color: '#FFCC80',
-        fontFamily: 'AvenirLTStd-Roman',
-        fontSize: 13,
+        color: 'white',
+        fontFamily: 'AvenirLTStd-Heavy',
+        fontSize: 12,
+        backgroundColor: 'red',
+        textAlign: 'center',
     },
-
-
 })
+
+
 
