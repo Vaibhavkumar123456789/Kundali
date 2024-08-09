@@ -50,7 +50,7 @@ const MembershipForm = ({ navigation }) => {
     const [checked1, setChecked1] = React.useState(false);
     const gender = [_kundali.male, _kundali.female]
     const married = [_kundali.married, _kundali.unmarried, _kundali.divorce]
-    const service = [_kundali.business, _kundali.service]
+    const service = [_kundali.business, _kundali.service, "Any Other"]
     const [checked2, setChecked2] = React.useState(false);
     const goverment = [_kundali.private, _kundali.government]
     const [checked3, setChecked3] = React.useState(false);
@@ -235,7 +235,7 @@ const MembershipForm = ({ navigation }) => {
                 toggleLoading(false);
                 if (data.status) {
                     setPlanList(data?.data)
-
+                    listupdate(data?.data)
                 } else {
                     alert(data?.msg);
                 }
@@ -244,6 +244,34 @@ const MembershipForm = ({ navigation }) => {
                 toggleLoading(false);
                 console.log('error', error);
             });
+    }
+
+    const listupdate = (listed) => {
+        // alert(JSON.stringify(item, null, 2))
+        // return
+        const updatedReport = listed?.map((item) => {
+            let amount = item["price"];
+            let discount = item["discount_price"];
+            let taxable_amount = discount > 0 ? discount : amount;
+
+            let tax_amount = 0;
+            let total_amount = 0;
+            let tax_percentage = 0;
+
+            if (item["mastertax"] == null) {
+                tax_percentage = 0;
+                total_amount = taxable_amount;
+            } else {
+                tax_percentage = item["mastertax"]["tax_percentage"];
+                tax_amount = taxable_amount * tax_percentage / 100;
+                total_amount = taxable_amount + tax_amount;
+            }
+            return {
+                ...item,
+                total_amount: `${parseFloat(total_amount).toFixed(2)}`
+            };
+        })
+        setPlanList(updatedReport);
     }
 
     const listconsultancy = () => {
@@ -335,7 +363,7 @@ const MembershipForm = ({ navigation }) => {
                 "marital_status": checked1 === 0 ? "Married" : checked1 === 1 ? "Unmarried" : "Divorce",
                 "no_of_childern": noofchildren,
                 "child_detail": languages,
-                "occupation": checked2 === 0 ? "Business" : checked2 === 1 ? "Service" : null,
+                "occupation": checked2 === 0 ? "Business" : checked2 === 1 ? "Service" : checked2 === 2 ? "Any Other" : null,
                 "filled_of_business": filedbusiness,
                 "service_type": checked3 === 0 ? "Private" : checked3 === 1 ? "Government" : null,
                 "consultancy_for": jj.join('|'),
@@ -1119,7 +1147,7 @@ const MembershipForm = ({ navigation }) => {
                                 <TouchableOpacity onPress={() => {
                                     setChecked2(index)
                                 }}>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center', marginHorizontal: 13, marginTop: 5 }}>
+                                    <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 13, marginTop: 5 }}>
                                         <RadioButton
                                             value={checked2}
                                             status={checked2 === index ? 'checked' : 'unchecked'}
@@ -1307,14 +1335,16 @@ const MembershipForm = ({ navigation }) => {
                                         }}>
                                             {item?.name}
                                         </Text>
-                                        <Text style={{
-                                            fontSize: 18,
-                                            color: '#333333',
-                                            fontFamily: 'AvenirLTStd-Heavy',
-                                            marginRight: 10,
-                                        }}>
-                                            ₹{item?.price}/{item?.type}
-                                        </Text>
+                                        {item?.is_free == 0 ?
+                                            <Text style={{
+                                                fontSize: 18,
+                                                color: '#333333',
+                                                fontFamily: 'AvenirLTStd-Heavy',
+                                                marginRight: 10,
+                                            }}>
+                                                ₹{item?.total_amount}/{item?.type}
+                                            </Text>
+                                            : null}
                                     </View>
 
                                     <View style={{ marginHorizontal: 10, marginTop: 5 }}>

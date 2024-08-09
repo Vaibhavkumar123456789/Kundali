@@ -18,20 +18,45 @@ import {
 } from 'react-native';
 import Header from '../Custom/Header';
 import stringsoflanguages from '../language/Language'
+import { useIsFocused } from '@react-navigation/native'
+import moment from 'moment';
+import Loader from '../utils/Loader';
+import { mesagecenterapi } from '../backend/Api';
 
 const UpcomingEvent = ({ navigation }) => {
     const window = Dimensions.get('window');
     const { width, height } = Dimensions.get('window');
     const { _member } = stringsoflanguages
+    const focus = useIsFocused()
+    const [messagetext, setMessageText] = useState([])
+    const [state, setState] = useState({
+        loading: false,
+    });
+    const toggleLoading = bol => setState({ ...state, loading: bol });
 
-    const data = [
-        {
+    useEffect(() => {
+        messapi()
+    }, [focus])
 
-        },
-        {
+    const messapi = () => {
+        toggleLoading(true);
+        mesagecenterapi()
+            .then(data => {
+                toggleLoading(false);
+                // alert(JSON.stringify(data, null, 2))
+                if (data.status) {
+                    setMessageText(data.data?.data)
+                } else {
+                    alert(data?.msg);
+                }
+            })
+            .catch(error => {
+                toggleLoading(false);
+                console.log('error', error);
+            });
+    }
 
-        },
-    ]
+
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
@@ -41,8 +66,11 @@ const UpcomingEvent = ({ navigation }) => {
                 leftIcon={require('../assets/backtoback.png')}
                 title={_member.upcoming}
             />
+            {state.loading && <Loader />}
+
+            {messagetext && messagetext?.length > "0" ?
             <FlatList
-                data={data}
+                data={messagetext}
                 style={{ flexGrow: 0, marginTop: 10 }}
                 renderItem={({ item, index }) => (
 
@@ -58,14 +86,14 @@ const UpcomingEvent = ({ navigation }) => {
                         }}>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', }}>
 
-                            <Text style={{
+                            <Text numberOfLines={1} style={{
                                 fontSize: 14,
                                 color: '#333333',
                                 fontFamily: 'AvenirLTStd-Heavy',
                                 marginLeft: 10,
                                 width: window.width - 195,
                             }}>
-                                {_member.id}: #5914
+                                {_member.id}: #{item?.userId}
                             </Text>
                             <Text style={{
                                 fontSize: 14,
@@ -73,18 +101,18 @@ const UpcomingEvent = ({ navigation }) => {
                                 fontFamily: 'AvenirLTStd-Medium',
                                 marginRight: 10,
                             }}>
-                                {_member.dob}: 06/02/1980
+                                {_member.dob}: {`${moment(item?.dateofBirth).format('DD-MMM-YYYY')}`}
                             </Text>
                         </View>
 
                         <Text style={{
                             fontSize: 14,
                             color: '#333333',
-                            marginTop: 3,
+                            marginTop: 4,
                             fontFamily: 'AvenirLTStd-Heavy',
                             marginHorizontal: 10,
                         }}>
-                            Deepak Kumar
+                            {item?.userName}
                         </Text>
                         <View style={{ borderBottomColor: '#36363610', borderBottomWidth: 1, marginTop: 7, }}></View>
 
@@ -94,13 +122,18 @@ const UpcomingEvent = ({ navigation }) => {
                             marginTop: 7,
                             fontFamily: 'AvenirLTStd-Medium',
                             marginHorizontal: 10,
+                            lineHeight: 20,
                         }}>
-                            Venus (in Uttara Ashada) - Remove a block from your relationship.
+                            {item?.calculateType}
                         </Text>
                     </View>
                 )
                 }
             />
+            :
+            <View style={{ justifyContent: 'center', alignItems: 'center', flex: 0.7 }}>
+                <Text style={{ textAlign: 'center', color: 'black', fontSize: 15, fontFamily: 'AvenirLTStd-Medium' }}>No Upcoming Event</Text>
+            </View>}
         </SafeAreaView >
     )
 }

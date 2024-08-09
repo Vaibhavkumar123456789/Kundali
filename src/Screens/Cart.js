@@ -181,11 +181,15 @@ const Cart = ({ navigation }) => {
         discount_price: item?.product?.discounted_price,
         price: item?.product?.prices,
       };
-    } else {
-      qualityRating = item?.product?.quality_rati1?.find(q => q.quality.toString() === item.variant.toString());
     }
-    
-    //   const qualityRating = item?.product?.quality_rati1?.find(q => q.quality.toString() === item.variant.toString());
+    else {
+      // qualityRating = item?.product?.quality_rati1?.find(q => q.quality.toString() === item.variant.toString());
+      qualityRating = {
+        discount_price: item?.discount_price,
+        price: item?.price,
+      };
+    }
+
     return (
       <View style={{
         flexDirection: 'row',

@@ -95,6 +95,7 @@ const PlaceOrder = ({ navigation, route }) => {
                 "trxn_id": txnid,
             };
 
+            console.log('.......place order body', e)
             toggleLoading(true);
             addorderapi(e)
                 .then(data => {
@@ -123,7 +124,11 @@ const PlaceOrder = ({ navigation, route }) => {
                 price: item?.product?.prices,
             };
         } else {
-            qualityRating = item?.product?.quality_rati1?.find(q => q.quality.toString() === item.variant.toString());
+            // qualityRating = item?.product?.quality_rati1?.find(q => q.quality.toString() === item.variant.toString());
+            qualityRating = {
+                discount_price: item?.discount_price,
+                price: item?.price,
+            };
         }
 
         return (

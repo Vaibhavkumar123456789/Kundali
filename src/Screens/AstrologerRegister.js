@@ -58,7 +58,13 @@ const AstrologerRegister = ({ navigation, route }) => {
         : route.params?.user_profile?.gender === "Male"
             ? 0
             : route.params?.user_profile?.gender === "Female" ? 1 : null);
+    const [checked1, setChecked1] = React.useState(route.params?.user_profile?.astrologer_you_are === null
+        ? false
+        : route.params?.user_profile?.astrologer_you_are === "Full Time"
+            ? 0
+            : route.params?.user_profile?.astrologer_you_are === "Part Time" ? 1 : null);
     const gender = [_kundali.male, _kundali.female]
+    const astrologertype = ["Full Time", "Part Time"]
     const [type, setType] = useState(false)
     const [date, setDate] = useState(route.params?.user_profile?.dob === null ? "" : route.params?.user_profile?.dob)
     const [pdate, setPDate] = useState('')
@@ -114,6 +120,7 @@ const AstrologerRegister = ({ navigation, route }) => {
         '',
         '',
     ];
+
     const customStyles = {
         stepIndicatorSize: 35,
         currentStepIndicatorSize: 30,
@@ -1137,31 +1144,40 @@ const AstrologerRegister = ({ navigation, route }) => {
                                 marginTop: 19,
                                 marginHorizontal: 18,
                             }}>
-                            {_astrologerForm.longtext}
+                            Which type of astrologer you are?
                         </Text>
-                        <TextInput
-                            style={{
-                                fontSize: 16,
-                                fontFamily: 'AvenirLTStd-Medium',
-                                borderRadius: 10,
-                                borderColor: '#00000020',
-                                borderWidth: 1.5,
-                                marginTop: 10,
-                                marginHorizontal: 18,
-                                paddingHorizontal: 15,
-                                paddingVertical: 11,
-                                color: '#333333',
-                            }}
-                            placeholderTextColor={'#333333'}
-                            placeholder={_astrologerForm.dailyhour}
-                            keyboardType='numeric'
-                            value={hour}
-                            onChangeText={(text) => setHour(text)}
+
+                        <FlatList
+                            data={astrologertype}
+                            horizontal
+                            renderItem={({ item, index }) => (
+                                <TouchableOpacity onPress={() => {
+                                    setChecked1(index)
+                                }}>
+                                    <View style={{ flexDirection: 'row', alignItems: 'center', marginHorizontal: 13, marginTop: 5 }}>
+                                        <RadioButton
+                                            value={checked1}
+                                            status={checked1 === index ? 'checked' : 'unchecked'}
+                                            onPress={() => {
+                                                setChecked1(index)
+                                            }}
+                                            uncheckedColor='#69707F'
+                                            color='#FFCC80'
+                                        />
+                                        <Text style={{
+                                            fontSize: 16,
+                                            color: '#333333',
+                                            fontFamily: 'AvenirLTStd-Medium',
+                                        }}>
+                                            {item}
+                                        </Text>
+                                    </View>
+                                </TouchableOpacity>
+                            )}
                         />
 
                     </View>
                 )}
-
                 {currentPosition == 2 && (
                     <View>
                         <Text
@@ -2049,8 +2065,8 @@ const AstrologerRegister = ({ navigation, route }) => {
                             else if (experience == '') {
                                 Toast.show('Please enter Experience');
                             }
-                            else if (hour == '') {
-                                Toast.show('Please enter Contribute daily hour');
+                            else if (checked1 === false) {
+                                Toast.show('Please select which type of atrologer you are');
                             }
                             else {
 
@@ -2071,7 +2087,7 @@ const AstrologerRegister = ({ navigation, route }) => {
                                             ? ""
                                             : route.params?.user_profile?.consultation)
                                         : should1,
-                                    "contribute_daily": hour,
+                                    "astrologer_you_are": checked1 === 0 ? "Full Time" : checked1 === 1 ? "Part Time" : null,
                                     "specialization": should3 === ''
                                         ? (route.params?.user_profile?.specialization == null
                                             ? ""

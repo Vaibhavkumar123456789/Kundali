@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "477327406311",
-    "project_id": "kundali-7bdc4",
-    "storage_bucket": "kundali-7bdc4.appspot.com"
+    "project_number": "477916338103",
+    "project_id": "kundali-d71cd",
+    "storage_bucket": "kundali-d71cd.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:477327406311:android:7362e8b83d4d12dac99e42",
+        "mobilesdk_app_id": "1:477916338103:android:111d9bc5c53a73be47ba32",
         "android_client_info": {
           "package_name": "com.kundali"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyCqpgUjXj6RbNlT0XksChQ2BPyRB641pzY"
+          "current_key": "AIzaSyBWrUTOClpdM9_OTHdLQnQ_z1jEO9bFVSs"
         }
       ],
       "services": {

@@ -44,8 +44,8 @@ const UpdateMember = ({ navigation, route }) => {
     const [checked1, setChecked1] = React.useState(route.params?.maindetailuser?.marital_status === "Married" ? 0 : route.params?.maindetailuser?.marital_status === "Unmarried" ? 1 : "Divorce");
     const gender = [_kundali.male, _kundali.female]
     const married = [_kundali.married, _kundali.unmarried, _kundali.divorce]
-    const service = [_kundali.business, _kundali.service]
-    const [checked2, setChecked2] = React.useState(route.params?.maindetailuser?.occupation === "Business" ? 0 : route.params?.maindetailuser?.occupation === "Service" ? 1 : null);
+    const service = [_kundali.business, _kundali.service, "Any Other"]
+    const [checked2, setChecked2] = React.useState(route.params?.maindetailuser?.occupation === "Business" ? 0 : route.params?.maindetailuser?.occupation === "Service" ? 1 : route.params?.maindetailuser?.occupation === "Any Other" ? 2 : null);
     const goverment = [_kundali.private, _kundali.government]
     const [checked3, setChecked3] = React.useState(route.params?.maindetailuser?.service_type === "Private" ? 0 : route.params?.maindetailuser?.service_type === "Government" ? 1 : null);
     const [type, setType] = useState(false)
@@ -268,7 +268,7 @@ const UpdateMember = ({ navigation, route }) => {
             "marital_status": checked1 === 0 ? "Married" : checked1 === 1 ? "Unmarried" : "Divorce",
             "no_of_childern": noofchildren,
             "child_detail": languages,
-            "occupation": checked2 === 0 ? "Business" : checked2 === 1 ? "Service" : null,
+            "occupation": checked2 === 0 ? "Business" : checked2 === 1 ? "Service" : checked2 === 2 ? "Any Other" : null,
             "filled_of_business": filedbusiness,
             "service_type": checked3 === 0 ? "Private" : checked3 === 1 ? "Government" : null,
             "consultancy_for": jj[0] == undefined || null ? selected.join('|') : jj.join('|'),
@@ -1111,7 +1111,7 @@ const UpdateMember = ({ navigation, route }) => {
                                 <TouchableOpacity onPress={() => {
                                     setChecked2(index)
                                 }}>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center', marginHorizontal: 13, marginTop: 5 }}>
+                                    <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 13, marginTop: 5 }}>
                                         <RadioButton
                                             value={checked2}
                                             status={checked2 === index ? 'checked' : 'unchecked'}
@@ -1482,7 +1482,6 @@ const UpdateMember = ({ navigation, route }) => {
                         containerStyle={{
                             width: '90%',
                             // position: 'absolute',
-                            marginRight: 18,
                             marginBottom: 20,
                             marginTop: 20,
                             height: 52,

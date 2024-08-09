@@ -1,3 +1,4 @@
+
 // import React, { useState, useEffect, useRef } from 'react';
 // import {
 //   Image,
@@ -38,12 +39,15 @@
 //   const { width, height } = Dimensions.get('window');
 //   const { _customlang, _product } = stringsoflanguages
 //   const [should1, setShould1] = useState('')
+//   const [should2, setShould2] = useState('')
+//   const [number, setNumber] = useState('1')
 //   const [quality, setQuality] = useState([])
+//   const [dropprice, setDropPrice] = useState([])
 //   const [astrologercutprice, setAstrologerCutPrice] = useState()
 //   const [astrologerprice, setAstrologerPrice] = useState()
 //   const [generalcutprice, setGeneralCutPrice] = useState()
 //   const [generalprice, setGeneralPrice] = useState()
-//   const [quantity, setQuantity] = useState(1);
+//   const [quantity, setQuantity] = useState();
 //   const [list, setNewList] = useState()
 //   const [state, setState] = useState({
 //     loading: false,
@@ -51,7 +55,8 @@
 //   const toggleLoading = bol => setState({ ...state, loading: bol });
 
 //   useEffect(() => {
-//     productlistapi()
+//     productlistapi();
+
 //   }, [isFocused == true])
 
 
@@ -59,29 +64,41 @@
 //     toggleLoading(true);
 //     let e = {
 
-//       "id": route.params?.id
+//       "id": route.params?.item?.id
 //     };
 //     productlist(e)
 //       .then(data => {
-//         // console.log(JSON.stringify(data?.data), null, 2)
-//         // alert(JSON.stringify(data?.data, null, 2))
+//         // alert(JSON.stringify(JSON.parse(data?.data?.quality_rati), null, 2))
 //         toggleLoading(false);
 //         if (data.status) {
 //           setNewList(data?.data)
 
 //           const ratti = JSON.parse(data?.data?.quality_rati)
-//           let tempCArr = []
-//           ratti?.map((item) => {
-//             tempCArr.push({
+
+//           if (ratti) {
+//             let tempCArr = []
+//             ratti?.map((item) => {
+//               tempCArr.push({
+//                 label: item?.quality,
+//                 value: item,
+//               })
+//               setQuality(tempCArr)
+//             })
+
+//             const tempQualityArray = ratti.map((item, index) => ({
 //               label: item?.quality,
 //               value: item,
-//             })
-//             setQuality(tempCArr)
-//           })
-//           if (tempCArr.length > 0) {
-//             setShould1(tempCArr[0]);
-//             taxdetail(tempCArr[0])
+//               _index: index,
+//             }));
+//             if (tempCArr.length > 0) {
+//               setShould1(tempCArr[0]);
+
+//               updatePrices(tempCArr[0]?.value);
+//               taxdetail(tempCArr[0])
+//             }
+//             productlistapi1(tempQualityArray, data?.data?.id);
 //           }
+
 //         } else {
 //           alert(data?.msg);
 //         }
@@ -92,7 +109,108 @@
 //       });
 //   }
 
+//   const updatePrices = (qualityItem) => {
+
+//     let tempCArrprice = qualityItem.prices.map((price) => ({
+//       label: `${price}`, // Convert number to string
+//       value: price // Store the price as the value
+//     }));
+//     setDropPrice(tempCArrprice);
+//     // Set the first price as selected by default
+//     if (tempCArrprice?.length > 0) {
+//       setShould2(tempCArrprice[0]);
+//     }
+//   };
+
+//   const handleupdateprice = (priceItem) => {
+//     console.log('Price item received:', priceItem);
+//     if (priceItem && priceItem?.value) {
+//       setShould2(priceItem);
+//     } else {
+//       console.error('Invalid price item:', priceItem);
+//     }
+//   };
+
+
+//   const productlistapi1 = (productlisted, field) => {
+//     toggleLoading(true);
+
+//     getcartapi()
+//       .then(data => {
+
+//         toggleLoading(false);
+//         if (data.status) {
+//           const cartItems = data.carts || [];
+//           // if (!list || !list.id) {
+//           //   alert('Product list or list ID is undefined');
+//           //   return;
+//           // }
+//           const cartItem = cartItems.find(item => item.product_id === field);
+
+//           // if (!cartItem) {
+//           //   alert('Cart item not found');
+//           //   return;
+//           // }
+//           if (cartItem) {
+//             const cartQuality = JSON.parse(cartItem.variant);
+
+//             const selectedQuality = productlisted.find(item => item.value.quality === cartQuality.toString());
+
+//             if (selectedQuality) {
+//               setQuantity(cartItem.qty + 1);
+//             } else {
+//               setQuantity(1);
+//             }
+//           } else {
+
+//             setQuantity(1); // Default quantity when not in cart
+//           }
+//         }
+//         else {
+//           alert(data?.msg)
+//         }
+//       })
+//       .catch(error => {
+//         toggleLoading(false);
+//         console.log('error', error);
+//       });
+//   };
+
+//   const handleQualityChange = (item, search) => {
+//     // alert(JSON.stringify({ item, search: search }, null, 2))
+//     // return
+//     setShould1(item);
+//     toggleLoading(true);
+
+//     getcartapi()
+//       .then(data => {
+//         toggleLoading(false);
+//         // alert(JSON.stringify(data, null, 2))
+//         if (data.status) {
+//           const cartItems = data.carts || [];
+
+//           const cartItem = cartItems.find(cartItem => cartItem.product_id === search && JSON.parse(cartItem.variant).toString() === item.value.quality);
+//           // alert(JSON.stringify(cartItem, null, 2))
+//           if (cartItem) {
+//             setQuantity(cartItem.qty + 1); // Set quantity to the cart item quantity
+//           } else {
+//             setQuantity(1); // Reset quantity to 1 if not in cart
+//           }
+
+//         } else {
+//           alert(data?.msg)
+//         }
+//       })
+//       .catch(error => {
+//         toggleLoading(false);
+//         console.log('error', error);
+//       });
+
+//   };
+
+
 //   const taxdetail = (item) => {
+//     // alert(JSON.stringify(item,null,2))
 //     // astrologer price
 //     let amount = item["value"]["price"];
 //     let discount = item["value"]["discount_price"];
@@ -113,6 +231,12 @@
 //     setGeneralPrice(taxable_amount1)
 
 //   }
+
+//   const handleChange = (text) => {
+//     // Allow only numbers and a single decimal point
+//     const numericValue = text.replace(/[^0-9]/g, '');
+//     setNumber(numericValue);
+//   };
 
 //   return (
 //     <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
@@ -189,131 +313,303 @@
 //             </View>
 //           )}
 
-//           <Text
-//             style={{
-//               marginTop: 8,
-//               fontSize: 16,
-//               fontFamily: 'AvenirLTStd-Medium',
-//               color: '#000521',
-//               marginLeft: 2,
+//           {route.params?.tabName == "Ratan" && list?.quality_rati?.length > 0 ?
+
+//             <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+//               <View>
+//                 <Text
+//                   style={{
+//                     marginTop: 8,
+//                     fontSize: 16,
+//                     fontFamily: 'AvenirLTStd-Medium',
+//                     color: '#000521',
+//                     marginLeft: 2,
+//                   }}>
+//                   {_product.quality}
+//                 </Text>
+
+//                 <Dropdown
+//                   style={{
+//                     height: 50,
+//                     marginTop: 10, borderWidth: 1.5, borderColor: '#00000020',
+//                     borderRadius: 10, marginLeft: 5, width: width - 220,
+//                   }}
+//                   placeholderStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', paddingHorizontal: 15, }}
+//                   selectedTextStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', paddingHorizontal: 15, textTransform: 'capitalize' }}
+//                   iconStyle={{
+//                     width: 20,
+//                     height: 20,
+//                     marginRight: 12,
+//                   }}
+//                   itemTextStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', textTransform: 'capitalize' }}
+//                   data={quality}
+//                   search
+//                   searchPlaceholder={_product.quality}
+//                   inputSearchStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', }}
+//                   maxHeight={200}
+//                   labelField="label"
+//                   valueField="value"
+//                   placeholder={_product.quality}
+//                   value={should1}
+//                   onChange={(item) => { setShould1(item), taxdetail(item), handleQualityChange(item, list?.id) }}
+//                 />
+//               </View>
+//               <View>
+//                 <Text
+//                   style={{
+//                     marginTop: 8,
+//                     fontSize: 16,
+//                     fontFamily: 'AvenirLTStd-Medium',
+//                     color: '#000521',
+//                   }}>
+//                   Price
+//                 </Text>
+
+//                 <Dropdown
+//                   style={{
+//                     height: 50,
+//                     marginTop: 10, borderWidth: 1.5, borderColor: '#00000020',
+//                     borderRadius: 10, marginRight: 5, width: width - 220,
+//                   }}
+//                   placeholderStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', paddingHorizontal: 15, }}
+//                   selectedTextStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', paddingHorizontal: 15, textTransform: 'capitalize' }}
+//                   iconStyle={{
+//                     width: 20,
+//                     height: 20,
+//                     marginRight: 12,
+//                   }}
+//                   itemTextStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', textTransform: 'capitalize' }}
+//                   data={dropprice}
+//                   search
+//                   searchPlaceholder={'Price'}
+//                   inputSearchStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', }}
+//                   maxHeight={200}
+//                   labelField="label"
+//                   valueField="value"
+//                   placeholder={"Price"}
+//                   value={should2}
+//                   onChange={(item) => { setShould2(item), handleupdateprice(item) }}
+//                 />
+//               </View>
+
+//             </View>
+//             :
+//             <>
+//               <Text
+//                 style={{
+//                   marginTop: 8,
+//                   fontSize: 16,
+//                   fontFamily: 'AvenirLTStd-Medium',
+//                   color: '#000521',
+//                   marginLeft: 5,
+//                 }}>
+//                 Qty
+//               </Text>
+//               <TextInput
+//                 style={{
+//                   fontSize: 16,
+//                   fontFamily: 'AvenirLTStd-Medium',
+//                   borderRadius: 10,
+//                   borderColor: '#00000020',
+//                   borderWidth: 1.5,
+//                   marginTop: 10,
+//                   marginHorizontal: 5,
+//                   paddingHorizontal: 15,
+//                   paddingVertical: 11,
+//                   color: '#333333',
+//                 }}
+//                 placeholderTextColor={'#333333'}
+//                 keyboardType='numeric'
+//                 placeholder={"Qty"}
+//                 value={number}
+//                 onChangeText={handleChange}
+//               />
+//             </>
+//           }
+
+//           {list?.quality_rati?.length > 0 && route.params?.tabName == "Ratan" ?
+
+//             <View style={{
+//               marginTop: 10,
+//               flexDirection: 'row', justifyContent: 'space-between',
 //             }}>
-//             {_product.quality}
-//           </Text>
-
-//           <Dropdown
-//             style={{
-//               height: 50,
-//               marginTop: 10, borderWidth: 1.5, borderColor: '#00000020',
-//               borderRadius: 10, marginHorizontal: 5,
-//             }}
-//             placeholderStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', paddingHorizontal: 15, }}
-//             selectedTextStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', paddingHorizontal: 15, textTransform: 'capitalize' }}
-//             iconStyle={{
-//               width: 20,
-//               height: 20,
-//               marginRight: 12,
-//             }}
-//             itemTextStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', textTransform: 'capitalize' }}
-//             data={quality}
-//             search
-//             searchPlaceholder={_product.quality}
-//             inputSearchStyle={{ fontSize: 16, fontFamily: 'AvenirLTStd-Medium', color: '#333333', }}
-//             maxHeight={200}
-//             labelField="label"
-//             valueField="value"
-//             placeholder={_product.quality}
-//             value={should1}
-//             onChange={(item) => { setShould1(item), taxdetail(item) }}
-//           />
-//           <View style={{
-//             marginTop: 10,
-//             flexDirection: 'row', justifyContent: 'space-between',
-//           }}>
-//             <View>
-//               <Text
-//                 numberOfLines={1}
-//                 style={{
-//                   color: '#1E1F20',
-//                   fontSize: 16,
-//                   fontFamily: 'AvenirLTStd-Medium',
-//                   marginLeft: 7,
-//                   marginTop: 0,
-//                 }}>
-//                 General Price
-//               </Text>
-//               <View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
-//                 {(generalprice &&
-//                   <Text
-//                     style={{
-//                       color: '#1E1F20',
-//                       fontFamily: 'AvenirLTStd-Heavy',
-//                       fontSize: 18,
-//                       marginLeft: 7,
-//                       marginTop: 3,
-//                     }}>
-//                     ₹ {generalprice}
-//                   </Text>
-//                 )}
-//                 {generalcutprice && generalcutprice > 0 ?
-//                   <Text
-//                     style={{
-//                       color: '#1E1F2090',
-//                       fontFamily: 'AvenirLTStd-Heavy',
-//                       fontSize: 14,
-//                       marginLeft: 3,
-//                       marginTop: 6,
-//                       textDecorationLine: 'line-through',
-//                     }}>
-//                     ₹ {generalcutprice}
-//                   </Text>
-//                   : null}
+//               <View>
+//                 <Text
+//                   numberOfLines={1}
+//                   style={{
+//                     color: '#1E1F20',
+//                     fontSize: 16,
+//                     fontFamily: 'AvenirLTStd-Medium',
+//                     marginLeft: 7,
+//                     marginTop: 0,
+//                   }}>
+//                   General Price
+//                 </Text>
+//                 <View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
+//                   {(generalprice &&
+//                     <Text
+//                       style={{
+//                         color: '#1E1F20',
+//                         fontFamily: 'AvenirLTStd-Heavy',
+//                         fontSize: 18,
+//                         marginLeft: 7,
+//                         marginTop: 3,
+//                       }}>
+//                       ₹ {generalprice}
+//                     </Text>
+//                   )}
+//                   {generalcutprice && generalcutprice > 0 ?
+//                     <Text
+//                       style={{
+//                         color: '#1E1F2090',
+//                         fontFamily: 'AvenirLTStd-Heavy',
+//                         fontSize: 14,
+//                         marginLeft: 3,
+//                         marginTop: 6,
+//                         textDecorationLine: 'line-through',
+//                       }}>
+//                       ₹ {generalcutprice}
+//                     </Text>
+//                     : null}
+//                 </View>
 //               </View>
-//             </View>
 
-//             <View>
-//               <Text
-//                 numberOfLines={1}
-//                 style={{
-//                   color: '#1E1F20',
-//                   fontSize: 16,
-//                   fontFamily: 'AvenirLTStd-Medium',
-//                   marginRight: 7,
-//                   marginTop: 0,
-//                 }}>
-//                 Astrologer Price
-//               </Text>
-//               <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
-//                 {(astrologerprice &&
-//                   <Text
-//                     style={{
-//                       color: '#1E1F20',
-//                       fontFamily: 'AvenirLTStd-Heavy',
-//                       fontSize: 18,
-//                       marginRight: 3,
-//                       marginTop: 3,
-//                       textAlign: 'right',
-//                     }}>
-//                     ₹ {astrologerprice}
-//                   </Text>
-//                 )}
-//                 {astrologercutprice && astrologercutprice > 0 ?
-//                   < Text
-//                     style={{
-//                       color: '#1E1F2090',
-//                       fontFamily: 'AvenirLTStd-Heavy',
-//                       fontSize: 14,
-//                       marginRight: 7,
-//                       marginTop: 6,
-//                       textAlign: 'right',
-//                       textDecorationLine: 'line-through'
-//                     }}>
-//                     ₹ {astrologercutprice}
-//                   </Text>
-//                   : null}
+//               <View>
+//                 <Text
+//                   numberOfLines={1}
+//                   style={{
+//                     color: '#1E1F20',
+//                     fontSize: 16,
+//                     fontFamily: 'AvenirLTStd-Medium',
+//                     marginRight: 7,
+//                     marginTop: 0,
+//                   }}>
+//                   Astrologer Price
+//                 </Text>
+//                 <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
+//                   {(astrologerprice &&
+//                     <Text
+//                       style={{
+//                         color: '#1E1F20',
+//                         fontFamily: 'AvenirLTStd-Heavy',
+//                         fontSize: 18,
+//                         marginRight: 3,
+//                         marginTop: 3,
+//                         textAlign: 'right',
+//                       }}>
+//                       ₹ {astrologerprice * `${should1?.value?.quality}` * `${should2?.value}`}
+//                     </Text>
+//                   )}
+//                   {astrologercutprice && astrologercutprice > 0 ?
+//                     < Text
+//                       style={{
+//                         color: '#1E1F2090',
+//                         fontFamily: 'AvenirLTStd-Heavy',
+//                         fontSize: 14,
+//                         marginRight: 7,
+//                         marginTop: 6,
+//                         textAlign: 'right',
+//                         textDecorationLine: 'line-through'
+//                       }}>
+//                       ₹ {astrologercutprice * `${should1?.value?.quality}` * `${should2?.value}`}
+//                     </Text>
+//                     : null}
+//                 </View>
 //               </View>
-//             </View>
 
-//           </View>
+//             </View>
+//             :
+//             <View style={{
+//               marginTop: 10,
+//               flexDirection: 'row', justifyContent: 'space-between',
+//             }}>
+//               <View>
+//                 <Text
+//                   numberOfLines={1}
+//                   style={{
+//                     color: '#1E1F20',
+//                     fontSize: 16,
+//                     fontFamily: 'AvenirLTStd-Medium',
+//                     marginLeft: 7,
+//                     marginTop: 0,
+//                   }}>
+//                   General Price
+//                 </Text>
+//                 <View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
+//                   {(list &&
+//                     <Text
+//                       style={{
+//                         color: '#1E1F20',
+//                         fontFamily: 'AvenirLTStd-Heavy',
+//                         fontSize: 18,
+//                         marginLeft: 7,
+//                         marginTop: 3,
+//                       }}>
+//                       ₹ {list?.discounted_price > 0 ? list?.discounted_price * number : list?.prices * number}
+//                     </Text>
+//                   )}
+//                   {list && list?.prices > 0 ?
+//                     <Text
+//                       style={{
+//                         color: '#1E1F2090',
+//                         fontFamily: 'AvenirLTStd-Heavy',
+//                         fontSize: 14,
+//                         marginLeft: 3,
+//                         marginTop: 6,
+//                         textDecorationLine: 'line-through',
+//                       }}>
+
+//                       ₹ {list?.discounted_price == 0 ? list?.discounted_price * number : list?.prices * number}
+//                     </Text>
+//                     : null}
+//                 </View>
+//               </View>
+
+//               <View>
+//                 <Text
+//                   numberOfLines={1}
+//                   style={{
+//                     color: '#1E1F20',
+//                     fontSize: 16,
+//                     fontFamily: 'AvenirLTStd-Medium',
+//                     marginRight: 7,
+//                     marginTop: 0,
+//                   }}>
+//                   Astrologer Price
+//                 </Text>
+//                 <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
+//                   {(list &&
+//                     <Text
+//                       style={{
+//                         color: '#1E1F20',
+//                         fontFamily: 'AvenirLTStd-Heavy',
+//                         fontSize: 18,
+//                         marginRight: 3,
+//                         marginTop: 3,
+//                         textAlign: 'right',
+//                       }}>
+//                       ₹ {list?.discounted_price > 0 ? list?.discounted_price * number : list?.prices * number}
+//                     </Text>
+//                   )}
+//                   {list && list?.prices > 0 ?
+//                     < Text
+//                       style={{
+//                         color: '#1E1F2090',
+//                         fontFamily: 'AvenirLTStd-Heavy',
+//                         fontSize: 14,
+//                         marginRight: 7,
+//                         marginTop: 6,
+//                         textAlign: 'right',
+//                         textDecorationLine: 'line-through'
+//                       }}>
+//                       ₹ {list?.discounted_price == 0 ? list?.discounted_price * number : list?.prices * number}
+//                     </Text>
+//                     : null}
+//                 </View>
+//               </View>
+
+//             </View>
+//           }
 
 //         </View>
 
@@ -341,10 +637,12 @@
 //             let e = {
 //               "type": "1",
 //               "product_id": list?.id,
-//               "qty": quantity.toString(),
-//               "variant": should1?.value?.quality
+//               "qty": list?.quality_rati?.length > 0 && route.params?.tabName == "Ratan" ? quantity : number,
+//               "variant": list?.quality_rati?.length > 0 && route.params?.tabName == "Ratan" ? should1?.value?.quality : "0",
 //             };
-
+//             console.log("......add cart body", e)
+//             // alert(JSON.stringify(e, null, 2))
+//             // return
 //             toggleLoading(true);
 //             addtocardapi(e)
 //               .then(data => {
@@ -376,14 +674,6 @@
 // export default ProductDetail
 
 // const styles = StyleSheet.create({})
-
-
-
-
-
-
-
-
 
 
 
@@ -439,6 +729,7 @@ const ProductDetail = ({ navigation, route }) => {
   const [generalprice, setGeneralPrice] = useState()
   const [quantity, setQuantity] = useState();
   const [list, setNewList] = useState()
+  const [indexValue, setIndexValue] = useState(0)
   const [state, setState] = useState({
     loading: false,
   });
@@ -458,7 +749,8 @@ const ProductDetail = ({ navigation, route }) => {
     };
     productlist(e)
       .then(data => {
-        // alert(JSON.stringify(JSON.parse(data?.data?.quality_rati), null, 2))
+        // alert(JSON.stringify(data.data, null, 2))
+
         toggleLoading(false);
         if (data.status) {
           setNewList(data?.data)
@@ -500,7 +792,7 @@ const ProductDetail = ({ navigation, route }) => {
   }
 
   const updatePrices = (qualityItem) => {
-
+    setIndexValue(0)
     let tempCArrprice = qualityItem.prices.map((price) => ({
       label: `${price}`, // Convert number to string
       value: price // Store the price as the value
@@ -513,6 +805,8 @@ const ProductDetail = ({ navigation, route }) => {
   };
 
   const handleupdateprice = (priceItem) => {
+    // alert(JSON.stringify(priceItem, null, 2))
+    setIndexValue(priceItem?._index)
     console.log('Price item received:', priceItem);
     if (priceItem && priceItem?.value) {
       setShould2(priceItem);
@@ -520,7 +814,6 @@ const ProductDetail = ({ navigation, route }) => {
       console.error('Invalid price item:', priceItem);
     }
   };
-
 
   const productlistapi1 = (productlisted, field) => {
     toggleLoading(true);
@@ -848,7 +1141,7 @@ const ProductDetail = ({ navigation, route }) => {
                       ₹ {generalprice}
                     </Text>
                   )}
-                  {generalcutprice && generalcutprice > 0 ?
+                  {/* {generalcutprice && generalcutprice > 0 ?
                     <Text
                       style={{
                         color: '#1E1F2090',
@@ -860,7 +1153,7 @@ const ProductDetail = ({ navigation, route }) => {
                       }}>
                       ₹ {generalcutprice}
                     </Text>
-                    : null}
+                    : null} */}
                 </View>
               </View>
 
@@ -877,20 +1170,20 @@ const ProductDetail = ({ navigation, route }) => {
                   Astrologer Price
                 </Text>
                 <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
-                  {(astrologerprice &&
-                    <Text
-                      style={{
-                        color: '#1E1F20',
-                        fontFamily: 'AvenirLTStd-Heavy',
-                        fontSize: 18,
-                        marginRight: 3,
-                        marginTop: 3,
-                        textAlign: 'right',
-                      }}>
-                      ₹ {astrologerprice * `${should1?.value?.quality}` * `${should2?.value}`}
-                    </Text>
-                  )}
-                  {astrologercutprice && astrologercutprice > 0 ?
+                  {/* {(astrologerprice && */}
+                  <Text
+                    style={{
+                      color: '#1E1F20',
+                      fontFamily: 'AvenirLTStd-Heavy',
+                      fontSize: 18,
+                      marginRight: 3,
+                      marginTop: 3,
+                      textAlign: 'right',
+                    }}>
+                    ₹ {`${should1?.value?.quality}` * `${should2?.value}`}
+                  </Text>
+                  {/* )} */}
+                  {/* {astrologercutprice && astrologercutprice > 0 ?
                     < Text
                       style={{
                         color: '#1E1F2090',
@@ -903,7 +1196,7 @@ const ProductDetail = ({ navigation, route }) => {
                       }}>
                       ₹ {astrologercutprice * `${should1?.value?.quality}` * `${should2?.value}`}
                     </Text>
-                    : null}
+                    : null} */}
                 </View>
               </View>
 
@@ -935,10 +1228,10 @@ const ProductDetail = ({ navigation, route }) => {
                         marginLeft: 7,
                         marginTop: 3,
                       }}>
-                      ₹ {list?.discounted_price > 0 ? list?.discounted_price * number : list?.prices * number}
+                      ₹ {list?.discounted_general_price > 0 ? list?.discounted_general_price * number : list?.general_price * number}
                     </Text>
                   )}
-                  {list && list?.prices > 0 ?
+                  {list && list?.general_price > 0 ?
                     <Text
                       style={{
                         color: '#1E1F2090',
@@ -949,7 +1242,7 @@ const ProductDetail = ({ navigation, route }) => {
                         textDecorationLine: 'line-through',
                       }}>
 
-                      ₹ {list?.discounted_price == 0 ? list?.discounted_price * number : list?.prices * number}
+                      ₹ {list?.discounted_general_price == 0 ? list?.discounted_general_price * number : list?.general_price * number}
                     </Text>
                     : null}
                 </View>
@@ -1029,7 +1322,9 @@ const ProductDetail = ({ navigation, route }) => {
               "product_id": list?.id,
               "qty": list?.quality_rati?.length > 0 && route.params?.tabName == "Ratan" ? quantity : number,
               "variant": list?.quality_rati?.length > 0 && route.params?.tabName == "Ratan" ? should1?.value?.quality : "0",
+              "multiplier": list?.quality_rati?.length > 0 && route.params?.tabName == "Ratan" ? indexValue : "0",
             };
+            console.log("......add cart body", e)
             // alert(JSON.stringify(e, null, 2))
             // return
             toggleLoading(true);
@@ -1063,6 +1358,8 @@ const ProductDetail = ({ navigation, route }) => {
 export default ProductDetail
 
 const styles = StyleSheet.create({})
+
+
 
 
 

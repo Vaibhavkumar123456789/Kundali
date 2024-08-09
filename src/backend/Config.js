@@ -63,6 +63,8 @@ export const PATH_URL = {
   thirdstep: 'astrologer/edit-profile-three',
   fourthstep: 'astrologer/edit-profile-four',
   prashnalagan: 'astrologer/prashan-lagan-list',
+  notification: 'astrologer/notification_list',
+  mesagecenter: 'astrologer/meessage-center',
 
 
 

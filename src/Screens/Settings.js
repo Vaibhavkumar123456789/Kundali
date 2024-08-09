@@ -81,7 +81,7 @@ const Settings = ({ navigation }) => {
                         </View>
                     </TouchableOpacity>
                     <TouchableOpacity
-                        onPress={() => navigation.navigate('')}>
+                        onPress={() => navigation.navigate('Notification')}>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 20, }}>
                             <View style={{ flexDirection: 'row' }}>
                                 <Image

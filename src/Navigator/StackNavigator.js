@@ -69,6 +69,7 @@ import PaymentSuccessfully1 from '../Screens/PaymentSuccessfully1';
 import KundliGenerate from '../Screens/KundliGenerate';
 import NoInterner from '../Screens/NoInterner';
 import PrashnaReport from '../Screens/PrashnaReport';
+import Notification from '../Screens/Notification';
 
 
 const Stack = createStackNavigator();
@@ -434,7 +435,11 @@ const StackNavigator = () => {
                     component={PrashnaReport}
                     options={{ headerShown: false }}
                 />
-             
+                <Stack.Screen
+                    name="Notification"
+                    component={Notification}
+                    options={{ headerShown: false }}
+                />
 
             </Stack.Navigator>
         </NavigationContainer>
