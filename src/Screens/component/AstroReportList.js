@@ -6,6 +6,7 @@ import moment from 'moment';
 import { useNavigation } from '@react-navigation/native';
 import Button from 'react-native-button';
 import RenderHtml, { defaultSystemFonts } from 'react-native-render-html';
+import { useWindowDimensions } from 'react-native';
 const systemFonts = [
     ...defaultSystemFonts,
     'AvenirLTStd-Medium',
@@ -17,6 +18,7 @@ function AstroReportList({ data, astro }) {
     const [report, setReport] = useState(data)
     const navigation = useNavigation();
     const window = Dimensions.get('window');
+    const { width: contentWidth } = useWindowDimensions();
     const { width, height } = Dimensions.get('window');
     const { _astrologerForm, _home } = stringsoflanguages
 
@@ -102,6 +104,7 @@ function AstroReportList({ data, astro }) {
                                     <View style={{ width: window.width - 200, marginLeft: 10 }}>
 
                                         <RenderHtml
+                                            contentWidth={contentWidth}
                                             containerStyle={{
                                                 marginTop: 20,
                                                 marginBottom: 10,

@@ -312,7 +312,7 @@ const Cart = ({ navigation }) => {
           justifyContent: 'space-between',
 
         }}>
-        <View style={{ flexDirection: 'row', }}>
+        <View style={{ flexDirection: 'row' }}>
           <TouchableOpacity activeOpacity={0.9}
             style={{ paddingVertical: 6 }}
             onPress={() => { navigation.goBack() }}>
@@ -343,7 +343,7 @@ const Cart = ({ navigation }) => {
           <TouchableOpacity activeOpacity={0.9} onPress={() => { navigation.navigate('Wallet') }} style={{
             flexDirection: 'row', borderColor: '#333333', borderWidth: 1,
             paddingHorizontal: 5, paddingVertical: 4, borderRadius: 4,
-            alignSelf: 'center', marginRight: 18, marginTop: 1
+            alignSelf: 'center', marginRight: 18, marginTop: 3
           }}>
             <Image
               source={require('../assets/wallet.png')}

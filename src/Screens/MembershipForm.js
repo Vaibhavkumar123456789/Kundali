@@ -39,10 +39,12 @@ const systemFonts = [
 import { astrologeraddmembership, consultancylist, Country, GetProfile, membershipplans } from '../backend/Api';
 import { BASE_URL_EXTERNAL } from '../backend/Config';
 import { useDispatch, useSelector, useStore } from 'react-redux';
+import { useWindowDimensions } from 'react-native';
 
 const MembershipForm = ({ navigation }) => {
     const { _kundali, _customlang } = stringsoflanguages
     const window = Dimensions.get('window');
+    const { width: contentWidth } = useWindowDimensions();
     const isFocused = useIsFocused();
     const { width, height } = Dimensions.get('window');
     const [modalVisible, setModalVisible] = useState(false);
@@ -1350,6 +1352,7 @@ const MembershipForm = ({ navigation }) => {
                                     <View style={{ marginHorizontal: 10, marginTop: 5 }}>
 
                                         <RenderHtml
+                                            contentWidth={contentWidth}
                                             containerStyle={{
                                                 marginTop: 20,
                                                 marginBottom: 10,

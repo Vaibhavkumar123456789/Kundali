@@ -25,6 +25,7 @@ const Notification = ({ navigation }) => {
             .then(data => {
                 toggleLoading(false);
                 // alert(JSON.stringify(data, null, 2))
+                // console.log(data.data[0]?.image)
                 if (data.status) {
                     setList(data.data)
                 } else {
@@ -48,7 +49,7 @@ const Notification = ({ navigation }) => {
                 title='Notification'
             />
             {state.loading && <Loader />}
-            
+
             {list && list?.length > "0" ?
                 <FlatList
                     data={list}
@@ -72,6 +73,7 @@ const Notification = ({ navigation }) => {
                                         height: 50,
                                         resizeMode: 'contain',
                                         marginLeft: 13,
+                                        borderRadius: 30,
                                     }}
                                     source={item?.image?.length > 0 ? { uri: item?.image } : require('../assets/notification1.png')} />
                                 <View style={{ width: window.width - 110, marginTop: 2, alignSelf: 'center' }}>

@@ -695,7 +695,8 @@ import {
   FlatList,
   SafeAreaView,
   ScrollView, PermissionsAndroid,
-  StatusBar, Animated
+  StatusBar, Animated,
+  useWindowDimensions
 } from 'react-native';
 import Toast from 'react-native-simple-toast';
 import stringsoflanguages from '../language/Language'
@@ -716,6 +717,7 @@ const ProductDetail = ({ navigation, route }) => {
   // alert(JSON.stringify(route.params, null, 2))
   const window = Dimensions.get('window');
   const isFocused = useIsFocused();
+  const { width: contentWidth } = useWindowDimensions();
   const { width, height } = Dimensions.get('window');
   const { _customlang, _product } = stringsoflanguages
   const [should1, setShould1] = useState('')
@@ -979,6 +981,7 @@ const ProductDetail = ({ navigation, route }) => {
           {(list &&
             <View style={{ marginLeft: 2 }}>
               <RenderHtml
+                contentWidth={contentWidth}
                 containerStyle={{
                   marginTop: 20,
                 }}

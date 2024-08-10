@@ -14,7 +14,8 @@ import {
   FlatList,
   SafeAreaView,
   ScrollView,
-  StatusBar
+  StatusBar,
+  useWindowDimensions
 } from 'react-native';
 import Header from '../Custom/Header';
 import stringsoflanguages from '../language/Language'
@@ -33,6 +34,7 @@ const Report = ({ navigation }) => {
   const window = Dimensions.get('window');
   const { width, height } = Dimensions.get('window');
   const { _member, _home } = stringsoflanguages
+  const { width: contentWidth } = useWindowDimensions();
   const isFocused = useIsFocused();
   const [astro, setAstro] = useState()
   const [report, setReport] = useState([])
@@ -147,6 +149,7 @@ const Report = ({ navigation }) => {
               <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 8 }}>
                 <View style={{ width: window.width - 175, marginLeft: 10 }}>
                   <RenderHtml
+                    contentWidth={contentWidth}
                     containerStyle={{
                       marginTop: 20,
                       marginBottom: 10,

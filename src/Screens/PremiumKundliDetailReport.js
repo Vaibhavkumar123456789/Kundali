@@ -1,4 +1,4 @@
-import { View, Text, Image, StyleSheet, Dimensions, FlatList, TextInput, StatusBar, SafeAreaView, ImageBackground, Pressable, ScrollView, TouchableOpacity, } from 'react-native'
+import { View, Text, Image, StyleSheet, Dimensions, FlatList, TextInput, StatusBar, SafeAreaView, ImageBackground, Pressable, ScrollView, TouchableOpacity, useWindowDimensions, } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import CustomHeader from '../Custom/CustomHeader';
 import stringsoflanguages from '../language/Language'
@@ -18,6 +18,7 @@ const PremiumKundliDetailReport = ({ navigation, route }) => {
   const { _member, _home, _kundali, _setting } = stringsoflanguages
   const window = Dimensions.get('window');
   const { width, height } = Dimensions.get('window');
+  const { width: contentWidth } = useWindowDimensions();
   const isFocused = useIsFocused();
   const [astro, setAstro] = useState()
   const [report, setReport] = useState()
@@ -167,6 +168,7 @@ const PremiumKundliDetailReport = ({ navigation, route }) => {
                   {/* <Text style={styles.dt_name}> */}
                   {(report &&
                     <RenderHtml
+                    contentWidth={contentWidth}
                       containerStyle={{
                         marginTop: 20,
                         marginBottom: 10,

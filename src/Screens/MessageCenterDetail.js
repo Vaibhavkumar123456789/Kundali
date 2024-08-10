@@ -14,12 +14,15 @@ import {
     FlatList,
     SafeAreaView,
     ScrollView,
-    StatusBar, Modal
+    StatusBar, Modal,
+    PermissionsAndroid
 } from 'react-native';
 import Header from '../Custom/Header';
 import ViewShot from 'react-native-view-shot';
+import RNFS from 'react-native-fs';
 import stringsoflanguages from '../language/Language'
 import Loader from '../utils/Loader';
+import RNHTMLtoPDF from 'react-native-html-to-pdf';
 import { HeaderPreviewApi } from '../backend/Api';
 import { useIsFocused } from '@react-navigation/native';
 
@@ -37,15 +40,40 @@ const MessageCenterDetail = ({ navigation }) => {
     const [imagePath, setImagePath] = useState("")
     const viewShotRef = useRef(null);
 
-    const captureViewShot = () => {
-        viewShotRef.current.capture({
-            format: 'jpg',
-            quality: 1.0,
-        }).then(uri => {
-            navigation.navigate("NaamJane", uri)
-            console.log('Full screen captured and saved to', uri);
-        });
+    const captureViewShot = async () => {
+        try {
+            const uri = await viewShotRef.current.capture({
+                format: 'jpg',
+                quality: 1.0,
+            });
 
+            console.log('Full screen captured and saved to', uri);
+
+            // Convert image to base64
+            const imageBase64 = await RNFS.readFile(uri, 'base64');
+
+            // Create HTML for PDF
+            const htmlContent = `
+                <html>
+                <body>
+                    <img src="data:image/jpeg;base64,${imageBase64}" style="width:100%;height:100%;" />
+                </body>
+                </html>
+            `;
+
+            // Convert HTML to PDF
+            const options = {
+                html: htmlContent,
+                fileName: 'view_capture',
+                directory: 'Documents',
+            };
+
+            const { filePath } = await RNHTMLtoPDF.convert(options);
+            console.log('PDF created at', filePath);
+            navigation.navigate('NaamJane', { filePath, uri })
+        } catch (error) {
+            console.error('Error capturing view or converting to PDF:', error);
+        }
     };
 
     useEffect(() => {
@@ -76,13 +104,15 @@ const MessageCenterDetail = ({ navigation }) => {
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
             <StatusBar barStyle="dark-content" backgroundColor="#FFCC80" />
+
+            <Header
+                menuOption={() => navigation.goBack()}
+                leftIcon={require('../assets/backtoback.png')}
+                title={'#5914'}
+            />
+
             <ViewShot ref={viewShotRef} style={{ flex: 1, width: '100%', height: '100%', backgroundColor: 'white' }}
                 options={{ format: 'jpg', quality: 1.0 }}>
-                <Header
-                    menuOption={() => navigation.goBack()}
-                    leftIcon={require('../assets/backtoback.png')}
-                    title={'#5914'}
-                />
 
                 <View style={{ flexDirection: 'row', alignItems: 'center', paddingTop: 15, paddingLeft: 20, backgroundColor: '#F7F7F7', paddingBottom: 15 }}>
                     <Image style={{ height: 32, width: 32, resizeMode: "contain", borderRadius: 25 }} source={{ uri: `${imagePath}/${profile?.image}` }} />

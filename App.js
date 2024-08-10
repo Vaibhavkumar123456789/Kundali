@@ -8,9 +8,12 @@ import Orientation from 'react-native-orientation-locker';
 import ForegroundHandler from './src/Screens/ForegroundHandler';
 LogBox.ignoreAllLogs();
 
+
 const App = () => {
 
   useEffect(() => {
+    LogBox.ignoreLogs(['Animated: `useNativeDriver`']);
+
     requestCameraPermission()
     Orientation.lockToPortrait();    // Lock to portrait
     return () => {

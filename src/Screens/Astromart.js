@@ -16,12 +16,11 @@ const Astromart = ({ navigation }) => {
   const [routes, setRoutes] = useState([]);
   const [walletBalance, setWalletBalance] = useState(0);
   const [data, setData] = useState({});
+  const [astro, setAstro] = useState()
   const [state, setState] = useState({
     loading: false,
   });
   const toggleLoading = bol => setState({ ...state, loading: bol });
-
-
 
   useEffect(() => {
     banner()
@@ -34,6 +33,7 @@ const Astromart = ({ navigation }) => {
         // alert(JSON.stringify(data, null, 2))
         if (data.status) {
           setWalletBalance(data?.user_profile?.wallet)
+
         } else {
           alert(data?.msg);
         }
@@ -51,6 +51,7 @@ const Astromart = ({ navigation }) => {
         // alert(JSON.stringify(data, null, 2))
         toggleLoading(false)
         if (data.status) {
+          setAstro(data.carts)
           const mentorRoutes = data?.data.map((item, index) => ({
             key: `${item.id}`,
             title: item?.name,
@@ -85,58 +86,58 @@ const Astromart = ({ navigation }) => {
           keyExtractor={(item) => item.id.toString()}
           style={{ marginTop: 10, flexGrow: 0 }}
           renderItem={({ item }) => (
-            <Pressable onPress={() => { navigation.navigate('ProductDetail', { item, tabName: route.title}) }} >
-          <View style={{
-            flexDirection: 'row',
-            marginTop: 10,
-            paddingVertical: 10,
-            alignSelf: 'center',
-            width: '90%',
-            bottom: 8,
-            borderRadius: 10,
-            overflow: 'hidden',
-            backgroundColor: '#FFFFFF',
-            shadowColor: '#000000',
-            elevation: 5,
-            flexDirection: 'row',
-            justifyContent: 'space-between'
-          }}>
+            <Pressable onPress={() => { navigation.navigate('ProductDetail', { item, tabName: route.title }) }} >
+              <View style={{
+                flexDirection: 'row',
+                marginTop: 10,
+                paddingVertical: 10,
+                alignSelf: 'center',
+                width: '90%',
+                bottom: 8,
+                borderRadius: 10,
+                overflow: 'hidden',
+                backgroundColor: '#FFFFFF',
+                shadowColor: '#000000',
+                elevation: 5,
+                flexDirection: 'row',
+                justifyContent: 'space-between'
+              }}>
 
-            <View style={{ flexDirection: 'row' }}>
+                <View style={{ flexDirection: 'row' }}>
 
-              <FastImage style={{ width: 39, height: 39, marginLeft: 9, borderRadius: 25, alignSelf: 'center' }}
+                  <FastImage style={{ width: 39, height: 39, marginLeft: 9, borderRadius: 25, alignSelf: 'center' }}
 
-                source={{
-                  uri: item?.image,
-                  headers: { Authorization: 'someAuthToken' },
-                  priority: FastImage.priority.normal,
-                }}
-                resizeMode={FastImage.resizeMode.stretch}
-              />
-              <View style={{ alignSelf: 'center' }}>
-                <Text
-                  numberOfLines={3}
-                  style={{
-                    color: '#1E1F20', marginTop: 2,
-                    fontFamily: 'AvenirLTStd-Medium', fontSize: 13,
-                    marginLeft: 8, width: window.width - 180,
-                    lineHeight: 22,
-                  }}>
-                  {item?.name}
-                </Text>
+                    source={{
+                      uri: item?.image,
+                      headers: { Authorization: 'someAuthToken' },
+                      priority: FastImage.priority.normal,
+                    }}
+                    resizeMode={FastImage.resizeMode.stretch}
+                  />
+                  <View style={{ alignSelf: 'center' }}>
+                    <Text
+                      numberOfLines={3}
+                      style={{
+                        color: '#1E1F20', marginTop: 2,
+                        fontFamily: 'AvenirLTStd-Medium', fontSize: 13,
+                        marginLeft: 8, width: window.width - 180,
+                        lineHeight: 22,
+                      }}>
+                      {item?.name}
+                    </Text>
+                  </View>
+                </View>
+                <View style={{ alignSelf: 'center' }}>
+                  <Text
+                    style={{ color: '#F44336', fontSize: 12, fontFamily: 'AvenirLTStd-Medium', lineHeight: 18, marginRight: 7, }}
+                  >
+                    View More
+                  </Text>
+                </View>
               </View>
-            </View>
-            <View style={{ alignSelf: 'center' }}>
-              <Text
-                style={{ color: '#F44336', fontSize: 12, fontFamily: 'AvenirLTStd-Medium', lineHeight: 18, marginRight: 7, }}
-              >
-                View More
-              </Text>
-            </View>
-          </View>
-        </Pressable>
-        )
-  }
+            </Pressable>
+          )
+          }
         />
       </View >
     );
@@ -212,15 +213,49 @@ const Astromart = ({ navigation }) => {
           <TouchableOpacity activeOpacity={0.9}
             style={{ paddingVertical: 6 }}
             onPress={() => { navigation.navigate('Cart') }}>
-            <Image
-              source={require('../assets/cart.png')}
-              style={{
-                height: 24,
-                width: 24,
-                resizeMode: 'contain',
-                marginRight: 18,
-              }}
-            />
+            {astro > 0 ?
+              <>
+                <Image
+                  source={require('../assets/cart.png')}
+                  style={{
+                    height: 24,
+                    width: 24,
+                    resizeMode: 'contain',
+                    marginRight: 18,
+                  }}
+                />
+                <View style={{
+                  position: 'absolute',
+                  top: 0,
+                  right: 10,
+                  backgroundColor: 'red',
+                  borderRadius: 30,
+                  width: 21,
+                  height: 21,
+                }}>
+                  <Text numberOfLines={1} style={{
+                    fontSize: 9,
+                    color: 'white',
+                    fontFamily: 'AvenirLTStd-Heavy',
+                    marginTop: 4.2,
+                    marginLeft: 1.1,
+                    textAlign: 'center',
+                  }}>
+                    {astro}
+                  </Text>
+                </View>
+              </>
+              :
+              <Image
+                source={require('../assets/cart.png')}
+                style={{
+                  height: 24,
+                  width: 24,
+                  resizeMode: 'contain',
+                  marginRight: 18,
+                }}
+              />
+            }
           </TouchableOpacity>
         </View>
       </View>

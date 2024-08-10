@@ -30,6 +30,7 @@ import Toast from 'react-native-simple-toast';
 import RenderHtml, { defaultSystemFonts } from 'react-native-render-html';
 import { NativeEventEmitter } from 'react-native';
 import { livepaymentkey, merchnatsaltkey } from '../backend/Config';
+import { useWindowDimensions } from 'react-native';
 const systemFonts = [
     ...defaultSystemFonts,
     'AvenirLTStd-Medium',
@@ -49,7 +50,7 @@ const Package = ({ navigation }) => {
     const [astrodata, setaAstrodata] = useState(GLobal.user)
     const [indexvalue, setIndexvalue] = useState(-1);
     const [result, setResult] = useState(null);
-
+    const { width: contentWidth } = useWindowDimensions();
     const [productInfo, setProductInfo] = useState('wallet');
     const [environment, setEnvironment] = useState('0');
     const [android_surl, setAndroidSurl] = useState(
@@ -482,7 +483,7 @@ const Package = ({ navigation }) => {
                             <Pressable onPress={() => {
                                 if (item.is_free == 1) {
                                     Freepackage(item)
-                                   
+
                                     //free
 
                                 } else if (item.is_free == 0) {
@@ -577,6 +578,7 @@ const Package = ({ navigation }) => {
 
                                         <View style={{ marginTop: 5, marginHorizontal: 10 }}>
                                             <RenderHtml
+                                                contentWidth={contentWidth}
                                                 containerStyle={{
                                                     marginTop: 20,
                                                 }}

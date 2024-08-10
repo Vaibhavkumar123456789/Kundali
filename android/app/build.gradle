@@ -90,7 +90,13 @@ def reactNativeArchitectures() {
 }
 
 android {
-    packagingOptions {
+
+    configurations {                  // html to pdf
+    all*.exclude module: 'conceal'
+    all*.exclude module: 'bcprov-jdk15on'
+  }
+
+    packagingOptions {                                // pdf
         pickFirst 'lib/x86/libc++_shared.so'
         pickFirst 'lib/x86_64/libjsc.so'
         pickFirst 'lib/arm64-v8a/libjsc.so'

@@ -413,18 +413,91 @@
 // // export default NaamJane;
 
 
-import { Image, StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import { View, Text, Image, StyleSheet, Modal, BackHandler, Animated, ActivityIndicator, Dimensions, FlatList, TextInput, StatusBar, SafeAreaView, ImageBackground, Pressable, ScrollView, TouchableOpacity, } from 'react-native'
+import React, { useEffect, useState, useRef } from 'react'
+import Button from 'react-native-button';
+import Share from 'react-native-share';
+import RNFS from 'react-native-fs';
+import Mailer from 'react-native-mail';
 
 const NaamJane = ({ navigation, route }) => {
-    alert(JSON.stringify(route.params, null, 2))
+    // alert(JSON.stringify(route.params, null, 2))
+    console.log(JSON.stringify(route.params, null, 2))
+    const window = Dimensions.get('window');
+    const { width, height } = Dimensions.get('window')
+
+
+    const downloadAndSharePDF = async () => {
+        const pdfPath = route.params?.filePath; // This should be a valid file path
+        const localFile = `file://${pdfPath}`; // Ensure this has the 'file://' protocol
+
+        try {
+            // Check if the file exists
+            const fileExists = await RNFS.exists(pdfPath);
+
+            if (fileExists) {
+                // Share the existing PDF file via WhatsApp
+                const shareOptions = {
+                    title: 'Share PDF',
+                    message: 'Here is your PDF file',
+                    url: localFile,
+                    type: 'application/pdf',
+                    social: Share.Social.WHATSAPP,
+                };
+
+                Share.open(shareOptions)
+                    .then((res) => console.log('Share successful', res))
+                    .catch((err) => console.log('Share failed', err));
+            } else {
+                console.log('File does not exist', pdfPath);
+            }
+        } catch (error) {
+            console.log('Error handling file', error);
+        }
+    };
+
     return (
-        <View style={{ flex: 1 }}>
+        <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
+            <StatusBar barStyle="dark-content" backgroundColor="#FFCC80" />
             <Image
-                source={{ uri: route.params }}
-                style={{ width: "100%", height: '90%' ,resizeMode:'stretch'}}
+                source={{ uri: route.params?.uri }}
+                style={{ width: "100%", height: window.height - 80, resizeMode: 'stretch' }}
             />
-        </View>
+
+            <View style={{ flexDirection: 'row',alignSelf:'center', marginHorizontal: 18, justifyContent: 'space-between', bottom: 20, position: 'absolute' }}>
+
+                <Pressable onPress={() => { navigation.goBack() }} style={{
+                    width: '48%',
+                    borderRadius: 8, paddingVertical: 14, backgroundColor: '#FFCC80',
+                }}>
+                    <Text style={{
+                        fontSize: 18,
+                        color: '#333333',
+                        fontFamily: 'AvenirLTStd-Medium',
+                        textAlign: 'center',
+                    }}>
+                        Skip
+                    </Text>
+                </Pressable>
+
+                <Pressable onPress={downloadAndSharePDF} style={{
+                    width: '48%',
+                    borderRadius: 8, paddingVertical: 14, backgroundColor: '#FFCC80',
+                }}>
+                    <Text style={{
+                        fontSize: 18,
+                        color: '#333333',
+                        fontFamily: 'AvenirLTStd-Medium',
+                        textAlign: 'center',
+                    }}>
+                        Whatsapp
+                    </Text>
+                </Pressable>
+
+            </View>
+
+
+        </SafeAreaView>
     )
 }
 

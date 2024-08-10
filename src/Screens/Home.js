@@ -11,6 +11,7 @@ import { useDispatch, useSelector, useStore } from 'react-redux';
 import GLobal from './GLobal';
 import AstroReportList from './component/AstroReportList';
 import NoInterner from './NoInterner';
+
 const Home = ({ navigation }) => {
     const window = Dimensions.get('window');
     const { free } = useSelector(store => store);
@@ -112,7 +113,7 @@ const Home = ({ navigation }) => {
         }
         Homebanner(e)
             .then(data => {
-                // alert(JSON.stringify(data, null, 2))
+                // alert(JSON.stringify(data.carts, null, 2))
                 toggleLoading(false)
                 if (data.status) {
                     setBannerImage(data?.topbanners)
@@ -284,15 +285,49 @@ const Home = ({ navigation }) => {
                     <TouchableOpacity activeOpacity={0.9}
                         style={{ paddingVertical: 6 }}
                         onPress={() => { navigation.navigate('Cart') }}>
-                        <Image
-                            source={require('../assets/cart.png')}
-                            style={{
-                                height: 24,
-                                width: 24,
-                                resizeMode: 'contain',
-                                marginRight: 18,
-                            }}
-                        />
+                        {astro?.carts > 0 ?
+                            <>
+                                <Image
+                                    source={require('../assets/cart.png')}
+                                    style={{
+                                        height: 24,
+                                        width: 24,
+                                        resizeMode: 'contain',
+                                        marginRight: 18,
+                                    }}
+                                />
+                                <View style={{
+                                    position: 'absolute',
+                                    top: 0,
+                                    right: 10,
+                                    backgroundColor: 'red',
+                                    borderRadius: 30,
+                                    width: 21,
+                                    height: 21,
+                                }}>
+                                    <Text numberOfLines={1} style={{
+                                        fontSize: 9,
+                                        color: 'white',
+                                        fontFamily: 'AvenirLTStd-Heavy',
+                                        marginTop: 4.2,
+                                        marginLeft: 1.1,
+                                        textAlign: 'center',
+                                    }}>
+                                        {astro?.carts}
+                                    </Text>
+                                </View>
+                            </>
+                            :
+                            <Image
+                                source={require('../assets/cart.png')}
+                                style={{
+                                    height: 24,
+                                    width: 24,
+                                    resizeMode: 'contain',
+                                    marginRight: 18,
+                                }}
+                            />
+                        }
                     </TouchableOpacity>
                 </View>
             </View>
