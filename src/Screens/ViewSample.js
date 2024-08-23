@@ -75,13 +75,15 @@ const ViewSample = ({ navigation, route }) => {
                     onPressLink={(uri) => {
                         console.log(`Link pressed: ${uri}`);
                     }}
+
                     style={{
                         flex: 1,
                         width: Dimensions.get('window').width - 50,
                         height: Dimensions.get('window').height,
+
                     }}
                 />
-                <View  >
+                <View>
                     <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.pageNavigatorContainer}>
                         {Array.from({ length: totalPages }, (_, index) => (
                             <TouchableOpacity

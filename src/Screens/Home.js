@@ -1,4 +1,4 @@
-import { View, Text, Image, StyleSheet, Dimensions, FlatList, Modal, Linking, TextInput, StatusBar, SafeAreaView, ImageBackground, Pressable, ScrollView, TouchableOpacity, Platform, BackHandler, Alert, } from 'react-native'
+import { View, Text, Image, StyleSheet, Dimensions, FlatList, Modal, Linking, TextInput, StatusBar, SafeAreaView, ImageBackground, Pressable, ScrollView, TouchableOpacity, Platform, BackHandler, Alert, LogBox, } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import Carousel from 'react-native-banner-carousel';
 import stringsoflanguages from '../language/Language'
@@ -29,6 +29,8 @@ const Home = ({ navigation }) => {
     const toggleLoading = bol => setState({ ...state, loading: bol });
 
     useEffect(() => {
+        LogBox.ignoreLogs(['Animated: `useNativeDriver`']);
+
         navigation.addListener('focus', () => {
             BackHandler.addEventListener('hardwareBackPress', handler);
         });
@@ -121,6 +123,7 @@ const Home = ({ navigation }) => {
                     setMessage(data?.message_center?.data)
                     setAstro(data)
                     GLobal.deliveryday = data?.settings?.delivery_day
+                    GLobal.count = data.carts
                 } else {
                     alert(data?.msg);
                 }
@@ -165,7 +168,7 @@ const Home = ({ navigation }) => {
             color: '#F1F8E9',
         },
     ];
-    const onPressHandler1 = title => {
+    const onPressHandler1 = async title => {
 
         switch (title) {
             case _home.membership:
@@ -175,8 +178,27 @@ const Home = ({ navigation }) => {
                 navigation.navigate('MyOrders')
                 break;
             case _home.online:
-                // navigation.navigate('OnlineJyotish')
-                Linking.openURL('https://play.google.com/store/apps/details?id=com.astromyntra.app&hl=en_IN')
+
+                const appScheme = 'com.astromyntra.app';
+                const playStoreUrl = 'https://play.google.com/store/apps/details?id=com.astromyntra.app';
+
+                try {
+                    const supported = await Linking.canOpenURL(`${appScheme}://`)
+                    if (supported) {
+                        // App is installed, open it
+                        await Linking.openURL(`${appScheme}://`);
+                    } else {
+                        // App is not installed, open the respective store
+                        if (Platform.OS === 'android') {
+                            await Linking.openURL(playStoreUrl);
+
+                        } else {
+                            Alert.alert('Error', 'Unsupported platform.');
+                        }
+                    }
+                } catch (error) {
+                    Alert.alert('Error', 'An error occurred while trying to open the app.');
+                }
                 break;
             default:
         }
@@ -198,6 +220,7 @@ const Home = ({ navigation }) => {
             </View>
         );
     };
+
     const onPressHandler = title => {
 
         switch (title) {

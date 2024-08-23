@@ -33,7 +33,7 @@ const Splash = ({ navigation }) => {
         setLanguage()
         requestUserPermission()
         requestLocationPermission()
-
+        requestNotificationPermission()
     }, [navigation]);
 
     async function requestLocationPermission() {
@@ -53,6 +53,30 @@ const Splash = ({ navigation }) => {
             }
         } catch (err) {
             console.warn(err)
+        }
+    }
+
+    async function requestNotificationPermission() {
+        if (Platform.OS === 'android') {
+            try {
+                const granted = await PermissionsAndroid.request(
+                    PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
+                    {
+                        title: 'Notification Permission',
+                        message: 'This app needs access to show notifications.',
+                        buttonNeutral: 'Ask Me Later',
+                        buttonNegative: 'Cancel',
+                        buttonPositive: 'OK',
+                    },
+                );
+                if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+                    console.log('You can use the notifications');
+                } else {
+                    console.log('Notification permission denied');
+                }
+            } catch (err) {
+                console.warn(err);
+            }
         }
     }
 
@@ -114,3 +138,157 @@ const Splash = ({ navigation }) => {
 
 export default Splash
 const styles = StyleSheet.create({})
+
+
+
+
+// import React, { useState, useEffect } from "react";
+// import {
+//     View,
+//     Text,
+//     StyleSheet,
+//     Image,
+//     SafeAreaView,
+//     Alert,
+//     Platform,
+//     StatusBar,
+//     ScrollView,
+//     TextInput,
+//     TouchableOpacity, PermissionsAndroid,
+//     Linking
+// } from "react-native";
+// import GetLocation from 'react-native-get-location';
+// import { check, request, PERMISSIONS } from 'react-native-permissions';
+// const Splash = ({ navigation }) => {
+
+//     const [location, setLocation] = useState(null);
+//     useEffect(() => {
+
+//     }, []);
+//     alert(JSON.stringify(location, null, 2))
+
+
+//     const showLocationConsent = async () => {
+//         Alert.alert(
+//             "Location permission required",
+//             "K-PRO collects location data to enable employee tracking, mark attendance, checking in/out at client's addressed & adding addresses even when the app is closed or not in use.",
+//             [
+//                 {
+//                     text: "Grant Permission",
+//                     onPress: async () => {
+//                         const status = await request(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION);
+//                         if (status !== "granted") {
+//                             showOneButtonAlert(
+//                                 "Error!",
+//                                 "Location permission denied, Please grant location access to go online! Open app settings and grant location permission"
+//                             );
+//                             // return;
+//                         }
+//                     },
+//                     style: "default",
+//                 },
+//                 {
+//                     text: "Open Settings",
+//                     onPress: () => Linking.openSettings(),
+//                     style: "default",
+//                 },
+//                 {
+//                     text: "Cancel",
+//                     onPress: () => console.log("OK Pressed"),
+//                     style: "cancel",
+//                 },
+//             ]
+//         );
+//     };
+
+
+//     const onSaveClicked = async () => {
+//         const permissions = [
+//             PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+//             PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION,
+//         ];
+//         for (const permission of permissions) {
+//             const result = await request(permission);
+//             console.log(result);
+//             if (result != "granted") {
+//                 showLocationConsent();
+//                 return;
+//             }
+//         }
+
+//         GetLocation.getCurrentPosition({
+//             enableHighAccuracy: true,
+//             timeout: 15000,
+//         })
+//             .then(location => {
+//                 // alert(JSON.stringify(location, null, 2));
+//                 setLocation(location)
+
+//                 console.log(location);
+//             })
+//             .catch(error => {
+//                 showOneButtonAlert("Error!", error.message);
+//                 const { code, message } = error;
+//                 console.warn(code, message);
+//             });
+//     };
+
+//     const showOneButtonAlert = (title, message) => {
+//         Alert.alert(title, message, [
+//             {
+//                 text: "OK",
+//                 onPress: () => console.log("OK Pressed"),
+//             },
+//         ]);
+//     };
+
+//     return (
+//         <View
+//             style={{
+
+//                 flex: 1,
+//             }}
+//         >
+//             <SafeAreaView style={{ flex: 1 }}>
+
+//                 <ScrollView
+//                     style={{
+//                         height: "100%",
+//                         paddingStart: 16,
+//                         paddingEnd: 16,
+//                     }}
+//                 >
+//                     <View style={{ flex: 1, marginBottom: 100 }}>
+
+
+//                         <TouchableOpacity
+//                             onPress={onSaveClicked}
+//                             style={{
+//                                 backgroundColor: 'red',
+//                                 height: 60,
+//                                 marginTop: 24,
+//                                 justifyContent: "center",
+//                                 borderRadius: 8,
+//                             }}
+//                         >
+//                             <Text
+//                                 style={{
+//                                     alignSelf: "center",
+//                                     fontSize: 16,
+//                                     fontWeight: "700",
+//                                     color: "#FFF",
+//                                 }}
+//                             >
+//                                 Save
+//                             </Text>
+//                         </TouchableOpacity>
+//                     </View>
+//                 </ScrollView>
+//             </SafeAreaView>
+//         </View>
+//     );
+// };
+
+// export default Splash;
+
+// const styles = StyleSheet.create({});

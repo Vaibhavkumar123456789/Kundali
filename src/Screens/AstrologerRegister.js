@@ -2012,7 +2012,7 @@ const AstrologerRegister = ({ navigation, route }) => {
                                 toggleLoading(true);
                                 StepOneditprofile(e)
                                     .then(data => {
-                                        // alert(JSON.stringify(data, null, 2))
+                                        // console.log(JSON.stringify(data, null, 2))
                                         toggleLoading(false);
                                         if (data.status) {
                                             setCurrentPosition(currentPosition + 1)

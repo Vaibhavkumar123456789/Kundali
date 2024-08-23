@@ -71,7 +71,6 @@ import NoInterner from '../Screens/NoInterner';
 import PrashnaReport from '../Screens/PrashnaReport';
 import Notification from '../Screens/Notification';
 
-
 const Stack = createStackNavigator();
 
 const StackNavigator = () => {
@@ -440,6 +439,7 @@ const StackNavigator = () => {
                     component={Notification}
                     options={{ headerShown: false }}
                 />
+
 
             </Stack.Navigator>
         </NavigationContainer>

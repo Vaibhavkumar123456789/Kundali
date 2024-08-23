@@ -728,10 +728,13 @@ const ProductDetail = ({ navigation, route }) => {
   const [astrologercutprice, setAstrologerCutPrice] = useState()
   const [astrologerprice, setAstrologerPrice] = useState()
   const [generalcutprice, setGeneralCutPrice] = useState()
+  const [general, setGeneral] = useState([])
+  const [generalquantity, setGeneralQuantity] = useState('')
   const [generalprice, setGeneralPrice] = useState()
   const [quantity, setQuantity] = useState();
   const [list, setNewList] = useState()
   const [indexValue, setIndexValue] = useState(0)
+  const [prices1, setPrices1] = useState('')
   const [state, setState] = useState({
     loading: false,
   });
@@ -751,8 +754,7 @@ const ProductDetail = ({ navigation, route }) => {
     };
     productlist(e)
       .then(data => {
-        // alert(JSON.stringify(data.data, null, 2))
-
+        // alert(JSON.stringify(data.data.quality_rati, null, 2))
         toggleLoading(false);
         if (data.status) {
           setNewList(data?.data)
@@ -776,9 +778,11 @@ const ProductDetail = ({ navigation, route }) => {
             }));
             if (tempCArr.length > 0) {
               setShould1(tempCArr[0]);
-
+              handleapidata(tempCArr[0]?.value)
               updatePrices(tempCArr[0]?.value);
               taxdetail(tempCArr[0])
+
+              setPrices1(tempCArr[0]?.value?.general_prices)
             }
             productlistapi1(tempQualityArray, data?.data?.id);
           }
@@ -792,10 +796,10 @@ const ProductDetail = ({ navigation, route }) => {
         console.log('error', error);
       });
   }
-
+  //price dropdown
   const updatePrices = (qualityItem) => {
     setIndexValue(0)
-    let tempCArrprice = qualityItem.prices.map((price) => ({
+    let tempCArrprice = qualityItem?.prices.map((price) => ({
       label: `${price}`, // Convert number to string
       value: price // Store the price as the value
     }));
@@ -826,10 +830,7 @@ const ProductDetail = ({ navigation, route }) => {
         toggleLoading(false);
         if (data.status) {
           const cartItems = data.carts || [];
-          // if (!list || !list.id) {
-          //   alert('Product list or list ID is undefined');
-          //   return;
-          // }
+
           const cartItem = cartItems.find(item => item.product_id === field);
 
           // if (!cartItem) {
@@ -838,8 +839,9 @@ const ProductDetail = ({ navigation, route }) => {
           // }
           if (cartItem) {
             const cartQuality = JSON.parse(cartItem.variant);
+            const cartmulti = JSON.parse(cartItem.multiplier)
 
-            const selectedQuality = productlisted.find(item => item.value.quality === cartQuality.toString());
+            const selectedQuality = productlisted.find(item => item.value.quality === cartQuality.toString() && item._index == cartmulti);
 
             if (selectedQuality) {
               setQuantity(cartItem.qty + 1);
@@ -862,8 +864,7 @@ const ProductDetail = ({ navigation, route }) => {
   };
 
   const handleQualityChange = (item, search) => {
-    // alert(JSON.stringify({ item, search: search }, null, 2))
-    // return
+
     setShould1(item);
     toggleLoading(true);
 
@@ -875,7 +876,40 @@ const ProductDetail = ({ navigation, route }) => {
           const cartItems = data.carts || [];
 
           const cartItem = cartItems.find(cartItem => cartItem.product_id === search && JSON.parse(cartItem.variant).toString() === item.value.quality);
-          // alert(JSON.stringify(cartItem, null, 2))
+          // console.log(JSON.parse(cartItem?.product?.quality_rati))
+
+          if (cartItem) {
+            setQuantity(cartItem.qty + 1); // Set quantity to the cart item quantity
+          } else {
+            setQuantity(1); // Reset quantity to 1 if not in cart
+          }
+
+        } else {
+          alert(data?.msg)
+        }
+      })
+      .catch(error => {
+        toggleLoading(false);
+        console.log('error', error);
+      });
+
+  };
+
+
+  const handlemulti = (item, search) => {
+
+    toggleLoading(true);
+
+    getcartapi()
+      .then(data => {
+        toggleLoading(false);
+        // alert(JSON.stringify(data, null, 2))
+        if (data.status) {
+          const cartItems = data.carts || [];
+
+          const cartItem = cartItems.find(cartItem => cartItem.product_id === search && cartItem.multiplier === item._index);
+          // console.log(JSON.parse(cartItem?.product?.quality_rati))
+         
           if (cartItem) {
             setQuantity(cartItem.qty + 1); // Set quantity to the cart item quantity
           } else {
@@ -921,6 +955,32 @@ const ProductDetail = ({ navigation, route }) => {
     // Allow only numbers and a single decimal point
     const numericValue = text.replace(/[^0-9]/g, '');
     setNumber(numericValue);
+  };
+
+
+  // general price
+  const handleapidata = (qualityItem) => {
+
+    let tempCArrprice = qualityItem?.general_prices.map((price) => ({
+      label: `${price}`, // Convert number to string
+      value: price // Store the price as the value
+    }));
+    setGeneral(tempCArrprice);
+    // Set the first price as selected by default
+    if (tempCArrprice?.length > 0) {
+      setGeneralQuantity(tempCArrprice[0]);
+    }
+  };
+
+
+  const handlepriceandgeneralprice = (item) => {
+    // alert(JSON.stringify(item, null, 2))
+
+    setGeneralQuantity({ value: prices1[item?._index] });
+    setShould2(item)
+
+    console.log('General Price item received:', prices1[item?._index]);
+
   };
 
   return (
@@ -1074,7 +1134,7 @@ const ProductDetail = ({ navigation, route }) => {
                   valueField="value"
                   placeholder={"Price"}
                   value={should2}
-                  onChange={(item) => { setShould2(item), handleupdateprice(item) }}
+                  onChange={(item) => { handlepriceandgeneralprice(item), handleupdateprice(item), handlemulti(item, list?.id) }}
                 />
               </View>
 
@@ -1132,18 +1192,18 @@ const ProductDetail = ({ navigation, route }) => {
                   General Price
                 </Text>
                 <View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
-                  {(generalprice &&
-                    <Text
-                      style={{
-                        color: '#1E1F20',
-                        fontFamily: 'AvenirLTStd-Heavy',
-                        fontSize: 18,
-                        marginLeft: 7,
-                        marginTop: 3,
-                      }}>
-                      ₹ {generalprice}
-                    </Text>
-                  )}
+                  {/* {(generalprice && */}
+                  <Text
+                    style={{
+                      color: '#1E1F20',
+                      fontFamily: 'AvenirLTStd-Heavy',
+                      fontSize: 18,
+                      marginLeft: 7,
+                      marginTop: 3,
+                    }}>
+                    ₹ {`${should1?.value?.quality}` * `${generalquantity?.value}`}
+                  </Text>
+                  {/* )} */}
                   {/* {generalcutprice && generalcutprice > 0 ?
                     <Text
                       style={{
@@ -1328,8 +1388,7 @@ const ProductDetail = ({ navigation, route }) => {
               "multiplier": list?.quality_rati?.length > 0 && route.params?.tabName == "Ratan" ? indexValue : "0",
             };
             console.log("......add cart body", e)
-            // alert(JSON.stringify(e, null, 2))
-            // return
+           
             toggleLoading(true);
             addtocardapi(e)
               .then(data => {

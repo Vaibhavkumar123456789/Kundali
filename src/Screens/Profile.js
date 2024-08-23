@@ -22,7 +22,7 @@ import Header from '../Custom/Header';
 import axios from 'axios';
 import stringsoflanguages from '../language/Language'
 import Button from 'react-native-button';
-import { AsyncStorageGettoken, GetProfile, UpdateProfile } from '../backend/Api';
+import { AsyncStorageGettoken, GetProfile, ppapi, UpdateProfile } from '../backend/Api';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import DocumentPicker, { type } from 'react-native-document-picker';
 import { validateEmail } from '../utils/utils';
@@ -130,7 +130,6 @@ const Profile = ({ navigation }) => {
     };
 
     const getPDF = async () => {
-        // alert(setModalVisible);
 
         try {
             const response = await DocumentPicker.pick({
@@ -304,7 +303,6 @@ const Profile = ({ navigation }) => {
             console.log(error)
         }
     };
-
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>

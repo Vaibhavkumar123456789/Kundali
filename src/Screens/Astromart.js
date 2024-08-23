@@ -6,6 +6,7 @@ import { TabView, TabBar, SceneMap } from 'react-native-tab-view';
 import { GetProfile, productdatalist } from '../backend/Api';
 import FastImage from 'react-native-fast-image'
 import Loader from '../utils/Loader';
+import GLobal from './GLobal';
 
 const Astromart = ({ navigation }) => {
   const { _member, _home, _productlist } = stringsoflanguages
@@ -16,7 +17,7 @@ const Astromart = ({ navigation }) => {
   const [routes, setRoutes] = useState([]);
   const [walletBalance, setWalletBalance] = useState(0);
   const [data, setData] = useState({});
-  const [astro, setAstro] = useState()
+
   const [state, setState] = useState({
     loading: false,
   });
@@ -51,7 +52,7 @@ const Astromart = ({ navigation }) => {
         // alert(JSON.stringify(data, null, 2))
         toggleLoading(false)
         if (data.status) {
-          setAstro(data.carts)
+
           const mentorRoutes = data?.data.map((item, index) => ({
             key: `${item.id}`,
             title: item?.name,
@@ -213,7 +214,7 @@ const Astromart = ({ navigation }) => {
           <TouchableOpacity activeOpacity={0.9}
             style={{ paddingVertical: 6 }}
             onPress={() => { navigation.navigate('Cart') }}>
-            {astro > 0 ?
+            {GLobal?.count > 0 ?
               <>
                 <Image
                   source={require('../assets/cart.png')}
@@ -241,7 +242,7 @@ const Astromart = ({ navigation }) => {
                     marginLeft: 1.1,
                     textAlign: 'center',
                   }}>
-                    {astro}
+                    {GLobal.count}
                   </Text>
                 </View>
               </>

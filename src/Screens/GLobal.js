@@ -24,7 +24,7 @@ module.exports = {
     deliveryday: '',
     locationiq: 'pk.8cce6ae4b2bc74fce6f52aa4903ac084',
     freetrial: '',
-
+    count: '',
     loginmobile: '',
     loginOTP: '',
     data: {},
