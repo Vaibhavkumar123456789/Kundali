@@ -263,13 +263,14 @@ const Home = ({ navigation }) => {
                             }}
                         />
                     </TouchableOpacity>
-                    <Text
+                    <Text numberOfLines={1}
                         style={{
                             fontSize: 18,
                             color: '#333333',
                             fontFamily: 'AvenirLTStd-Heavy',
                             marginTop: 8,
                             marginLeft: 13,
+                            width: window.width - 240,
                         }}>
                         Kundli App
                     </Text>

@@ -123,6 +123,7 @@ const Astromart = ({ navigation }) => {
                         fontFamily: 'AvenirLTStd-Medium', fontSize: 13,
                         marginLeft: 8, width: window.width - 180,
                         lineHeight: 22,
+                        textTransform: 'capitalize',
                       }}>
                       {item?.name}
                     </Text>

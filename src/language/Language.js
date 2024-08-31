@@ -273,6 +273,10 @@ let stringsoflanguages = new LocalizedStrings({
             recharge: 'Recharge Wallet',
             proceed: 'Proceed',
             gst: 'Gst Charges',
+        },
+        _new: {
+            pro: 'Your Professional Profile',
+            wtran: 'Wallet Transaction',
         }
 
 
@@ -479,6 +483,8 @@ let stringsoflanguages = new LocalizedStrings({
             already: 'क्या आपके पास पहले से एक खाता मौजूद है?',
             forgotp: 'पासवर्ड भूल गए',
             forgottext: 'आपको पासवर्ड रीसेट कोड भेजने के लिए हमें आपके पंजीकरण फ़ोन नंबर की आवश्यकता है!',
+            astologerform: 'ज्योतिषी प्रपत्र',
+            institutename: 'संस्थान/केंद्र का नाम',
         },
         _otp: {
             phoneverify: 'फ़ोन सत्यापन',

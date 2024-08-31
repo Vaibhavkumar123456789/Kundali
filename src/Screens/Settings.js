@@ -18,8 +18,8 @@ import {
 } from 'react-native';
 import Header from '../Custom/Header';
 import stringsoflanguages from '../language/Language'
-import {useDispatch, useSelector} from 'react-redux';
-  import * as actions from '../redux/actions';
+import { useDispatch, useSelector } from 'react-redux';
+import * as actions from '../redux/actions';
 import { _RemoveAuthToken } from '../backend/ApiSauce';
 import { AsyncStorageClear, AsyncStorageSettoken } from '../backend/Api';
 
@@ -62,7 +62,7 @@ const Settings = ({ navigation }) => {
                         bottom: 5,
                         marginTop: 20,
                     }}>
-                    <TouchableOpacity>
+                    <TouchableOpacity activeOpacity={0.8}>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                             <View style={{ flexDirection: 'row' }}>
                                 <Image
@@ -80,7 +80,7 @@ const Settings = ({ navigation }) => {
                             />
                         </View>
                     </TouchableOpacity>
-                    <TouchableOpacity
+                    <TouchableOpacity activeOpacity={0.8}
                         onPress={() => navigation.navigate('Notification')}>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 20, }}>
                             <View style={{ flexDirection: 'row' }}>
@@ -99,7 +99,7 @@ const Settings = ({ navigation }) => {
                             />
                         </View>
                     </TouchableOpacity>
-                    <TouchableOpacity>
+                    <TouchableOpacity activeOpacity={0.8}>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 20, }}>
                             <View style={{ flexDirection: 'row' }}>
                                 <Image
@@ -117,7 +117,7 @@ const Settings = ({ navigation }) => {
                             />
                         </View>
                     </TouchableOpacity>
-                    <TouchableOpacity>
+                    <TouchableOpacity activeOpacity={0.8}>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 20, }}>
                             <View style={{ flexDirection: 'row' }}>
                                 <Image
@@ -135,7 +135,7 @@ const Settings = ({ navigation }) => {
                             />
                         </View>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => {
+                    <TouchableOpacity activeOpacity={0.8} onPress={() => {
 
                         Alert.alert(
                             'Logout',

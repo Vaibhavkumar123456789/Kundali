@@ -829,6 +829,7 @@ const ProductDetail = ({ navigation, route }) => {
 
         toggleLoading(false);
         if (data.status) {
+          // alert(JSON.stringify(data, null, 2))
           const cartItems = data.carts || [];
 
           const cartItem = cartItems.find(item => item.product_id === field);
@@ -909,7 +910,7 @@ const ProductDetail = ({ navigation, route }) => {
 
           const cartItem = cartItems.find(cartItem => cartItem.product_id === search && cartItem.multiplier === item._index);
           // console.log(JSON.parse(cartItem?.product?.quality_rati))
-         
+
           if (cartItem) {
             setQuantity(cartItem.qty + 1); // Set quantity to the cart item quantity
           } else {
@@ -1023,6 +1024,7 @@ const ProductDetail = ({ navigation, route }) => {
                 color: '#333333',
                 fontFamily: 'AvenirLTStd-Heavy',
                 marginLeft: 2,
+                textTransform: 'capitalize',
               }}>
               {list?.name}
             </Text>
@@ -1388,7 +1390,7 @@ const ProductDetail = ({ navigation, route }) => {
               "multiplier": list?.quality_rati?.length > 0 && route.params?.tabName == "Ratan" ? indexValue : "0",
             };
             console.log("......add cart body", e)
-           
+
             toggleLoading(true);
             addtocardapi(e)
               .then(data => {

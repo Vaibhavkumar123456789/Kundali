@@ -1078,6 +1078,18 @@ const KundaliForm = ({ navigation }) => {
     const [report, setReport] = useState([])
     const { plandetail } = useSelector(store => store.free);
     const [showFreePopUp, setShowFreePopUp] = useState(false);
+    const [modalVisible4, setModalVisible4] = useState(false);
+    const [modalVisible1, setModalVisible1] = useState(false);
+    const [modalVisible2, setModalVisible2] = useState(false);
+    const [modalVisible3, setModalVisible3] = useState(false);
+    const [selectedHour, setSelectedHour] = useState('');
+    const [selectedMinute, setSelectedMinute] = useState('');
+    const [selectedSecond, setSelectedSecond] = useState('');
+    const [selectedAmPm, setSelectedAmPm] = useState('');
+
+    const hours = Array.from({ length: 12 }, (_, i) => String(i + 1).padStart(2, '0'));
+    const minutes = Array.from({ length: 60 }, (_, i) => String(i).padStart(2, '0'));
+    const seconds = Array.from({ length: 60 }, (_, i) => String(i).padStart(2, '0'));
 
     const [searchQuery, setSearchQuery] = useState('');
     const [showDropdown, setShowDropdown] = useState(true);
@@ -1235,6 +1247,7 @@ const KundaliForm = ({ navigation }) => {
         setTotalAmount(total_amount)
 
     }
+    console.log({ selectedHour, selectedMinute, selectedSecond, selectedAmPm }, null, 2)
     // alert(JSON.stringify(plandetail.is_free, null, 2))
     const kundliformdata = () => {
         var txnid = new Date().getTime().toString();
@@ -1251,8 +1264,17 @@ const KundaliForm = ({ navigation }) => {
         else if (date === '') {
             Toast.show('Please Select Date of birth');
         }
-        else if (date1 === '') {
-            Toast.show('Please Select Time of birth');
+        else if (selectedHour === '') {
+            Toast.show('Please Select Hour');
+        }
+        else if (selectedMinute === '') {
+            Toast.show('Please Select Minutes');
+        }
+        else if (selectedSecond === '') {
+            Toast.show('Please Select Second');
+        }
+        else if (selectedAmPm === '') {
+            Toast.show('Please Select AM/PM');
         }
         else if (should1 === '') {
             Toast.show('Please Select Country');
@@ -1292,7 +1314,7 @@ const KundaliForm = ({ navigation }) => {
                 "name": name,
                 "gender": checked === 0 ? "Male" : checked === 1 ? "Female" : null,
                 "dob": date == '' ? '' : moment(date).format('YYYY-MM-DD'),
-                "tob": date1 == '' ? '' : moment(date1).format('hh:mm a'),
+                "tob": `${selectedHour}:${selectedMinute}:${selectedSecond} ${selectedAmPm}`,
                 "country": should1,
                 "pob": `${selectedcity.cityName}`,
                 "mobile": number,
@@ -1308,9 +1330,9 @@ const KundaliForm = ({ navigation }) => {
                 'cityid': selectedcity.cityId,
                 "agree": "1",
                 "package_id": addtex?.value?.id,
-                "tax_amt": `${parseFloat(taxstate).toFixed(2)}`,
-                "net_amount": `${parseFloat(netamount).toFixed(2)}`,
-                "total_mrp": `${parseFloat(totatamount).toFixed(2)}`,
+                "tax_amt": `${parseFloat(taxstate).toFixed(2)} `,
+                "net_amount": `${parseFloat(netamount).toFixed(2)} `,
+                "total_mrp": `${parseFloat(totatamount).toFixed(2)} `,
                 "payment_id": txnid,
             };
 
@@ -1321,7 +1343,7 @@ const KundaliForm = ({ navigation }) => {
                     // alert(JSON.stringify(data, null, 2))
                     toggleLoading(false);
                     if (data.status) {
-                        navigation.navigate('KundliGenerate', { item: `${data?.detail?.report}`, title: data?.detail?.email, number: "2" })
+                        navigation.navigate('KundliGenerate', { item: `${data?.detail?.report} `, title: data?.detail?.email, number: "2" })
 
                     } else {
                         alert(data?.msg);
@@ -1498,7 +1520,7 @@ const KundaliForm = ({ navigation }) => {
                     {_kundali.timeofbirth}
                 </Text>
 
-                <TouchableOpacity activeOpacity={0.9} style={{
+                {/* <TouchableOpacity activeOpacity={0.9} style={{
                     borderRadius: 10,
                     paddingHorizontal: 15,
                     marginHorizontal: 18,
@@ -1521,7 +1543,77 @@ const KundaliForm = ({ navigation }) => {
                         placeholderTextColor={'#333333'}
                     />
 
-                </TouchableOpacity>
+                </TouchableOpacity> */}
+
+                <View style={{
+                    flexDirection: 'row', justifyContent: 'space-between',
+                    marginHorizontal: 18, marginTop: 10
+                }}>
+                    <TouchableOpacity style={{
+                        width: 60,
+                        height: 50,
+                        borderColor: '#00000020',
+                        borderWidth: 1.5,
+                        borderRadius: 10,
+                    }} activeOpacity={0.9} onPress={() => setModalVisible4(true)}>
+                        <TextInput
+                            style={styles.input}
+                            value={selectedHour}
+                            maxLength={2}
+                            editable={false}
+                            onFocus={() => setModalVisible4(true)}
+                            placeholderTextColor={'#333333'}
+                            placeholder="HH"
+                        />
+                    </TouchableOpacity>
+                    <TouchableOpacity style={{
+                        width: 60,
+                        height: 50,
+                        borderColor: '#00000020',
+                        borderWidth: 1.5,
+                        borderRadius: 10,
+                    }} activeOpacity={0.9} onPress={() => setModalVisible1(true)}>
+                        <TextInput
+                            style={styles.input}
+                            value={selectedMinute}
+                            maxLength={2}
+                            editable={false}
+                            placeholderTextColor={'#333333'}
+                            placeholder="MM"
+                        />
+                    </TouchableOpacity>
+                    <TouchableOpacity style={{
+                        width: 60,
+                        height: 50,
+                        borderColor: '#00000020',
+                        borderWidth: 1.5,
+                        borderRadius: 10,
+                    }} activeOpacity={0.9} onPress={() => setModalVisible2(true)}>
+                        <TextInput
+                            style={styles.input}
+                            value={selectedSecond}
+                            editable={false}
+                            placeholderTextColor={'#333333'}
+                            maxLength={2}
+                            placeholder="SS"
+                        />
+                    </TouchableOpacity>
+                    <TouchableOpacity style={{
+                        width: 60,
+                        height: 50,
+                        borderColor: '#00000020',
+                        borderWidth: 1.5,
+                        borderRadius: 10,
+                    }} activeOpacity={0.9} onPress={() => setModalVisible3(true)}>
+                        <TextInput
+                            style={styles.input}
+                            value={selectedAmPm}
+                            editable={false}
+                            placeholderTextColor={'#333333'}
+                            placeholder="AM/PM"
+                        />
+                    </TouchableOpacity>
+                </View>
                 <Text
                     style={{
                         fontFamily: 'AvenirLTStd-Medium',
@@ -1584,7 +1676,7 @@ const KundaliForm = ({ navigation }) => {
                             paddingVertical: 14,
                             color: '#333333',
                         }}>
-                        {selectedcity == '' ? _kundali.birth : `${selectedcity.cityName},${selectedcity.state},${selectedcity.countryCode}`}
+                        {selectedcity == '' ? _kundali.birth : `${selectedcity.cityName},${selectedcity.state},${selectedcity.countryCode} `}
                     </Text>
                 </Pressable>
 
@@ -1807,26 +1899,52 @@ const KundaliForm = ({ navigation }) => {
                     }}>
                     {_kundali.mobile}
                 </Text>
-                <TextInput
-                    style={{
-                        fontSize: 16,
-                        fontFamily: 'AvenirLTStd-Medium',
-                        borderRadius: 10,
-                        borderColor: '#00000020',
-                        borderWidth: 1.5,
-                        marginTop: 10,
-                        marginHorizontal: 18,
-                        paddingHorizontal: 15,
-                        paddingVertical: 11,
-                        color: '#333333',
-                    }}
-                    placeholderTextColor={'#333333'}
-                    keyboardType='numeric'
-                    placeholder={_kundali.mobile}
-                    value={number}
-                    onChangeText={(text) => setNumber(text)}
-                    maxLength={10}
-                />
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                    <TextInput
+                        style={{
+                            fontSize: 16,
+                            fontFamily: 'AvenirLTStd-Medium',
+                            borderRadius: 10,
+                            borderColor: '#00000020',
+                            borderWidth: 1.5,
+                            marginTop: 10,
+                            marginLeft: 18,
+                            paddingHorizontal: 15,
+                            paddingVertical: 11,
+                            color: '#333333',
+                        }}
+                        placeholderTextColor={'#333333'}
+                        placeholder={'+91'}
+                        editable={false}
+                    />
+                    <TextInput
+                        style={{
+                            fontSize: 16,
+                            fontFamily: 'AvenirLTStd-Medium',
+                            borderRadius: 10,
+                            borderColor: '#00000020',
+                            borderWidth: 1.5,
+                            marginTop: 10,
+                            marginLeft: 10,
+                            marginRight: 18,
+                            width: window.width - 105,
+                            paddingHorizontal: 15,
+                            paddingVertical: 11,
+                            color: '#333333',
+                        }}
+                        placeholderTextColor={'#333333'}
+                        keyboardType='numeric'
+                        placeholder={_kundali.mobile}
+                        value={number}
+                        onChangeText={(text) => {
+                            const texttt = text.replace(/[^0-9]/g, '');
+                            setNumber(texttt);
+                        }}
+                        maxLength={10}
+                    />
+
+
+                </View>
                 <Text
                     style={{
                         fontFamily: 'AvenirLTStd-Medium',
@@ -1875,7 +1993,7 @@ const KundaliForm = ({ navigation }) => {
                                 letterSpacing: -0.2,
                                 marginLeft: 1,
                             }}>
-                            {`₹ ${parseFloat(totatamount).toFixed(2)}`}
+                            {`₹ ${parseFloat(totatamount).toFixed(2)} `}
                         </Text>
                     )}
                 </View>
@@ -2011,6 +2129,137 @@ const KundaliForm = ({ navigation }) => {
                     </View>
                 </TouchableOpacity>
             </Modal>
+
+
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={modalVisible4}
+                onRequestClose={() => {
+                    setModalVisible4(!modalVisible4);
+                }}
+            >
+                <TouchableOpacity
+                    activeOpacity={0.8}
+                    onPress={() => {
+                        setModalVisible4(false);
+                    }}
+                    style={styles.first}>
+                    <View style={styles.second}>
+                        <TouchableOpacity
+                            activeOpacity={0.8}
+                            onPress={() => {
+
+                            }}>
+                            <ScrollView showsVerticalScrollIndicator={false}>
+                                {hours.map((hour, index) => (
+                                    <TouchableOpacity key={index} onPress={() => { setSelectedHour(hour); setModalVisible4(false); }}>
+                                        <Text style={styles.pickerItem}>{hour}</Text>
+                                    </TouchableOpacity>
+                                ))}
+                            </ScrollView>
+                        </TouchableOpacity>
+                    </View>
+                </TouchableOpacity>
+            </Modal>
+
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={modalVisible1}
+                onRequestClose={() => {
+                    setModalVisible1(!modalVisible1);
+                }}
+            >
+                <TouchableOpacity
+                    activeOpacity={0.8}
+                    onPress={() => {
+                        setModalVisible1(false);
+                    }}
+                    style={styles.first}>
+                    <View style={styles.second}>
+                        <TouchableOpacity
+                            activeOpacity={0.8}
+                            onPress={() => {
+
+                            }}>
+                            <ScrollView showsVerticalScrollIndicator={false}>
+                                {minutes.map((minute, index) => (
+                                    <TouchableOpacity key={index} onPress={() => { setSelectedMinute(minute); setModalVisible1(false); }}>
+                                        <Text style={styles.pickerItem}>{minute}</Text>
+                                    </TouchableOpacity>
+                                ))}
+                            </ScrollView>
+                        </TouchableOpacity>
+                    </View>
+                </TouchableOpacity>
+            </Modal>
+
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={modalVisible2}
+                onRequestClose={() => {
+                    setModalVisible2(!modalVisible2);
+                }}
+            >
+                <TouchableOpacity
+                    activeOpacity={0.8}
+                    onPress={() => {
+                        setModalVisible2(false);
+                    }}
+                    style={styles.first}>
+                    <View style={styles.second}>
+                        <TouchableOpacity
+                            activeOpacity={0.8}
+                            onPress={() => {
+
+                            }}>
+                            <ScrollView showsVerticalScrollIndicator={false}>
+                                {seconds.map((second, index) => (
+                                    <TouchableOpacity key={index} onPress={() => { setSelectedSecond(second); setModalVisible2(false); }}>
+                                        <Text style={styles.pickerItem}>{second}</Text>
+                                    </TouchableOpacity>
+                                ))}
+                            </ScrollView>
+                        </TouchableOpacity>
+                    </View>
+                </TouchableOpacity>
+            </Modal>
+
+
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={modalVisible3}
+                onRequestClose={() => {
+                    setModalVisible3(!modalVisible3);
+                }}
+            >
+                <TouchableOpacity
+                    activeOpacity={0.8}
+                    onPress={() => {
+                        setModalVisible3(false);
+                    }}
+                    style={styles.first}>
+                    <View style={styles.second}>
+                        <TouchableOpacity
+                            activeOpacity={0.8}
+                            onPress={() => {
+
+                            }}>
+                            <ScrollView showsVerticalScrollIndicator={false}>
+                                {['AM', 'PM'].map((ampm, index) => (
+                                    <TouchableOpacity key={index} onPress={() => { setSelectedAmPm(ampm); setModalVisible3(false); }}>
+                                        <Text style={styles.pickerItem}>{ampm}</Text>
+                                    </TouchableOpacity>
+                                ))}
+                            </ScrollView>
+                        </TouchableOpacity>
+                    </View>
+                </TouchableOpacity>
+            </Modal>
+
         </SafeAreaView >
     )
 }
@@ -2022,9 +2271,33 @@ const styles = StyleSheet.create({
         flex: 1,
     },
 
+    input: {
+        fontFamily: 'AvenirLTStd-Medium',
+        color: '#333333',
+        textAlign: 'center',
+        fontSize: 16,
+    },
+    pickerItem: {
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        textAlign: 'center',
+        fontSize: 18,
+    },
+    scrollContainer: {
+        width: 60,
+        maxHeight: 200,
+    },
+    first: {
+        flex: 1,
+        backgroundColor: '#00000099',
+        justifyContent: 'center',
+    },
+    second: {
+        width: '40%',
+        alignSelf: 'center',
+        padding: 20,
+        backgroundColor: 'white',
+        borderRadius: 10,
+    }
+
 })
-
-
-
-
-

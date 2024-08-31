@@ -76,12 +76,13 @@ const Cart = ({ navigation }) => {
       product_id: product.product_id,
       qty: "0",
       variant: product.variant,
+      "multiplier": product.multiplier,
     };
     console.log(JSON.stringify(e, null, 2))
     toggleLoading(true);
     addtocardapi(e)
       .then(res => {
-        console.log('remove cart ', res);
+        console.log('remove cart .......', res);
         toggleLoading(false);
         if (res.status) {
           setCart(cart.filter(item => item.id !== product.id));
@@ -106,7 +107,9 @@ const Cart = ({ navigation }) => {
       product_id: product.product_id,
       qty: quantity,
       variant: product.variant,
+      "multiplier": product.multiplier,
     };
+
     toggleLoading(true);
     addtocardapi(e)
       .then(res => {
@@ -129,12 +132,13 @@ const Cart = ({ navigation }) => {
   };
 
   const deleteProductFromCart = async (product) => {
-    // alert(JSON.stringify(product, null, 2))
+
     let e = {
       type: "1",
       product_id: product?.product?.id,
       qty: '0',
       variant: product.variant,
+      "multiplier": product.multiplier,
     };
     console.log(JSON.stringify(e, null, 2))
     // alert(JSON.stringify(e, null, 2))
@@ -142,7 +146,7 @@ const Cart = ({ navigation }) => {
     toggleLoading(true);
     addtocardapi(e)
       .then(res => {
-        console.log('delete product cart ', res);
+        console.log('delete product cart ....', res);
         // alert(JSON.stringify(res, null, 2))
         toggleLoading(false);
         if (res.status) {
@@ -218,6 +222,7 @@ const Cart = ({ navigation }) => {
                 color: '#333333',
                 marginRight: 18,
                 width: window.width - 180,
+                textTransform:'capitalize',
               }}>
               {item?.product?.name}
             </Text>

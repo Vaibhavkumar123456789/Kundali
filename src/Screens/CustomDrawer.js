@@ -7,7 +7,7 @@ import { TabActions } from '@react-navigation/native';
 import { useIsFocused } from '@react-navigation/native';
 import { GetProfile } from '../backend/Api'
 const CustomDrawer = ({ navigation }) => {
-    const { _drawer } = stringsoflanguages
+    const { _drawer, _new } = stringsoflanguages
     const isFocused = useIsFocused();
     const [pathurl, setPathurl] = useState('')
     const data = [
@@ -17,7 +17,7 @@ const CustomDrawer = ({ navigation }) => {
         },
         {
             icon: require('../assets/sidebar-history.png'),
-            input: "Your Professional Profile",
+            input: _new.pro,
         },
         // {
         //     icon: require('../assets/sidebar-history.png'),
@@ -37,7 +37,7 @@ const CustomDrawer = ({ navigation }) => {
         },
         {
             icon: require('../assets/sidebar-wallet.png'),
-            input: "Wallet Transaction",
+            input: _new.wtran,
         },
         {
             icon: require('../assets/sidebar-invoice.png'),
